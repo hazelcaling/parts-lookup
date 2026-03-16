@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { partsData } from "./data/partsData";
 import { jsPDF } from "jspdf";
 import { useNavigate } from "react-router-dom";
-
-
+import { generateQuoteNumber, money, drawQuoteHeader } from "./utils/pdfHelpers";
 
 function App() {
 
@@ -17,20 +16,7 @@ const [searchedModel, setSearchedModel] = useState("");
 
 const [company,setCompany] = useState("");
 const [attn,setAttn] = useState("");
-
-const generateQuoteNumber = () => {
-
-const now = new Date();
-
-const mm = String(now.getMonth()+1).padStart(2,"0");
-const dd = String(now.getDate()).padStart(2,"0");
-const yy = String(now.getFullYear()).slice(-2);
-
-const random = Math.floor(Math.random()*90)+10;
-
-return `Q${mm}${dd}${yy}${random}`;
-
-};
+const [email,setEmail] = useState("");
 
 const searchParts = () => {
 
@@ -70,6 +56,8 @@ const clearSearch = () => {
 setModel("");
 setResults([]);
 setSearched(false);
+setSeriesName("");
+setSearchedModel("");
 
 };
 
@@ -86,106 +74,134 @@ const subtotal = results.reduce(
 0
 );
 
+const drawTableHeader = (doc,y) => {
+
+doc.setFont(undefined,"bold");
+doc.setFontSize(11);
+
+doc.text("Line",14,y);
+doc.text("Part Number",26,y);
+doc.text("Description",62,y);
+doc.text("Qty",148,y,{align:"center"});
+doc.text("Unit Price",168,y,{align:"center"});
+doc.text("Total",196,y,{align:"right"});
+
+y += 4;
+doc.line(14,y,196,y);
+
+return y + 8;
+
+};
+
 const generatePDF = () => {
 
 const quoteNumber = generateQuoteNumber();
 
 const doc = new jsPDF();
 
-let y = 20;
+let y = drawQuoteHeader(doc,{
+quoteNumber,
+company,
+attn,
+email,
+subtitle:"Recommended Annual Kit",
+subtitle2:[`Series: ${seriesName}`,`Model: ${searchedModel}`]
+});
 
-doc.setFontSize(18);
-doc.text(`Quote #: ${quoteNumber}`,14,y);
-y+=6;
+y = drawTableHeader(doc,y);
 
-y+=10;
+doc.setFont(undefined,"normal");
+doc.setFontSize(10);
 
-doc.setFontSize(11);
-
-doc.text(`Date: ${new Date().toLocaleDateString()}`,14,y);
-
-y+=10;
-
-doc.text(`Company: ${company}`,14,y);
-y+=6;
-doc.text(`Attn: ${attn}`,14,y);
-
-y+=12;
-
-doc.setFontSize(13);
-doc.text("Recommended Annual Kit",14,y);
-
-y+=8;
-
-doc.setFontSize(11);
-doc.text(`Series: ${seriesName}`,14,y);
-y+=6;
-doc.text(`Model: ${searchedModel}`,14,y);
-
-y+=12;
-
-doc.text("Part Number",14,y);
-doc.text("Description",60,y);
-doc.text("Qty",150,y);
-doc.text("Total",170,y);
-
-y+=4;
-doc.line(14,y,195,y);
-
-y+=8;
+let item = 1;
 
 results.forEach((p)=>{
 
-doc.text(p.pn,14,y);
+const unit = Number(p.price || 0);
+const qty = Number(p.qty || 1);
+const total = unit * qty;
 
-doc.text(p.description.substring(0,40),60,y);
+const descLines = doc.splitTextToSize(p.description || "",78);
+const rowHeight = Math.max(descLines.length*5+2,8);
 
-doc.text(String(p.qty),152,y);
+if (y + rowHeight > 265) {
 
-doc.text(`$${(p.qty*p.price).toFixed(2)}`,170,y);
+doc.addPage();
 
-y+=8;
+y = drawQuoteHeader(doc,{
+quoteNumber,
+company,
+attn,
+email,
+subtitle:"Recommended Annual Kit",
+subtitle2:[`Series: ${seriesName}`,`Model: ${searchedModel}`]
+});
+
+y = drawTableHeader(doc,y);
+
+doc.setFont(undefined,"normal");
+doc.setFontSize(10);
+
+}
+
+doc.text(String(item),14,y);
+doc.text(p.pn || "",26,y);
+doc.text(descLines,62,y);
+
+doc.text(String(qty),148,y,{align:"center"});
+doc.text(money(unit),168,y,{align:"center"});
+doc.text(money(total),196,y,{align:"right"});
+
+y += rowHeight;
+
+item++;
 
 });
 
-y+=5;
-
-doc.line(120,y,195,y);
+y += 4;
+doc.line(120,y,196,y);
 
 y += 8;
 
-/* SUBTOTAL */
 doc.setFontSize(12);
-doc.setFont(undefined, "bold");
-doc.text(`Subtotal: $${subtotal.toFixed(2)}`,150,y);
+doc.setFont(undefined,"bold");
 
-/* NOTES UNDER SUBTOTAL */
-y += 10;
+doc.text(`Subtotal: ${money(subtotal)}`,196,y,{align:"right"});
+
+y += 12;
 
 doc.setFontSize(10);
 doc.setFont(undefined,"italic");
 
-doc.text("Freight and applicable sales tax not included.", 14, y);
+doc.text("Freight and applicable sales tax not included.",14,y);
 
-y += 5;
+y += 10;
 
-doc.text("Pricing valid for 30 days.", 14, y);
-
-/* PREPARED BY */
-y += 15;
-
-doc.setFontSize(10);
 doc.setFont(undefined,"normal");
 doc.text("Prepared by Hazel Caling",14,y);
 
 doc.save(`Quote_${quoteNumber}.pdf`);
+
+const subject = `Quote #${quoteNumber}`;
+
+const body = `Hello,
+
+Please see the attached quote.
+
+Thank you.`;
+
+if(email.trim()){
+
+window.location.href =
+`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+}
 
 };
 
 return (
 
 <div style={{padding:"40px",fontFamily:"Arial"}}>
-    
 
 <button
 onClick={() => navigate("/quote")}
@@ -257,16 +273,17 @@ Recommended Annual Kit
 <table
 border="1"
 cellPadding="8"
-style={{borderCollapse:"collapse",minWidth:"700px"}}
+style={{borderCollapse:"collapse",minWidth:"900px"}}
 >
 
 <thead>
 
 <tr>
 
+<th>Line</th>
 <th>Part Number</th>
 <th>Description</th>
-<th>Price</th>
+<th>Unit Price</th>
 <th style={{textAlign:"center"}}>Qty</th>
 <th>Total</th>
 
@@ -277,13 +294,16 @@ style={{borderCollapse:"collapse",minWidth:"700px"}}
 <tbody>
 
 {results.map((part,index)=>(
+
 <tr key={index}>
+
+<td style={{textAlign:"center"}}>{index+1}</td>
 
 <td>{part.pn}</td>
 
 <td>{part.description}</td>
 
-<td>${part.price.toFixed(2)}</td>
+<td>{money(part.price)}</td>
 
 <td style={{textAlign:"center"}}>
 
@@ -300,9 +320,10 @@ textAlign:"center"
 
 </td>
 
-<td>${(part.qty*part.price).toFixed(2)}</td>
+<td>{money(part.qty*part.price)}</td>
 
 </tr>
+
 ))}
 
 </tbody>
@@ -311,12 +332,12 @@ textAlign:"center"
 
 <tr>
 
-<td colSpan="4" style={{textAlign:"right"}}>
+<td colSpan="5" style={{textAlign:"right"}}>
 <strong>Subtotal</strong>
 </td>
 
 <td>
-<strong>${subtotal.toFixed(2)}</strong>
+<strong>{money(subtotal)}</strong>
 </td>
 
 </tr>
@@ -329,9 +350,7 @@ textAlign:"center"
 
 <div style={{marginTop:"20px"}}>
 
-<div>
-Quote Info
-</div>
+<div>Quote Info</div>
 
 <input
 placeholder="Company Name"
@@ -344,6 +363,13 @@ style={{padding:"8px",marginRight:"10px"}}
 placeholder="Attn To"
 value={attn}
 onChange={(e)=>setAttn(e.target.value)}
+style={{padding:"8px",marginRight:"10px"}}
+/>
+
+<input
+placeholder="Email"
+value={email}
+onChange={(e)=>setEmail(e.target.value)}
 style={{padding:"8px"}}
 />
 

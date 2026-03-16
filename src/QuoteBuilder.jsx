@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import leftLogo from "./assets/leftLogo.jpeg";
-import rightLogo from "./assets/rightLogo.png";
+import { generateQuoteNumber, money, drawQuoteHeader } from "./utils/pdfHelpers";
 
 function QuoteBuilder() {
   const [company, setCompany] = useState("");
@@ -19,15 +18,6 @@ function QuoteBuilder() {
       qty: 1,
     },
   ]);
-
-  const generateQuoteNumber = () => {
-    const now = new Date();
-    const mm = String(now.getMonth() + 1).padStart(2, "0");
-    const dd = String(now.getDate()).padStart(2, "0");
-    const yy = String(now.getFullYear()).slice(-2);
-    const random = Math.floor(Math.random() * 90) + 10;
-    return `Q${mm}${dd}${yy}${random}`;
-  };
 
   const toNumber = (value, fallback = 0) => {
     const num = Number(value);
@@ -76,60 +66,14 @@ function QuoteBuilder() {
     0
   );
 
-  const drawHeader = (doc, quoteNumber) => {
-    const leftLogoX = 14;
-    const leftLogoY = 10;
-    const leftLogoW = 60;
-    const leftLogoH = 30;
-
-    const rightLogoX = 110;
-    const rightLogoY = 15;
-    const rightLogoW = 90;
-    const rightLogoH = 30;
-
-    try {
-      doc.addImage(leftLogo, "JPEG", leftLogoX, leftLogoY, leftLogoW, leftLogoH);
-    } catch (e) {}
-
-    try {
-      doc.addImage(rightLogo, "PNG", rightLogoX, rightLogoY, rightLogoW, rightLogoH);
-    } catch (e) {
-      console.error("Right logo failed to load", e);
-    }
-
-    // calculate bottom of logos
-    const logosBottom = Math.max(
-      leftLogoY + leftLogoH,
-      rightLogoY + rightLogoH
-    );
-
-    let y = logosBottom + 10;
-
-    doc.setFontSize(18);
+  const drawTableHeader = (doc, y) => {
     doc.setFont(undefined, "bold");
-    doc.text("QUOTE", 105, y, { align: "center" });
-
-    y += 10;
-
     doc.setFontSize(11);
-    doc.setFont(undefined, "normal");
-    doc.text(`Quote #: ${quoteNumber}`, 14, y);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, y + 6);
-
-    y += 18;
-
-    doc.text(`Company: ${company}`, 14, y);
-    doc.text(`Attn: ${attn}`, 14, y + 6);
-    doc.text(`Email: ${email}`, 14, y + 12);
-
-    y += 26;
-
-    doc.setFont(undefined, "bold");
     doc.text("Line", 14, y);
     doc.text("Part Number", 26, y);
     doc.text("Description", 65, y);
     doc.text("Qty", 148, y, { align: "center" });
-    doc.text("Unit Price", 162, y, { align: "center" });
+    doc.text("Unit Price", 168, y, { align: "center" });
     doc.text("Total", 196, y, { align: "right" });
 
     y += 4;
@@ -142,7 +86,14 @@ function QuoteBuilder() {
     const quoteNumber = generateQuoteNumber();
     const doc = new jsPDF();
 
-    let y = drawHeader(doc, quoteNumber);
+    let y = drawQuoteHeader(doc, {
+      quoteNumber,
+      company,
+      attn,
+      email,
+    });
+
+    y = drawTableHeader(doc, y);
 
     doc.setFont(undefined, "normal");
     doc.setFontSize(10);
@@ -159,7 +110,16 @@ function QuoteBuilder() {
 
       if (y + rowHeight > 265) {
         doc.addPage();
-        y = drawHeader(doc, quoteNumber);
+
+        y = drawQuoteHeader(doc, {
+          quoteNumber,
+          company,
+          attn,
+          email,
+        });
+
+        y = drawTableHeader(doc, y);
+
         doc.setFont(undefined, "normal");
         doc.setFontSize(10);
       }
@@ -168,8 +128,8 @@ function QuoteBuilder() {
       doc.text(r.pn || "", 26, y);
       doc.text(descLines, 65, y);
       doc.text(String(qty), 148, y, { align: "center" });
-      doc.text(`$${unit.toFixed(2)}`, 162, y, { align: "center" });
-      doc.text(`$${total.toFixed(2)}`, 196, y, { align: "right" });
+      doc.text(money(unit), 168, y, { align: "center" });
+      doc.text(money(total), 196, y, { align: "right" });
 
       y += rowHeight;
       item++;
@@ -179,34 +139,27 @@ function QuoteBuilder() {
     doc.line(120, y, 196, y);
 
     y += 8;
-
     doc.setFontSize(12);
     doc.setFont(undefined, "bold");
-    doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 196, y, { align: "right" });
+    doc.text(`Subtotal: ${money(subtotal)}`, 196, y, { align: "right" });
 
     y += 12;
-
     doc.setFontSize(10);
     doc.setFont(undefined, "italic");
     doc.text("Freight and applicable sales tax not included.", 14, y);
 
-    // y += 5;
-    // doc.text("Pricing valid for 30 days.", 14, y);
-
     y += 10;
-
     doc.setFont(undefined, "normal");
     doc.text("Prepared by Hazel Caling", 14, y);
 
     doc.save(`Quote_${quoteNumber}.pdf`);
 
     const subject = `Quote ${quoteNumber}`;
-
     const body = `Hello,
 
-Please see attached quote.
+Please see the attached quote.
 
-Thank you`;
+Thank you.`;
 
     if (email.trim()) {
       window.location.href = `mailto:${email}?subject=${encodeURIComponent(
@@ -305,7 +258,7 @@ Thank you`;
                 />
               </td>
 
-              <td>${toNumber(row.sellPrice).toFixed(2)}</td>
+              <td>{money(toNumber(row.sellPrice))}</td>
 
               <td>
                 <input
@@ -316,9 +269,7 @@ Thank you`;
                 />
               </td>
 
-              <td>
-                ${(toNumber(row.qty, 1) * toNumber(row.sellPrice)).toFixed(2)}
-              </td>
+              <td>{money(toNumber(row.qty, 1) * toNumber(row.sellPrice))}</td>
 
               <td>
                 <button onClick={() => deleteRow(index)}>X</button>
@@ -335,7 +286,7 @@ Thank you`;
       <br />
       <br />
 
-      <h3>Subtotal: ${subtotal.toFixed(2)}</h3>
+      <h3>Subtotal: {money(subtotal)}</h3>
 
       <button onClick={generatePDF}>Generate Quote</button>
     </div>
