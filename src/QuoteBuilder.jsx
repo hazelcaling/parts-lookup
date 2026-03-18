@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import { generateQuoteNumber, money, drawQuoteHeader } from "./utils/pdfHelpers";
+import "./App.css";
 
 function QuoteBuilder() {
   const [company, setCompany] = useState("");
@@ -169,7 +170,7 @@ Thank you.`;
   };
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div className="app-container">
       <h2>Create Quote</h2>
 
       <input
@@ -195,7 +196,7 @@ Thank you.`;
       <br />
       <br />
 
-      <table border="1" style={{ borderCollapse: "collapse", width: "100%" }}>
+      <table className="quote-table" border="1" style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
           <tr>
             <th>PN</th>
@@ -216,16 +217,24 @@ Thank you.`;
               <td>
                 <input
                   value={row.pn}
-                  onChange={(e) => updateRow(index, "pn", e.target.value)}
+                  onChange={(e) => {
+                    updateRow(index, "pn", e.target.value);
+
+                  }}
                 />
               </td>
 
               <td>
-                <input
+                <textarea
                   value={row.description}
-                  onChange={(e) =>
-                    updateRow(index, "description", e.target.value)
-                  }
+                  rows={1}
+                  style={{ width: "100%", resize: "none", overflow: "hidden" }}
+                  onChange={(e) => {
+                    updateRow(index, "description", e.target.value);
+
+                    e.target.style.height = "auto";
+                    e.target.style.height = e.target.scrollHeight + "px";
+                  }}
                 />
               </td>
 
@@ -272,7 +281,7 @@ Thank you.`;
               <td>{money(toNumber(row.qty, 1) * toNumber(row.sellPrice))}</td>
 
               <td>
-                <button onClick={() => deleteRow(index)}>X</button>
+                <button className="delete-btn"onClick={() => deleteRow(index)}>X</button>
               </td>
             </tr>
           ))}

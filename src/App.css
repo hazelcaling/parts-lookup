@@ -1,4 +1,4 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -35,8 +35,119 @@
 
 .card {
   padding: 2em;
-}
+} 
 
 .read-the-docs {
   color: #888;
 }
+
+.quote-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.quote-table th,
+.quote-table td {
+  padding: 4px;
+}
+
+/* PN */
+.quote-table th:nth-child(1),
+.quote-table td:nth-child(1) {
+  width: 120px;
+}
+
+/* Description (wider) */
+.quote-table th:nth-child(2),
+.quote-table td:nth-child(2) {
+  width: 420px;
+}
+
+/* List Price */
+.quote-table th:nth-child(3),
+.quote-table td:nth-child(3) {
+  width: 90px;
+}
+
+/* Multiplier */
+.quote-table th:nth-child(4),
+.quote-table td:nth-child(4) {
+  width: 80px;
+}
+
+/* Markup */
+.quote-table th:nth-child(5),
+.quote-table td:nth-child(5) {
+  width: 80px;
+}
+
+/* Sell Price */
+.quote-table th:nth-child(6),
+.quote-table td:nth-child(6) {
+  width: 100px;
+}
+
+/* Qty */
+.quote-table th:nth-child(7),
+.quote-table td:nth-child(7) {
+  width: 60px;
+}
+
+/* Total */
+.quote-table th:nth-child(8),
+.quote-table td:nth-child(8) {
+  width: 100px;
+}
+
+/* Delete button */
+.quote-table th:nth-child(9),
+.quote-table td:nth-child(9) {
+  width: 40px;
+}
+
+.quote-table input,
+.quote-table textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.delete-btn {
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  color: red;
+}
+
+.quote-table td:last-child {
+  text-align: center;
+}
+
+.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.quote-table {
+  width: 100%;
+  table-layout: fixed;
+  margin-top: 15px;
+}
+
+.quote-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.quote-table th,
+.quote-table td {
+  padding: 6px;
+}
+
+input,
+textarea {
+  padding: 4px;
+  font-size: 14px;
+} */
