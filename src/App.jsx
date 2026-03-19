@@ -1643,7 +1643,7 @@ Thank you.`;
           }}
         >
           <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>
-            Parts Catalog
+            Raypak IPL Parts
           </h2>
 
           <input
@@ -1846,7 +1846,7 @@ Thank you.`;
               width: "100%",
             }}
           >
-            Add Selected Catalog Items to Quote
+            Add Selected Items to Quote
           </button>
         </div>
       </div>
