@@ -2048,8 +2048,7 @@
 // }
 
 // export default App;
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { partsData } from "./data/partsData";
 import partsCatalog from "./data/partsCatalog.json";
 import { jsPDF } from "jspdf";
@@ -2081,36 +2080,19 @@ function App() {
   const [catalogPage, setCatalogPage] = useState(1);
   const [selectedCatalog, setSelectedCatalog] = useState({});
 
-  const makeQuoteKey = (item, index = 0) =>
-    [
-      item.pn || "",
-      item.description || "",
-      item.model || "",
-      item.source || "",
-      item.callOut || "",
-      item.iplDescription || "",
-      item.notes || "",
-      index,
-    ].join("|");
+  const itemsPerPage = 15;
 
-  const makeCatalogKey = (item, index = 0) =>
-    [
-      item.series || "",
-      item.model || "",
-      item.section || "",
-      item.partNumber || "",
-      item.callOut || "",
-      item.description || "",
-      item.iplDescription || "",
-      item.notes || "",
-      index,
-    ].join("|");
+  const makeQuoteKey = (item) =>
+    `${item.pn}|${item.description}|${item.model || ""}|${item.source || ""}`;
+
+  const makeCatalogKey = (item) =>
+    `${item.series}|${item.model}|${item.partNumber}|${item.callOut}|${item.description}`;
 
   const normalizeModel = (value) => String(value || "").trim().toUpperCase();
 
   const splitModels = (value) =>
     normalizeModel(value)
-      .split(/[\s,;/|]+/)
+      .split(/[\s,/|]+/)
       .map((m) => m.trim())
       .filter(Boolean);
 
@@ -2156,9 +2138,15 @@ function App() {
   const clearSearch = () => {
     setModel("");
     setAnnualResults([]);
-    setSearched(false);
     setSeriesName("");
     setSearchedModel("");
+    setSearched(false);
+  };
+
+  const updateAnnualQty = (index, value) => {
+    const updated = [...annualResults];
+    updated[index].qty = Number(value) || 1;
+    setAnnualResults(updated);
   };
 
   const toggleAnnualItemSelected = (index) => {
@@ -2175,127 +2163,96 @@ function App() {
     setAnnualResults(updated);
   };
 
-  const updateAnnualQty = (index, value) => {
-    const updated = [...annualResults];
-    updated[index].qty = Number(value) || 1;
-    setAnnualResults(updated);
-  };
+  const addSelectedToQuote = () => {
+    const selectedItems = annualResults.filter((item) => item.selected);
 
-  const addSelectedAnnualToQuote = () => {
-    const selectedAnnual = annualResults.filter((item) => item.selected);
-
-    if (selectedAnnual.length === 0) {
+    if (selectedItems.length === 0) {
       alert("Please select at least one annual kit item.");
       return;
     }
 
     const merged = [...quoteItems];
 
-    selectedAnnual.forEach((item) => {
-      const quoteItem = {
-        pn: item.pn || "",
-        description: item.description || "",
-        price: Number(item.price || 0),
-        qty: Number(item.qty || 1),
-        selected: true,
-        source: "annual-kit",
-        model: item.model || searchedModel,
-        series: item.series || seriesName,
-        callOut: item.callOut || "",
-        iplDescription: item.iplDescription || "",
-        notes: item.notes || "",
-      };
-
-      const existingIndex = merged.findIndex(
-        (q) =>
-          q.pn === quoteItem.pn &&
-          q.description === quoteItem.description &&
-          (q.model || "") === (quoteItem.model || "") &&
-          (q.source || "") === (quoteItem.source || "")
-      );
+    selectedItems.forEach((item) => {
+      const key = makeQuoteKey(item);
+      const existingIndex = merged.findIndex((q) => makeQuoteKey(q) === key);
 
       if (existingIndex >= 0) {
-        merged[existingIndex].qty += quoteItem.qty;
+        merged[existingIndex].qty += Number(item.qty || 1);
         merged[existingIndex].selected = true;
       } else {
-        merged.push(quoteItem);
+        merged.push({
+          ...item,
+          pn: item.pn || "",
+          price: Number(item.price || 0),
+          qty: Number(item.qty || 1),
+          selected: true,
+        });
       }
     });
 
     setQuoteItems(merged);
   };
 
-  const toggleCatalogItem = (item, index) => {
-    const key = makeCatalogKey(item, index);
+  const filteredCatalog = useMemo(() => {
+    return partsCatalog.filter((item) => {
+      const search = catalogSearch.trim().toLowerCase();
+
+      const matchesSearch =
+        !search ||
+        String(item.partNumber || "").toLowerCase().includes(search) ||
+        String(item.description || "").toLowerCase().includes(search) ||
+        String(item.iplDescription || "").toLowerCase().includes(search);
+
+      const matchesSeries =
+        !seriesFilter || String(item.series || "") === seriesFilter;
+
+      const matchesModel =
+        !modelFilter || modelMatches(item.model, modelFilter);
+
+      const matchesSection =
+        !sectionFilter || String(item.section || "") === sectionFilter;
+
+      return (
+        matchesSearch && matchesSeries && matchesModel && matchesSection
+      );
+    });
+  }, [catalogSearch, seriesFilter, modelFilter, sectionFilter]);
+
+  const paginatedCatalog = useMemo(() => {
+    const start = (catalogPage - 1) * itemsPerPage;
+    return filteredCatalog.slice(start, start + itemsPerPage);
+  }, [filteredCatalog, catalogPage]);
+
+  const totalCatalogPages = Math.max(
+    1,
+    Math.ceil(filteredCatalog.length / itemsPerPage)
+  );
+
+  const catalogSeriesOptions = useMemo(() => {
+    return [...new Set(partsCatalog.map((item) => item.series).filter(Boolean))].sort();
+  }, []);
+
+  const catalogModelOptions = useMemo(() => {
+    return [...new Set(partsCatalog.map((item) => item.model).filter(Boolean))].sort();
+  }, []);
+
+  const catalogSectionOptions = useMemo(() => {
+    return [...new Set(partsCatalog.map((item) => item.section).filter(Boolean))].sort();
+  }, []);
+
+  const toggleCatalogSelected = (item) => {
+    const key = makeCatalogKey(item);
     setSelectedCatalog((prev) => ({
       ...prev,
       [key]: !prev[key],
     }));
   };
 
-  const uniqueSeries = useMemo(
-    () =>
-      [...new Set(partsCatalog.map((item) => item.series).filter(Boolean))].sort(),
-    []
-  );
-
-  const uniqueSections = useMemo(
-    () =>
-      [...new Set(partsCatalog.map((item) => item.section).filter(Boolean))].sort(),
-    []
-  );
-
-  const filteredCatalog = useMemo(() => {
-    const q = catalogSearch.trim().toLowerCase();
-    const normalizedModelFilter = normalizeModel(modelFilter);
-
-    return partsCatalog.filter((item) => {
-      const matchesSearch =
-        !q ||
-        String(item.partNumber || "").toLowerCase().includes(q) ||
-        String(item.description || "").toLowerCase().includes(q) ||
-        String(item.iplDescription || "").toLowerCase().includes(q) ||
-        String(item.notes || "").toLowerCase().includes(q) ||
-        String(item.callOut || "").toLowerCase().includes(q);
-
-      const matchesSeries = !seriesFilter || item.series === seriesFilter;
-      const matchesModel = !normalizedModelFilter
-        ? true
-        : modelMatches(item.model, normalizedModelFilter);
-      const matchesSection = !sectionFilter || item.section === sectionFilter;
-
-      return matchesSearch && matchesSeries && matchesModel && matchesSection;
-    });
-  }, [catalogSearch, seriesFilter, modelFilter, sectionFilter]);
-
-  useEffect(() => {
-    setCatalogPage(1);
-  }, [catalogSearch, seriesFilter, modelFilter, sectionFilter]);
-
-  const pageSize = 25;
-  const totalPages = Math.max(1, Math.ceil(filteredCatalog.length / pageSize));
-  const pagedCatalog = filteredCatalog.slice(
-    (catalogPage - 1) * pageSize,
-    catalogPage * pageSize
-  );
-
-  const addSelectedCatalogToQuote = () => {
-    const selectedItems = filteredCatalog
-      .filter((item, index) => selectedCatalog[makeCatalogKey(item, index)])
-      .map((item) => ({
-        pn: item.partNumber,
-        description: item.description || "",
-        price: Number(item.sellPrice || 0),
-        qty: 1,
-        selected: true,
-        source: "catalog",
-        series: item.series || "",
-        model: item.model || "",
-        section: item.section || "",
-        callOut: item.callOut || "",
-        iplDescription: item.iplDescription || "",
-        notes: item.notes || "",
-      }));
+  const addCatalogSelectedToQuote = () => {
+    const selectedItems = filteredCatalog.filter(
+      (item) => selectedCatalog[makeCatalogKey(item)]
+    );
 
     if (selectedItems.length === 0) {
       alert("Please select at least one catalog item.");
@@ -2305,20 +2262,29 @@ function App() {
     const merged = [...quoteItems];
 
     selectedItems.forEach((item) => {
-      const existingIndex = merged.findIndex(
-        (q) =>
-          q.pn === item.pn &&
-          q.description === item.description &&
-          (q.model || "") === (item.model || "") &&
-          (q.source || "") === (item.source || "") &&
-          (q.callOut || "") === (item.callOut || "")
-      );
+      const newItem = {
+        pn: item.partNumber || "",
+        description: item.description || "",
+        iplDescription: item.iplDescription || "",
+        callOut: item.callOut || "",
+        notes: item.notes || "",
+        model: item.model || "",
+        series: item.series || "",
+        section: item.section || "",
+        price: Number(item.sellPrice || 0),
+        qty: 1,
+        selected: true,
+        source: "catalog",
+      };
+
+      const key = makeQuoteKey(newItem);
+      const existingIndex = merged.findIndex((q) => makeQuoteKey(q) === key);
 
       if (existingIndex >= 0) {
         merged[existingIndex].qty += 1;
         merged[existingIndex].selected = true;
       } else {
-        merged.push(item);
+        merged.push(newItem);
       }
     });
 
@@ -2390,7 +2356,11 @@ function App() {
       company,
       attn,
       email,
-      subtitle: `Parts for ${seriesName || "N/A"} – Model ${searchedModel || "N/A"}`,
+      subtitle: "Parts for",
+      subtitle2: [
+        `Series: ${seriesName || "N/A"}`,
+        `Model: ${searchedModel || "N/A"}`,
+      ],
     });
 
     y = drawTableHeader(doc, y);
@@ -2423,7 +2393,7 @@ function App() {
           company,
           attn,
           email,
-          subtitle: "Selected Parts Quote",
+          subtitle: "Replacement Parts",
           subtitle2: [
             `Series: ${seriesName || "N/A"}`,
             `Model: ${searchedModel || "N/A"}`,
@@ -2431,7 +2401,6 @@ function App() {
         });
 
         y = drawTableHeader(doc, y);
-
         doc.setFont(undefined, "normal");
         doc.setFontSize(10);
       }
@@ -2567,535 +2536,350 @@ Thank you.`;
               type="text"
               placeholder="Enter model (ex: 1007 or 399B)"
               value={model}
-              onChange={(e) => setModel(e.target.value.toUpperCase())}
-              style={{
-                padding: "10px 12px",
-                minWidth: "220px",
-                flex: "1 1 220px",
-                boxSizing: "border-box",
-              }}
+              onChange={(e) => setModel(e.target.value)}
+              style={{ padding: "10px", width: "240px" }}
             />
-
-            <button type="submit" style={{ padding: "10px 16px" }}>
+            <button type="submit" style={{ padding: "10px 18px" }}>
               Search
             </button>
-
-            <button type="button" onClick={clearSearch} style={{ padding: "10px 16px" }}>
+            <button
+              type="button"
+              onClick={clearSearch}
+              style={{ padding: "10px 18px" }}
+            >
               Clear
             </button>
           </form>
 
-          {searched && annualResults.length > 0 && (
+          {searched && (
+            <div style={{ marginBottom: "14px" }}>
+              <strong>Series:</strong> {seriesName || "N/A"} &nbsp; | &nbsp;
+              <strong>Model:</strong> {searchedModel || "N/A"}
+            </div>
+          )}
+
+          {annualResults.length > 0 && (
             <>
-              <div style={{ marginBottom: "14px" }}>
-                <div style={{ fontSize: "14px", color: "#666" }}>
-                  Recommended Annual Kit
-                </div>
-
-                <div
-                  style={{
-                    fontSize: "32px",
-                    fontWeight: "700",
-                    lineHeight: 1.1,
-                    marginTop: "4px",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {seriesName} {searchedModel}
-                </div>
+              <div style={{ marginBottom: "10px" }}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={allAnnualSelected}
+                    onChange={(e) => toggleSelectAllAnnual(e.target.checked)}
+                  />{" "}
+                  Select All
+                </label>
               </div>
 
-              <div style={{ overflowX: "auto", width: "100%" }}>
-                <table
-                  border="1"
-                  cellPadding="8"
-                  style={{
-                    borderCollapse: "collapse",
-                    width: "100%",
-                    minWidth: "760px",
-                    tableLayout: "fixed",
-                  }}
-                >
-                  <thead>
-                    <tr>
-                      <th style={{ width: "46px", textAlign: "center" }}>
-                        <input
-                          type="checkbox"
-                          checked={allAnnualSelected}
-                          onChange={(e) => toggleSelectAllAnnual(e.target.checked)}
-                        />
-                      </th>
-                      <th style={{ width: "60px" }}>Line</th>
-                      <th style={{ width: "130px" }}>Part Number</th>
-                      <th>Description</th>
-                      <th style={{ width: "120px" }}>Unit Price</th>
-                      <th style={{ width: "90px", textAlign: "center" }}>Qty</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {annualResults.map((part, index) => (
-                      <tr
-                        key={`${part.pn}-${index}`}
-                        style={{ opacity: part.selected ? 1 : 0.55 }}
-                      >
-                        <td style={{ textAlign: "center" }}>
-                          <input
-                            type="checkbox"
-                            checked={!!part.selected}
-                            onChange={() => toggleAnnualItemSelected(index)}
-                          />
-                        </td>
-                        <td style={{ textAlign: "center" }}>{index + 1}</td>
-                        <td>{part.pn}</td>
-                        <td style={{ wordBreak: "break-word" }}>{part.description}</td>
-                        <td>{money(part.price)}</td>
-                        <td style={{ textAlign: "center" }}>
-                          <input
-                            type="number"
-                            min="1"
-                            value={part.qty}
-                            onChange={(e) => updateAnnualQty(index, e.target.value)}
-                            style={{ width: "60px", textAlign: "center" }}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <button
-                onClick={addSelectedAnnualToQuote}
+              <table
                 style={{
-                  marginTop: "14px",
-                  padding: "10px 18px",
-                  background: "#2563eb",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginBottom: "16px",
                 }}
               >
-                Add Selected Annual Kit Items to Quote
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Part Number</th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {annualResults.map((item, index) => (
+                    <tr key={`${item.pn}-${index}`}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={item.selected}
+                          onChange={() => toggleAnnualItemSelected(index)}
+                        />
+                      </td>
+                      <td>{item.pn}</td>
+                      <td>{item.description}</td>
+                      <td>
+                        <input
+                          type="number"
+                          min="1"
+                          value={item.qty}
+                          onChange={(e) => updateAnnualQty(index, e.target.value)}
+                          style={{ width: "70px" }}
+                        />
+                      </td>
+                      <td>{money(Number(item.price || 0))}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <button onClick={addSelectedToQuote} style={{ padding: "10px 18px" }}>
+                Add Selected to Quote
               </button>
             </>
           )}
-
-          {searched && annualResults.length === 0 && <p>No parts found</p>}
         </div>
 
         <div
           style={{
             width: "100%",
             minWidth: 0,
+            background: "#fff",
             border: "1px solid #ddd",
             borderRadius: "10px",
             padding: "18px",
-            background: "#fff",
             boxSizing: "border-box",
           }}
         >
-          <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>
-            Raypak IPL Parts
-          </h2>
+          <h2 style={{ marginTop: 0 }}>Quote Builder</h2>
 
-          <input
-            type="text"
-            placeholder="Search part number, description, IPL, notes, call out"
-            value={catalogSearch}
-            onChange={(e) => setCatalogSearch(e.target.value)}
+          <div style={{ display: "grid", gap: "10px", marginBottom: "18px" }}>
+            <input
+              type="text"
+              placeholder="Company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              style={{ padding: "10px" }}
+            />
+            <input
+              type="text"
+              placeholder="Attn"
+              value={attn}
+              onChange={(e) => setAttn(e.target.value)}
+              style={{ padding: "10px" }}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ padding: "10px" }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "14px" }}>
+            <label>
+              <input
+                type="checkbox"
+                checked={allQuoteSelected}
+                onChange={(e) => toggleSelectAllQuote(e.target.checked)}
+              />{" "}
+              Select All Quote Items
+            </label>
+          </div>
+
+          <table
             style={{
               width: "100%",
-              padding: "10px 12px",
-              marginBottom: "12px",
-              boxSizing: "border-box",
+              borderCollapse: "collapse",
+              marginBottom: "16px",
             }}
-          />
+          >
+            <thead>
+              <tr>
+                <th></th>
+                <th>PN</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {quoteItems.map((item, index) => (
+                <tr key={`${makeQuoteKey(item)}-${index}`}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={item.selected}
+                      onChange={() => toggleQuoteItemSelected(index)}
+                    />
+                  </td>
+                  <td>{item.pn}</td>
+                  <td>{item.description}</td>
+                  <td>
+                    <input
+                      type="number"
+                      min="1"
+                      value={item.qty}
+                      onChange={(e) => updateQuoteQty(index, e.target.value)}
+                      style={{ width: "70px" }}
+                    />
+                  </td>
+                  <td>{money(Number(item.price || 0))}</td>
+                  <td>{money(Number(item.qty || 0) * Number(item.price || 0))}</td>
+                  <td>
+                    <button onClick={() => removeQuoteItem(index)}>Remove</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div style={{ fontWeight: "bold", marginBottom: "16px" }}>
+            Subtotal: {money(quoteSubtotal)}
+          </div>
+
+          <button
+            onClick={generatePDF}
+            style={{
+              padding: "12px 20px",
+              background: "#16a34a",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Generate Quote PDF
+          </button>
+
+          <hr style={{ margin: "24px 0" }} />
+
+          <h3>Catalog Search</h3>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr)",
+              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
               gap: "10px",
-              marginBottom: "12px",
+              marginBottom: "14px",
             }}
           >
-            <select
-              value={seriesFilter}
-              onChange={(e) => setSeriesFilter(e.target.value)}
-              style={{ padding: "10px", minWidth: 0 }}
-            >
-              <option value="">All Series</option>
-              {uniqueSeries.map((series) => (
-                <option key={series} value={series}>
-                  {series}
-                </option>
-              ))}
-            </select>
-
             <input
               type="text"
-              placeholder="Filter model"
-              value={modelFilter}
-              onChange={(e) => setModelFilter(e.target.value.toUpperCase())}
-              style={{ padding: "10px", minWidth: 0, boxSizing: "border-box" }}
+              placeholder="Search PN / Description / IPL"
+              value={catalogSearch}
+              onChange={(e) => {
+                setCatalogSearch(e.target.value);
+                setCatalogPage(1);
+              }}
+              style={{ padding: "10px" }}
             />
-
+            <select
+              value={seriesFilter}
+              onChange={(e) => {
+                setSeriesFilter(e.target.value);
+                setCatalogPage(1);
+              }}
+              style={{ padding: "10px" }}
+            >
+              <option value="">All Series</option>
+              {catalogSeriesOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            <select
+              value={modelFilter}
+              onChange={(e) => {
+                setModelFilter(e.target.value);
+                setCatalogPage(1);
+              }}
+              style={{ padding: "10px" }}
+            >
+              <option value="">All Models</option>
+              {catalogModelOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
             <select
               value={sectionFilter}
-              onChange={(e) => setSectionFilter(e.target.value)}
-              style={{ padding: "10px", minWidth: 0 }}
+              onChange={(e) => {
+                setSectionFilter(e.target.value);
+                setCatalogPage(1);
+              }}
+              style={{ padding: "10px" }}
             >
               <option value="">All Sections</option>
-              {uniqueSections.map((section) => (
-                <option key={section} value={section}>
-                  {section}
+              {catalogSectionOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
                 </option>
               ))}
             </select>
           </div>
 
-          <div style={{ fontSize: "13px", color: "#666", marginBottom: "10px" }}>
-            Showing {pagedCatalog.length} of {filteredCatalog.length} items
-          </div>
-
-          <div
+          <table
             style={{
-              maxHeight: "720px",
-              overflowY: "auto",
-              overflowX: "auto",
-              border: "1px solid #ddd",
-              background: "white",
+              width: "100%",
+              borderCollapse: "collapse",
+              marginBottom: "14px",
             }}
           >
-            <table
-              border="1"
-              cellPadding="6"
-              style={{
-                borderCollapse: "collapse",
-                width: "100%",
-                minWidth: "720px",
-                fontSize: "13px",
-                tableLayout: "fixed",
-              }}
-            >
-              <thead style={{ position: "sticky", top: 0, background: "#f3f3f3", zIndex: 1 }}>
-                <tr>
-                  <th style={{ width: "58px" }}>Select</th>
-                  <th style={{ width: "90px" }}>Part Number</th>
-                  <th>Description</th>
-                  <th style={{ width: "90px" }}>Model</th>
-                  <th style={{ width: "90px" }}>Contractor Pricing</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {pagedCatalog.map((item, index) => {
-                  const globalIndex = (catalogPage - 1) * pageSize + index;
-                  const key = makeCatalogKey(item, globalIndex);
-
-                  return (
-                    <tr key={key}>
-                      <td style={{ textAlign: "center" }}>
-                        <input
-                          type="checkbox"
-                          checked={!!selectedCatalog[key]}
-                          onChange={() => toggleCatalogItem(item, globalIndex)}
-                        />
-                      </td>
-                      <td>{item.partNumber}</td>
-                      <td style={{ wordBreak: "break-word" }}>
-                        <div>{item.description}</div>
-
-                        {item.callOut && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#888",
-                              marginTop: "4px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Call Out: {item.callOut}
-                          </div>
-                        )}
-
-                        {item.iplDescription && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#666",
-                              marginTop: "4px",
-                            }}
-                          >
-                            IPL: {item.iplDescription}
-                          </div>
-                        )}
-
-                        {item.notes && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#888",
-                              marginTop: "4px",
-                            }}
-                          >
-                            Notes: {item.notes}
-                          </div>
-                        )}
-                      </td>
-                      <td>{item.model}</td>
-                      <td>{money(item.sellPrice || 0)}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Series</th>
+                <th>Model</th>
+                <th>Part Number</th>
+                <th>Description</th>
+                <th>Section</th>
+                <th>Sell Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedCatalog.map((item, index) => {
+                const key = makeCatalogKey(item);
+                return (
+                  <tr key={`${key}-${index}`}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={!!selectedCatalog[key]}
+                        onChange={() => toggleCatalogSelected(item)}
+                      />
+                    </td>
+                    <td>{item.series}</td>
+                    <td>{item.model}</td>
+                    <td>{item.partNumber}</td>
+                    <td>{item.description}</td>
+                    <td>{item.section}</td>
+                    <td>{money(Number(item.sellPrice || 0))}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
 
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              marginTop: "14px",
               alignItems: "center",
-              flexWrap: "wrap",
-              gap: "10px",
+              marginBottom: "14px",
             }}
           >
-            <div>
-              <button
-                onClick={() => setCatalogPage((p) => Math.max(1, p - 1))}
-                disabled={catalogPage === 1}
-                style={{ padding: "8px 12px", marginRight: "8px" }}
-              >
-                Prev
-              </button>
-
-              <button
-                onClick={() => setCatalogPage((p) => Math.min(totalPages, p + 1))}
-                disabled={catalogPage === totalPages}
-                style={{ padding: "8px 12px" }}
-              >
-                Next
-              </button>
-            </div>
-
-            <div style={{ fontSize: "13px" }}>
-              Page {catalogPage} of {totalPages}
-            </div>
-          </div>
-
-          <button
-            onClick={addSelectedCatalogToQuote}
-            style={{
-              marginTop: "16px",
-              padding: "10px 18px",
-              background: "#059669",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              width: "100%",
-            }}
-          >
-            Add Selected Items to Quote
-          </button>
-        </div>
-      </div>
-
-      <div
-        style={{
-          marginTop: "24px",
-          border: "1px solid #ddd",
-          borderRadius: "10px",
-          padding: "18px",
-          background: "#fff",
-        }}
-      >
-        <h3 style={{ marginTop: 0 }}>Selected Items for Quote</h3>
-
-        {quoteItems.length === 0 ? (
-          <p>No items added yet.</p>
-        ) : (
-          <>
-            <div style={{ overflowX: "auto", width: "100%" }}>
-              <table
-                border="1"
-                cellPadding="8"
-                style={{
-                  borderCollapse: "collapse",
-                  width: "100%",
-                  minWidth: "1100px",
-                }}
-              >
-                <thead>
-                  <tr>
-                    <th style={{ textAlign: "center" }}>
-                      <input
-                        type="checkbox"
-                        checked={allQuoteSelected}
-                        onChange={(e) => toggleSelectAllQuote(e.target.checked)}
-                      />
-                    </th>
-                    <th>Line</th>
-                    <th>Part Number</th>
-                    <th>Description</th>
-                    <th>Source</th>
-                    <th>Unit Price</th>
-                    <th style={{ textAlign: "center" }}>Qty</th>
-                    <th>Total</th>
-                    <th>Remove</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {quoteItems.map((item, index) => (
-                    <tr
-                      key={makeQuoteKey(item, index)}
-                      style={{ opacity: item.selected ? 1 : 0.55 }}
-                    >
-                      <td style={{ textAlign: "center" }}>
-                        <input
-                          type="checkbox"
-                          checked={!!item.selected}
-                          onChange={() => toggleQuoteItemSelected(index)}
-                        />
-                      </td>
-                      <td style={{ textAlign: "center" }}>{index + 1}</td>
-                      <td>{item.pn}</td>
-                      <td style={{ wordBreak: "break-word" }}>
-                        <div>{item.description}</div>
-
-                        {item.source === "catalog" && item.callOut && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#888",
-                              marginTop: "4px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Call Out: {item.callOut}
-                          </div>
-                        )}
-
-                        {item.source === "catalog" && item.iplDescription && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#666",
-                              marginTop: "4px",
-                            }}
-                          >
-                            IPL: {item.iplDescription}
-                          </div>
-                        )}
-
-                        {item.source === "catalog" && item.notes && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#888",
-                              marginTop: "4px",
-                            }}
-                          >
-                            Notes: {item.notes}
-                          </div>
-                        )}
-                      </td>
-                      <td>{item.source === "annual-kit" ? "Annual Kit" : "Catalog"}</td>
-                      <td>{money(item.price)}</td>
-                      <td style={{ textAlign: "center" }}>
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.qty}
-                          onChange={(e) => updateQuoteQty(index, e.target.value)}
-                          style={{ width: "60px", textAlign: "center" }}
-                        />
-                      </td>
-                      <td>{money(item.selected ? item.qty * item.price : 0)}</td>
-                      <td style={{ textAlign: "center" }}>
-                        <button
-                          onClick={() => removeQuoteItem(index)}
-                          style={{
-                            padding: "6px 10px",
-                            background: "#dc2626",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-
-                <tfoot>
-                  <tr>
-                    <td colSpan="7" style={{ textAlign: "right" }}>
-                      <strong>Subtotal</strong>
-                    </td>
-                    <td>
-                      <strong>{money(quoteSubtotal)}</strong>
-                    </td>
-                    <td></td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-
-            <div
-              style={{
-                marginTop: "18px",
-                display: "flex",
-                gap: "10px",
-                flexWrap: "wrap",
-              }}
+            <button
+              onClick={() => setCatalogPage((p) => Math.max(1, p - 1))}
+              disabled={catalogPage === 1}
             >
-              <input
-                placeholder="Company Name"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                style={{ padding: "10px", minWidth: "220px", flex: "1 1 220px" }}
-              />
+              Prev
+            </button>
 
-              <input
-                placeholder="Attn To"
-                value={attn}
-                onChange={(e) => setAttn(e.target.value)}
-                style={{ padding: "10px", minWidth: "180px", flex: "1 1 180px" }}
-              />
-
-              <input
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{ padding: "10px", minWidth: "240px", flex: "1 1 240px" }}
-              />
+            <div>
+              Page {catalogPage} of {totalCatalogPages}
             </div>
 
             <button
-              onClick={generatePDF}
-              style={{
-                marginTop: "18px",
-                padding: "10px 20px",
-                background: "#1f4ed8",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
+              onClick={() =>
+                setCatalogPage((p) => Math.min(totalCatalogPages, p + 1))
+              }
+              disabled={catalogPage === totalCatalogPages}
             >
-              Download Quote PDF
+              Next
             </button>
-          </>
-        )}
+          </div>
+
+          <button onClick={addCatalogSelectedToQuote} style={{ padding: "10px 18px" }}>
+            Add Selected Catalog Items to Quote
+          </button>
+        </div>
       </div>
     </div>
   );
