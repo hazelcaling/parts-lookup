@@ -2390,11 +2390,7 @@ function App() {
       company,
       attn,
       email,
-      subtitle: "Selected Parts Quote",
-      subtitle2: [
-        `Series: ${seriesName || "N/A"}`,
-        `Model: ${searchedModel || "N/A"}`,
-      ],
+      subtitle: `Parts for ${seriesName || "N/A"} – Model ${searchedModel || "N/A"}`,
     });
 
     y = drawTableHeader(doc, y);
