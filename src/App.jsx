@@ -1732,7 +1732,7 @@ Thank you.`;
                   <th style={{ width: "90px" }}>Part Number</th>
                   <th>Description</th>
                   <th style={{ width: "90px" }}>Model</th>
-                  <th style={{ width: "90px" }}>Price</th>
+                  <th style={{ width: "90px" }}>Contractor Pricing</th>
                 </tr>
               </thead>
 
