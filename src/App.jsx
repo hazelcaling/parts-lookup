@@ -2385,12 +2385,21 @@ function App() {
     const quoteNumber = generateQuoteNumber();
     const doc = new jsPDF();
 
+    // const subtitle =
+    //     seriesName && searchedModel
+    //     ? `Parts for ${seriesName} ${searchedModel}`
+    //     : seriesName
+    //     ? `Parts for ${seriesName}`
+    //     : searchedModel
+    //     ? `Parts for ${searchedModel}`
+    //     : "Parts";
+
     let y = drawQuoteHeader(doc, {
       quoteNumber,
       company,
       attn,
       email,
-      subtitle: `Parts for ${seriesName || "N/A"} ${searchedModel || "N/A"}`
+    //   subtitle
     });
 
     y += 5;
@@ -2425,7 +2434,7 @@ function App() {
           company,
           attn,
           email,
-          subtitle: `Parts for ${seriesName || "N/A"} ${searchedModel || "N/A"}`
+        //   subtitle
 
         });
 
