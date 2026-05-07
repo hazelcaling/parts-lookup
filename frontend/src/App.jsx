@@ -2372,45 +2372,132 @@ if (title === "PURCHASE ORDER") {
     return y + 8;
   };
 
-  const drawPdfLineItems = (doc, quote, y, type) => {
-  y = drawPdfTableHeader(doc, y);
+//   const drawPdfLineItems = (doc, quote, y, type) => {
+//   y = drawPdfTableHeader(doc, y);
 
-  doc.setFont(undefined, "normal");
-  doc.setFontSize(10);
+//   doc.setFont(undefined, "normal");
+//   doc.setFontSize(10);
 
-  let pdfTotal = 0;
+//   let pdfTotal = 0;
 
-  quote.line_items?.forEach((item, index) => {
-    const qty = toNumber(item.qty, 1);
+//   quote.line_items?.forEach((item, index) => {
+//     const qty = toNumber(item.qty, 1);
 
-    const unit =
-      type === "po"
-        ? Math.ceil(
-            toNumber(item.list_price) *
-              toNumber(item.multiplier, 1)
-          )
-        : toNumber(item.sell_price);
+//     const unit =
+//       type === "po"
+//         ? Math.ceil(
+//             toNumber(item.list_price) *
+//               toNumber(item.multiplier, 1)
+//           )
+//         : toNumber(item.sell_price);
 
-    const total = unit * qty;
-    pdfTotal += total;
+//     const total = unit * qty;
+//     pdfTotal += total;
 
-const vendorLine =
-  type !== "po" && item.vendor
-    ? `Vendor: ${item.vendor}`
-    : "";
+// const vendorLine =
+//   type !== "po" && item.vendor
+//     ? `Vendor: ${item.vendor}`
+//     : "";
 
-const descText = vendorLine
-  ? `${item.description || ""}\n${vendorLine}`
-  : item.description || "";
+// const descText = vendorLine
+//   ? `${item.description || ""}\n${vendorLine}`
+//   : item.description || "";
 
-    const descLines = doc.splitTextToSize(descText, 78);
+//     const descLines = doc.splitTextToSize(descText, 78);
 
-    const rowHeight = Math.max(
-      descLines.length * 5 + 2,
-      8
-    );
+//     const rowHeight = Math.max(
+//       descLines.length * 5 + 2,
+//       8
+//     );
 
-    if (y + rowHeight > 265) {
+//     if (y + rowHeight > 265) {
+//       doc.addPage();
+
+//       y = drawPdfTableHeader(doc, 25);
+
+//       doc.setFont(undefined, "normal");
+//       doc.setFontSize(10);
+//     }
+
+//     doc.text(String(index + 1), 14, y);
+
+//     doc.text(item.part_number || "", 26, y);
+
+//     doc.text(descLines, 65, y);
+
+//     doc.text(String(qty), 148, y, {
+//       align: "center",
+//     });
+
+//     doc.text(money(unit), 168, y, {
+//       align: "center",
+//     });
+
+//     doc.text(money(total), 196, y, {
+//       align: "right",
+//     });
+
+//     y += rowHeight;
+//   });
+
+//   y += 4;
+
+//   doc.line(120, y, 196, y);
+
+//   y += 8;
+
+//   doc.setFontSize(12);
+
+//   doc.setFont(undefined, "bold");
+
+//   doc.text(
+//     `Subtotal: ${money(pdfTotal)}`,
+//     196,
+//     y,
+//     {
+//       align: "right",
+//     }
+//   );
+
+//   if (type !== "po") {
+//     y += 18;
+
+//     doc.setFontSize(10);
+
+//     doc.setFont(undefined, "italic");
+
+//     doc.text(
+//       "Freight and applicable sales tax not included.",
+//       14,
+//       y
+//     );
+//   }
+
+//   y += 12;
+
+//   doc.setFont(undefined, "normal");
+
+//   doc.text(
+//     "Heat Transfer Equipment Company, Inc. | partsales@htecompany.com",
+//     14,
+//     y
+//   );
+
+//   y += 6;
+
+//   doc.setFontSize(9);
+
+//   doc.text(
+//     "If you have any questions, please feel free to reach out.",
+//     14,
+//     y
+//   );
+// };
+const drawPdfLineItems = (doc, quote, y, type) => {
+  const bottomLimit = 265;
+
+  const checkPageSpace = (neededHeight) => {
+    if (y + neededHeight > bottomLimit) {
       doc.addPage();
 
       y = drawPdfTableHeader(doc, 25);
@@ -2418,6 +2505,42 @@ const descText = vendorLine
       doc.setFont(undefined, "normal");
       doc.setFontSize(10);
     }
+  };
+
+  y = drawPdfTableHeader(doc, y);
+
+  doc.setFont(undefined, "normal");
+  doc.setFontSize(10);
+
+  quote.line_items?.forEach((item, index) => {
+    const qty = toNumber(item.qty, 1);
+
+    // =========================
+    // PO USES NET COST
+    // QUOTE/OC USE SELL PRICE
+    // =========================
+    const unit =
+      type === "po"
+        ? Math.ceil(
+            toNumber(item.list_price) *
+              (1 + toNumber(item.surcharge)) *
+              toNumber(item.multiplier, 1)
+          )
+        : toNumber(item.sell_price);
+
+    const total = unit * qty;
+
+    const descLines = doc.splitTextToSize(
+      item.description || "",
+      78
+    );
+
+    const rowHeight = Math.max(
+      descLines.length * 5 + 4,
+      10
+    );
+
+    checkPageSpace(rowHeight);
 
     doc.text(String(index + 1), 14, y);
 
@@ -2440,6 +2563,27 @@ const descText = vendorLine
     y += rowHeight;
   });
 
+  // =========================
+  // PDF TOTAL
+  // =========================
+  const pdfTotal =
+    quote.line_items?.reduce((sum, item) => {
+      const qty = toNumber(item.qty, 1);
+
+      const unit =
+        type === "po"
+          ? Math.ceil(
+              toNumber(item.list_price) *
+                (1 + toNumber(item.surcharge)) *
+                toNumber(item.multiplier, 1)
+            )
+          : toNumber(item.sell_price);
+
+      return sum + unit * qty;
+    }, 0) || 0;
+
+  checkPageSpace(type !== "po" ? 55 : 42);
+
   y += 4;
 
   doc.line(120, y, 196, y);
@@ -2447,7 +2591,6 @@ const descText = vendorLine
   y += 8;
 
   doc.setFontSize(12);
-
   doc.setFont(undefined, "bold");
 
   doc.text(
@@ -2463,7 +2606,6 @@ const descText = vendorLine
     y += 18;
 
     doc.setFontSize(10);
-
     doc.setFont(undefined, "italic");
 
     doc.text(
@@ -2476,6 +2618,7 @@ const descText = vendorLine
   y += 12;
 
   doc.setFont(undefined, "normal");
+  doc.setFontSize(10);
 
   doc.text(
     "Heat Transfer Equipment Company, Inc. | partsales@htecompany.com",
