@@ -1817,6 +1817,10 @@ function App() {
 const payload = {
   ...companyForm,
   name: toUpper(companyForm.name),
+  state: toUpper(companyForm.state),
+  address_1: toTitleCase(companyForm.address_1),
+  address_2: toTitleCase(companyForm.address_2),
+  city: toTitleCase(companyForm.city),
 };
 
 if (editingCompanyId) {
@@ -2184,17 +2188,17 @@ y += 14;
 
 if (title === "PURCHASE ORDER") {
 
-  if (quote.ordered_date) {
-    y += 6;
-
+  if (quote.order_confirmation_number) {
+    y += -8;
+    doc.setFont(undefined, "bold");
     doc.text(
-      `Ordered Date: ${quote.ordered_date}`,
+      `PO # : ${quote.order_confirmation_number}`,
       14,
       y
     );
   }
 
-  y += 10;
+  y += 12;
 
   doc.setFont(undefined, "bold");
 
@@ -2520,13 +2524,11 @@ const drawPdfLineItems = (doc, quote, y, type) => {
     // QUOTE/OC USE SELL PRICE
     // =========================
     const unit =
-      type === "po"
-        ? Math.ceil(
-            toNumber(item.list_price) *
-              (1 + toNumber(item.surcharge)) *
-              toNumber(item.multiplier, 1)
-          )
-        : toNumber(item.sell_price);
+type === "po"
+  ? toNumber(item.list_price) *
+      (1 + toNumber(item.surcharge)) *
+      toNumber(item.multiplier, 1)
+  : toNumber(item.sell_price);
 
     const total = unit * qty;
 
@@ -2571,13 +2573,11 @@ const drawPdfLineItems = (doc, quote, y, type) => {
       const qty = toNumber(item.qty, 1);
 
       const unit =
-        type === "po"
-          ? Math.ceil(
-              toNumber(item.list_price) *
-                (1 + toNumber(item.surcharge)) *
-                toNumber(item.multiplier, 1)
-            )
-          : toNumber(item.sell_price);
+type === "po"
+  ? toNumber(item.list_price) *
+      (1 + toNumber(item.surcharge)) *
+      toNumber(item.multiplier, 1)
+  : toNumber(item.sell_price);
 
       return sum + unit * qty;
     }, 0) || 0;
@@ -2602,18 +2602,91 @@ const drawPdfLineItems = (doc, quote, y, type) => {
     }
   );
 
-  if (type !== "po") {
+if (type === "order_confirmation") {
+  checkPageSpace(45);
+
+  y += 18;
+
+  doc.setFontSize(11);
+  doc.setFont(undefined, "bold");
+
+  doc.text(
+    "THANK YOU FOR YOUR BUSINESS!",
+    14,
+    y
+  );
+
+  y += 7;
+
+  doc.setFontSize(9);
+  doc.setFont(undefined, "normal");
+
+  doc.text(
+    "If you discover an error or have any questions regarding your order, please contact your sales associate immediately",
+    14,
+    y
+  );
+
+  y += 5;
+
+  doc.text(
+    "to rectify any issue or concern. Otherwise, the above order is considered accurate and will be shipped accordingly.",
+    14,
+    y
+  );
+
+  y += 12;
+
+  doc.setFontSize(10);
+  doc.setFont(undefined, "normal");
+
+  doc.text(
+    "Heat Transfer Equipment Company, Inc. | partsales@htecompany.com",
+    14,
+    y
+  );
+} else {
+
+    if (type === "po") {
     y += 18;
 
-    doc.setFontSize(10);
-    doc.setFont(undefined, "italic");
+    doc.setFontSize(9);
+    doc.setFont(undefined, "normal");
 
     doc.text(
-      "Freight and applicable sales tax not included.",
+      "Please reference PO # and Delivery Ref # on all invoices, packing slips, and order confirmations.",
+      14,
+      y
+    );
+
+    y += 10;
+
+    doc.text(
+      "Invoices: accounting@htecompany.com",
+      14,
+      y
+    );
+
+    y += 6;
+
+    doc.text(
+      "Order Confirmations, Ship Dates & Tracking: partsales@htecompany.com",
       14,
       y
     );
   }
+
+if (type !== "po") {
+  y += 18;
+
+  doc.setFontSize(10);
+  doc.setFont(undefined, "italic");
+
+  doc.text(
+    "Freight and applicable sales tax not included.",
+    14,
+    y
+  );
 
   y += 12;
 
@@ -2635,6 +2708,8 @@ const drawPdfLineItems = (doc, quote, y, type) => {
     14,
     y
   );
+}
+}
 };
 
   const generateDocumentPdf = async (quoteId, type) => {
