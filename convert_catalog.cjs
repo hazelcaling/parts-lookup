@@ -16,7 +16,7 @@ const data = rows.map((row) => ({
   model: String(row["model"] || "").trim().toUpperCase(),
   partNumber: String(row["part number"] || "").trim().toUpperCase(),
   description: String(row["DESCRIPTION"] || "").trim(),
-  sellPrice: Number(row["SELL PRICE"] || 0),
+  listPrice: Number(row["list price"] || row["SELL PRICE"] || 0),
   callOut: String(row["call out"] || "").trim().toUpperCase(),
   section: String(row["section"] || "").trim(),
   iplDescription: String(row["IPL DESCRIPTION"] || "").trim(),

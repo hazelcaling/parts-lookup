@@ -13,7 +13,7 @@ for _, row in df.iterrows():
     part = {
         "pn": row["PN"],
         "description": row["DESCRIPTION"],
-        "price": row["SELL PRICE"],
+        "price": row.get("list price", row.get("SELL PRICE", 0)),
         "annual": bool(row["ANNUAL"]),
         "defaultQty": row["DEFAULT QTY"]
     }

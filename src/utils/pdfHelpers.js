@@ -1,3 +1,5 @@
+
+
 import leftLogo from "../assets/leftLogo.jpeg";
 import rightLogo from "../assets/rightLogo.png";
 
@@ -22,10 +24,10 @@ export const drawQuoteHeader = (
     quoteNumber,
     company = "",
     attn = "",
-    email = "",
+    model = "",
+    serial = "",
+    job = "",
     title = "QUOTE",
-    subtitle = "",
-    subtitle2 = "",
   }
 ) => {
   const leftLogoX = 14;
@@ -49,49 +51,48 @@ export const drawQuoteHeader = (
   }
 
   const logosBottom = Math.max(leftLogoY + leftLogoH, rightLogoY + rightLogoH);
-
   let y = logosBottom + 10;
 
+  // Title
   doc.setFontSize(18);
   doc.setFont(undefined, "bold");
   doc.text(title, 105, y, { align: "center" });
 
+  y += 12;
+
+  // Quote # (bold) + Date
+  doc.setFontSize(11);
+  doc.setFont(undefined, "bold");
+  doc.text(`Quote #: ${quoteNumber}`, 14, y);
+
+  doc.setFont(undefined, "normal");
+doc.text(`Date: ${new Date().toLocaleDateString()}`, 196, y, { align: "right" });
+
   y += 10;
 
-  doc.setFontSize(11);
-  doc.setFont(undefined, "normal");
-  doc.text(`Quote #: ${quoteNumber}`, 14, y);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, y + 6);
+  // Company & Attn
+if (company && company.trim()) {
+  doc.text(company.trim(), 14, y);
+  y += 6;
+}
+if (attn && attn.trim()) {
+  doc.text(`Attn: ${attn.trim()}`, 14, y);
+  y += 6;
+}
 
-  y += 18;
-
-  doc.text(`Company: ${company}`, 14, y);
-  doc.text(`Attn: ${attn}`, 14, y + 6);
-  doc.text(`Email: ${email}`, 14, y + 12);
-
-  y += 24;
-
-  if (subtitle) {
-    doc.setFont(undefined, "bold");
-    doc.text(subtitle, 14, y);
-    y += 7;
+  // Model & Serial (only if filled)
+  if (model && model.trim()) {
+    doc.text(`Model: ${model.trim()}`, 14, y);
+    y += 6;
+  }
+  if (serial && serial.trim()) {
+    doc.text(`Serial: ${serial.trim()}`, 14, y);
+    y += 6;
+  }
+  if (job && job.trim()) {
+    doc.text(`Job: ${job.trim()}`, 14, y);
+    y += 6;
   }
 
-  if (subtitle2) {
-    doc.setFont(undefined, "normal");
-
-    if (Array.isArray(subtitle2)) {
-      subtitle2.forEach((line, index) => {
-        doc.text(line, 14, y + index * 6);
-      });
-      y += subtitle2.length * 6;
-    } else {
-      doc.text(subtitle2, 14, y);
-      y += 6;
-    }
-
-    y += 5;
-  }
-
-  return y;
+  return y + 4;
 };

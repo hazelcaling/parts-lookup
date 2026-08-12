@@ -4,35 +4,35 @@ export const partsData = {
       {
         "pn": "018937F",
         "description": "KIT-BURNER ACCESS GASKET 1007-1507",
-        "price": 92,
+        "price": 142.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018624F",
         "description": "KIT-AIR FILTER PLEATED 1007-1507",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -41,35 +41,35 @@ export const partsData = {
       {
         "pn": "018937F",
         "description": "KIT-BURNER ACCESS GASKET 1007-1507",
-        "price": 92,
+        "price": 142.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018624F",
         "description": "KIT-AIR FILTER PLEATED 1007-1507",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -78,35 +78,35 @@ export const partsData = {
       {
         "pn": "018937F",
         "description": "KIT-BURNER ACCESS GASKET 1007-1507",
-        "price": 92,
+        "price": 142.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018624F",
         "description": "KIT-AIR FILTER PLEATED 1007-1507",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -115,35 +115,35 @@ export const partsData = {
       {
         "pn": "018938F",
         "description": "KIT-BURNER ACCESS GASKET 2007",
-        "price": 112,
+        "price": 175.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018625F",
         "description": "KIT-AIR FILTER PLEATED 2007-4007",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -152,35 +152,35 @@ export const partsData = {
       {
         "pn": "018939F",
         "description": "KIT-BURNER ACCESS GASKET 2507-4007",
-        "price": 142,
+        "price": 221.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018625F",
         "description": "KIT-AIR FILTER PLEATED 2007-4007",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -189,35 +189,35 @@ export const partsData = {
       {
         "pn": "018939F",
         "description": "KIT-BURNER ACCESS GASKET 2507-4007",
-        "price": 142,
+        "price": 221.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018625F",
         "description": "KIT-AIR FILTER PLEATED 2007-4007",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -226,35 +226,35 @@ export const partsData = {
       {
         "pn": "018939F",
         "description": "KIT-BURNER ACCESS GASKET 2507-4007",
-        "price": 142,
+        "price": 221.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018625F",
         "description": "KIT-AIR FILTER PLEATED 2007-4007",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -263,35 +263,35 @@ export const partsData = {
       {
         "pn": "018939F",
         "description": "KIT-BURNER ACCESS GASKET 2507-4007",
-        "price": 142,
+        "price": 221.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019265F",
         "description": "KIT-FLAME SENSOR PROBE 1007-4007",
-        "price": 42,
+        "price": 64.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018940F",
         "description": "KIT-IGNITER HOT SURFACE 1007-4007",
-        "price": 117,
+        "price": 182.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 300,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018625F",
         "description": "KIT-AIR FILTER PLEATED 2007-4007",
-        "price": 61,
+        "price": 95.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -302,35 +302,35 @@ export const partsData = {
       {
         "pn": "017799F",
         "description": "KIT-BURNER GASKET",
-        "price": 80,
+        "price": 100.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017800F",
         "description": "KIT-IGNITER DSI XVERSL",
-        "price": 235,
+        "price": 293.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013290F",
         "description": "KIT-AIR FILTER PLEATED 10 X 10 X 1",
-        "price": 87,
+        "price": 108.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -339,35 +339,35 @@ export const partsData = {
       {
         "pn": "017799F",
         "description": "KIT-BURNER GASKET",
-        "price": 80,
+        "price": 100.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017800F",
         "description": "KIT-IGNITER DSI XVERSL",
-        "price": 235,
+        "price": 293.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013290F",
         "description": "KIT-AIR FILTER PLEATED 10 X 10 X 1",
-        "price": 87,
+        "price": 108.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -376,35 +376,35 @@ export const partsData = {
       {
         "pn": "017799F",
         "description": "KIT-BURNER GASKET",
-        "price": 80,
+        "price": 100.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017800F",
         "description": "KIT-IGNITER DSI XVERSL",
-        "price": 235,
+        "price": 293.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013290F",
         "description": "KIT-AIR FILTER PLEATED 10 X 10 X 1",
-        "price": 87,
+        "price": 108.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -413,35 +413,35 @@ export const partsData = {
       {
         "pn": "017799F",
         "description": "KIT-BURNER GASKET",
-        "price": 80,
+        "price": 100.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017800F",
         "description": "KIT-IGNITER DSI XVERSL",
-        "price": 235,
+        "price": 293.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013290F",
         "description": "KIT-AIR FILTER PLEATED 10 X 10 X 1",
-        "price": 87,
+        "price": 108.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -450,35 +450,35 @@ export const partsData = {
       {
         "pn": "017799F",
         "description": "KIT-BURNER GASKET",
-        "price": 80,
+        "price": 100.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017800F",
         "description": "KIT-IGNITER DSI XVERSL",
-        "price": 235,
+        "price": 293.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013290F",
         "description": "KIT-AIR FILTER PLEATED 10 X 10 X 1",
-        "price": 87,
+        "price": 108.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -489,35 +489,35 @@ export const partsData = {
       {
         "pn": "013163F",
         "description": "KIT-FLAME SENSOR PROBE 300-500 88A-398A",
-        "price": 82,
+        "price": 102.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013166F",
         "description": "KIT-IGNITER DIRECT SPARK 300-500 88A-398A",
-        "price": 110,
+        "price": 137.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013171F",
         "description": "KIT-GASKET BURNER SEAL 300-500",
-        "price": 40,
+        "price": 49.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013290F",
         "description": "KIT-AIR FILTER PLEATED 10 X 10 X 1",
-        "price": 87,
+        "price": 108.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -526,35 +526,35 @@ export const partsData = {
       {
         "pn": "013163F",
         "description": "KIT-FLAME SENSOR PROBE 300-500 88A-398A",
-        "price": 82,
+        "price": 102.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013166F",
         "description": "KIT-IGNITER DIRECT SPARK 300-500 88A-398A",
-        "price": 110,
+        "price": 137.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013171F",
         "description": "KIT-GASKET BURNER SEAL 300-500",
-        "price": 40,
+        "price": 49.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -563,35 +563,35 @@ export const partsData = {
       {
         "pn": "013163F",
         "description": "KIT-FLAME SENSOR PROBE 300-500 88A-398A",
-        "price": 82,
+        "price": 102.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013166F",
         "description": "KIT-IGNITER DIRECT SPARK 300-500 88A-398A",
-        "price": 110,
+        "price": 137.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013171F",
         "description": "KIT-GASKET BURNER SEAL 300-500",
-        "price": 40,
+        "price": 49.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -600,35 +600,35 @@ export const partsData = {
       {
         "pn": "013164F",
         "description": "KIT-FLAME SENSOR PROBE 700-850",
-        "price": 132,
+        "price": 165.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013167F",
         "description": "KIT-IGNITER DIRECT SPARK 700-850",
-        "price": 126,
+        "price": 157.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013172F",
         "description": "KIT-GASKET BURNER SEAL 700-850",
-        "price": 40,
+        "price": 49.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -637,35 +637,35 @@ export const partsData = {
       {
         "pn": "013164F",
         "description": "KIT-FLAME SENSOR PROBE 700-850",
-        "price": 132,
+        "price": 165.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013167F",
         "description": "KIT-IGNITER DIRECT SPARK 700-850",
-        "price": 126,
+        "price": 157.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "013172F",
         "description": "KIT-GASKET BURNER SEAL 700-850",
-        "price": 40,
+        "price": 49.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -676,56 +676,56 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "008924F",
         "description": "KIT-SILICONE RUBBER SEALANT 2.8OZ",
-        "price": 151,
+        "price": 188.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012599F",
         "description": "KIT-AIR FILTER PLEATED 12 X 20 X 1 1005-2005A",
-        "price": 71,
+        "price": 88.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -734,56 +734,56 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "008924F",
         "description": "KIT-SILICONE RUBBER SEALANT 2.8OZ",
-        "price": 151,
+        "price": 188.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012599F",
         "description": "KIT-AIR FILTER PLEATED 12 X 20 X 1 1005-2005A",
-        "price": 71,
+        "price": 88.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -792,49 +792,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "008924F",
         "description": "KIT-SILICONE RUBBER SEALANT 2.8OZ",
-        "price": 151,
+        "price": 188.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012599F",
         "description": "KIT-AIR FILTER PLEATED 12 X 20 X 1 1005-2005A",
-        "price": 71,
+        "price": 88.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -843,56 +843,56 @@ export const partsData = {
       {
         "pn": "014398F",
         "description": "KIT-BURNER ADAPTER GASKET 2503-4005",
-        "price": 228,
+        "price": 284.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014408F",
         "description": "KIT-GASKET BLOWER MTG 2503-4005",
-        "price": 84,
+        "price": 105.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014409F",
         "description": "KIT-GASKET BLOWER ADAPTER 2503-4005",
-        "price": 143,
+        "price": 178.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "008924F",
         "description": "KIT-SILICONE RUBBER SEALANT 2.8OZ",
-        "price": 151,
+        "price": 188.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014492F",
         "description": "KIT-AIR FILTER 18 X 24 2503-4005",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -901,56 +901,56 @@ export const partsData = {
       {
         "pn": "014398F",
         "description": "KIT-BURNER ADAPTER GASKET 2503-4005",
-        "price": 228,
+        "price": 284.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014408F",
         "description": "KIT-GASKET BLOWER MTG 2503-4005",
-        "price": 84,
+        "price": 105.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014409F",
         "description": "KIT-GASKET BLOWER ADAPTER 2503-4005",
-        "price": 143,
+        "price": 178.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "008924F",
         "description": "KIT-SILICONE RUBBER SEALANT 2.8OZ",
-        "price": 151,
+        "price": 188.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014492F",
         "description": "KIT-AIR FILTER 18 X 24 2503-4005",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -959,56 +959,56 @@ export const partsData = {
       {
         "pn": "014398F",
         "description": "KIT-BURNER ADAPTER GASKET 2503-4005",
-        "price": 228,
+        "price": 284.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014408F",
         "description": "KIT-GASKET BLOWER MTG 2503-4005",
-        "price": 84,
+        "price": 105.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014409F",
         "description": "KIT-GASKET BLOWER ADAPTER 2503-4005",
-        "price": 143,
+        "price": 178.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "008924F",
         "description": "KIT-SILICONE RUBBER SEALANT 2.8OZ",
-        "price": 151,
+        "price": 188.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014492F",
         "description": "KIT-AIR FILTER 18 X 24 2503-4005",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1019,49 +1019,49 @@ export const partsData = {
       {
         "pn": "016747F",
         "description": "KIT-GASKET ADAPTER PLATE 856-1506",
-        "price": 56,
+        "price": 70.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018772F",
         "description": "KIT-FLAME SENSOR PROBE - XVERS 856 - 1006",
-        "price": 85,
+        "price": 106.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016755F",
         "description": "KIT-GASKET BURNER SEAL 856/1006",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019037F",
         "description": "KIT-BURNER ACCESS GASKET XVERS 0856-1006",
-        "price": 68,
+        "price": 85.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016860F",
         "description": "KIT-AIR FILTER PLEATED 12 X 16 X 1",
-        "price": 103,
+        "price": 128.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1070,49 +1070,49 @@ export const partsData = {
       {
         "pn": "016747F",
         "description": "KIT-GASKET ADAPTER PLATE 856-1506",
-        "price": 56,
+        "price": 70.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "018772F",
         "description": "KIT-FLAME SENSOR PROBE - XVERS 856 - 1006",
-        "price": 85,
+        "price": 106.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016755F",
         "description": "KIT-GASKET BURNER SEAL 856/1006",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019037F",
         "description": "KIT-BURNER ACCESS GASKET XVERS 0856-1006",
-        "price": 68,
+        "price": 85.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016860F",
         "description": "KIT-AIR FILTER PLEATED 12 X 16 X 1",
-        "price": 103,
+        "price": 128.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1121,49 +1121,49 @@ export const partsData = {
       {
         "pn": "016747F",
         "description": "KIT-GASKET ADAPTER PLATE 856-1506",
-        "price": 56,
+        "price": 70.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016756F",
         "description": "KIT-GASKET BURNER SEAL 1256/1506",
-        "price": 60,
+        "price": 74.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019038F",
         "description": "KIT-BURNER ACCESS GASKET XVERS 1256-1506",
-        "price": 60,
+        "price": 74.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016860F",
         "description": "KIT-AIR FILTER PLEATED 12 X 16 X 1",
-        "price": 103,
+        "price": 128.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1172,49 +1172,49 @@ export const partsData = {
       {
         "pn": "016747F",
         "description": "KIT-GASKET ADAPTER PLATE 856-1506",
-        "price": 56,
+        "price": 70.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016756F",
         "description": "KIT-GASKET BURNER SEAL 1256/1506",
-        "price": 60,
+        "price": 74.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019038F",
         "description": "KIT-BURNER ACCESS GASKET XVERS 1256-1506",
-        "price": 60,
+        "price": 74.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016860F",
         "description": "KIT-AIR FILTER PLEATED 12 X 16 X 1",
-        "price": 103,
+        "price": 128.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1223,49 +1223,49 @@ export const partsData = {
       {
         "pn": "016748F",
         "description": "KIT-GASKET ADAPTER PLATE 1756-3006",
-        "price": 92,
+        "price": 114.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016757F",
         "description": "KIT-GASKET BURNER SEAL 1756/2006",
-        "price": 76,
+        "price": 94.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019039F",
         "description": "KIT-BURNER ACCESS GASKET 1756/2006",
-        "price": 145,
+        "price": 181.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1274,49 +1274,49 @@ export const partsData = {
       {
         "pn": "016748F",
         "description": "KIT-GASKET ADAPTER PLATE 1756-3006",
-        "price": 92,
+        "price": 114.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016757F",
         "description": "KIT-GASKET BURNER SEAL 1756/2006",
-        "price": 76,
+        "price": 94.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019039F",
         "description": "KIT-BURNER ACCESS GASKET 1756/2006",
-        "price": 145,
+        "price": 181.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1325,49 +1325,49 @@ export const partsData = {
       {
         "pn": "017684F",
         "description": "OBSOLETE - NO REPLACEMENT",
-        "price": 0,
+        "price": NaN,
         "annual": false,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016758F",
         "description": "BURNER GASKET \u00e2\u20ac\u201c XVERS 2506-3006",
-        "price": 88,
+        "price": 110.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019040F",
         "description": "KIT-BURNER ACCESS GASKET XVERS 2506-3006",
-        "price": 154,
+        "price": 192.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1376,49 +1376,49 @@ export const partsData = {
       {
         "pn": "017684F",
         "description": "OBSOLETE - NO REPLACEMENT",
-        "price": 0,
+        "price": NaN,
         "annual": false,
         "defaultQty": 1
       },
       {
         "pn": "017954F",
         "description": "KIT-FLAME SENSOR PROBE 856-3006",
-        "price": 90,
+        "price": 112.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017953F",
         "description": "KIT-IGNITER HSI 856-3006",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "016758F",
         "description": "BURNER GASKET \u00e2\u20ac\u201c XVERS 2506-3006",
-        "price": 88,
+        "price": 110.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "019040F",
         "description": "KIT-BURNER ACCESS GASKET XVERS 2506-3006",
-        "price": 154,
+        "price": 192.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1429,28 +1429,28 @@ export const partsData = {
       {
         "pn": "017875F",
         "description": "KIT-IGNITER ASSEMBLY XFIIRE 300B-500B",
-        "price": 271,
+        "price": 338.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017876F",
         "description": "KIT-FLAME SENSOR",
-        "price": 196,
+        "price": 245.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1459,28 +1459,28 @@ export const partsData = {
       {
         "pn": "017875F",
         "description": "KIT-IGNITER ASSEMBLY XFIIRE 300B-500B",
-        "price": 271,
+        "price": 338.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017876F",
         "description": "KIT-FLAME SENSOR",
-        "price": 196,
+        "price": 245.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1489,28 +1489,28 @@ export const partsData = {
       {
         "pn": "017875F",
         "description": "KIT-IGNITER ASSEMBLY XFIIRE 300B-500B",
-        "price": 271,
+        "price": 338.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017876F",
         "description": "KIT-FLAME SENSOR",
-        "price": 196,
+        "price": 245.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1519,28 +1519,28 @@ export const partsData = {
       {
         "pn": "017875F",
         "description": "KIT-IGNITER ASSEMBLY XFIIRE 300B-500B",
-        "price": 271,
+        "price": 338.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017876F",
         "description": "KIT-FLAME SENSOR",
-        "price": 196,
+        "price": 245.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1549,28 +1549,28 @@ export const partsData = {
       {
         "pn": "017875F",
         "description": "KIT-IGNITER ASSEMBLY XFIIRE 300B-500B",
-        "price": 271,
+        "price": 338.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017876F",
         "description": "KIT-FLAME SENSOR",
-        "price": 196,
+        "price": 245.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1579,28 +1579,28 @@ export const partsData = {
       {
         "pn": "017875F",
         "description": "KIT-IGNITER ASSEMBLY XFIIRE 300B-500B",
-        "price": 271,
+        "price": 338.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "017876F",
         "description": "KIT-FLAME SENSOR",
-        "price": 196,
+        "price": 245.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1611,49 +1611,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1662,49 +1662,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1713,49 +1713,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1764,49 +1764,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1815,49 +1815,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1866,42 +1866,42 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1910,42 +1910,42 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -1954,49 +1954,49 @@ export const partsData = {
       {
         "pn": "014398F",
         "description": "KIT-BURNER ADAPTER GASKET 2503-4005",
-        "price": 228,
+        "price": 284.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014408F",
         "description": "KIT-GASKET BLOWER MTG 2503-4005",
-        "price": 84,
+        "price": 105.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014409F",
         "description": "KIT-GASKET BLOWER ADAPTER 2503-4005",
-        "price": 143,
+        "price": 178.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014492F",
         "description": "KIT-AIR FILTER 18 X 24 2503-4005",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2005,49 +2005,49 @@ export const partsData = {
       {
         "pn": "014398F",
         "description": "KIT-BURNER ADAPTER GASKET 2503-4005",
-        "price": 228,
+        "price": 284.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014408F",
         "description": "KIT-GASKET BLOWER MTG 2503-4005",
-        "price": 84,
+        "price": 105.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014409F",
         "description": "KIT-GASKET BLOWER ADAPTER 2503-4005",
-        "price": 143,
+        "price": 178.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014492F",
         "description": "KIT-AIR FILTER 18 X 24 2503-4005",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2056,49 +2056,49 @@ export const partsData = {
       {
         "pn": "014398F",
         "description": "KIT-BURNER ADAPTER GASKET 2503-4005",
-        "price": 228,
+        "price": 284.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014408F",
         "description": "KIT-GASKET BLOWER MTG 2503-4005",
-        "price": 84,
+        "price": 105.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014409F",
         "description": "KIT-GASKET BLOWER ADAPTER 2503-4005",
-        "price": 143,
+        "price": 178.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014492F",
         "description": "KIT-AIR FILTER 18 X 24 2503-4005",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2107,49 +2107,49 @@ export const partsData = {
       {
         "pn": "014398F",
         "description": "KIT-BURNER ADAPTER GASKET 2503-4005",
-        "price": 228,
+        "price": 284.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014408F",
         "description": "KIT-GASKET BLOWER MTG 2503-4005",
-        "price": 84,
+        "price": 105.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014409F",
         "description": "KIT-GASKET BLOWER ADAPTER 2503-4005",
-        "price": 143,
+        "price": 178.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "014492F",
         "description": "KIT-AIR FILTER 18 X 24 2503-4005",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2160,49 +2160,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2211,49 +2211,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2262,49 +2262,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012553F",
         "description": "KIT-AIR FILTER PLEATED 12 X 12 X 1",
-        "price": 68,
+        "price": 84.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2313,49 +2313,49 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011886F",
         "description": "KIT-GASKET BLOWER ADAPTER 503-1505A",
-        "price": 108,
+        "price": 135.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2364,42 +2364,42 @@ export const partsData = {
       {
         "pn": "011751F",
         "description": "KIT-BURNER ADAPTER GASKET & HEAT SHIELD MVB",
-        "price": 182,
+        "price": 227.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011752F",
         "description": "KIT-FLAME SENSOR PROBE",
-        "price": 64,
+        "price": 80.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "011885F",
         "description": "KIT-GASKET BLOWER MTG MVB 503A-2004A XTHERM 1005A-2005A",
-        "price": 117,
+        "price": 146.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "012552F",
         "description": "KIT-AIR FILTER PLEATED 16 X 16 X 1",
-        "price": 75,
+        "price": 93.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2410,35 +2410,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 6
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2447,35 +2447,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 8
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2484,35 +2484,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 10
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2521,35 +2521,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 13
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2558,35 +2558,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 15
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2595,35 +2595,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 18
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2632,35 +2632,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 11
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2669,35 +2669,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 14
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2706,35 +2706,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 17
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2743,35 +2743,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 20
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2780,35 +2780,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2817,35 +2817,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2854,35 +2854,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 26
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2891,35 +2891,35 @@ export const partsData = {
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 6
       },
       {
         "pn": "008401F",
         "description": "KIT-AIR FILTER 9 X 12 302-502",
-        "price": 44,
+        "price": 55.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2928,35 +2928,35 @@ export const partsData = {
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 8
       },
       {
         "pn": "008401F",
         "description": "KIT-AIR FILTER 9 X 12 302-502",
-        "price": 44,
+        "price": 55.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -2965,35 +2965,35 @@ export const partsData = {
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 10
       },
       {
         "pn": "008401F",
         "description": "KIT-AIR FILTER 9 X 12 302-502",
-        "price": 44,
+        "price": 55.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3002,35 +3002,35 @@ export const partsData = {
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 13
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3039,35 +3039,35 @@ export const partsData = {
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 15
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3076,35 +3076,35 @@ export const partsData = {
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 18
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3113,35 +3113,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 11
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3150,35 +3150,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 14
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3187,35 +3187,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 17
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3224,35 +3224,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 20
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3261,35 +3261,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3298,35 +3298,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3335,35 +3335,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 26
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3374,35 +3374,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 8
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3411,35 +3411,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 10
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3448,35 +3448,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 13
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3485,35 +3485,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 15
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3522,35 +3522,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 18
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3559,35 +3559,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 8
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3596,35 +3596,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 10
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3633,35 +3633,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 13
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3670,35 +3670,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 15
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3707,35 +3707,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 18
       },
       {
         "pn": "009730F",
         "description": "KIT-AIR FILTER 8 X 8 302B-902B",
-        "price": 37,
+        "price": 46.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3744,35 +3744,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 11
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3781,35 +3781,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 14
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3818,35 +3818,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 17
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3855,35 +3855,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 20
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3892,35 +3892,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3929,35 +3929,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -3966,35 +3966,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 26
       },
       {
         "pn": "008402F",
         "description": "KIT-AIR FILTER 12 X 12 INTAKE AIR 6\"",
-        "price": 47,
+        "price": 58.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4003,35 +4003,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 11
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4040,35 +4040,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 14
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4077,35 +4077,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 17
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4114,35 +4114,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 20
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4151,35 +4151,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4188,35 +4188,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 23
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4225,35 +4225,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 26
       },
       {
         "pn": "008923F",
         "description": "KIT-AIR FILTER 6 X 7 499-2339",
-        "price": 42,
+        "price": 52.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4264,35 +4264,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 2
       },
       {
         "pn": "012843F",
         "description": "KIT-AIR FILTER 6 X 6 X 1 HD101-HD401",
-        "price": 28,
+        "price": 34.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4301,35 +4301,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 3
       },
       {
         "pn": "012843F",
         "description": "KIT-AIR FILTER 6 X 6 X 1 HD101-HD401",
-        "price": 28,
+        "price": 34.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4338,35 +4338,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 4
       },
       {
         "pn": "012843F",
         "description": "KIT-AIR FILTER 6 X 6 X 1 HD101-HD401",
-        "price": 28,
+        "price": 34.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4375,35 +4375,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 5
       },
       {
         "pn": "012843F",
         "description": "KIT-AIR FILTER 6 X 6 X 1 HD101-HD401",
-        "price": 28,
+        "price": 34.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4412,35 +4412,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 6
       },
       {
         "pn": "012843F",
         "description": "KIT-AIR FILTER 6 X 6 X 1 HD101-HD401",
-        "price": 28,
+        "price": 34.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
@@ -4449,35 +4449,35 @@ export const partsData = {
       {
         "pn": "007443F",
         "description": "KIT-GASKET BURNER SEAL",
-        "price": 8,
+        "price": 10.0,
         "annual": true,
         "defaultQty": 8
       },
       {
         "pn": "012843F",
         "description": "KIT-AIR FILTER 6 X 6 X 1 HD101-HD401",
-        "price": 28,
+        "price": 34.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007400F",
         "description": "KIT-IGNITER HSI 120V HIDELTA 302B-2342B MVB 1003-1503 XVERS 856-3006 (REPLACES 601559)",
-        "price": 92,
+        "price": 115.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "006535F",
         "description": "KIT-SENSOR FLAME ELECTRODE",
-        "price": 55,
+        "price": 68.0,
         "annual": true,
         "defaultQty": 1
       },
       {
         "pn": "007157F",
         "description": "KIT-PC BOARD CONTROL LWCO",
-        "price": 375,
+        "price": 468.0,
         "annual": true,
         "defaultQty": 1
       }
