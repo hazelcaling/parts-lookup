@@ -63,9 +63,9 @@ export async function seedDatabase(pool, partsData, partsCatalog) {
       annual.map((p) => [p.series, p.model, String(p.pn ?? ""), String(p.description ?? ""),
         num(p.price), Boolean(p.annual), num(p.defaultQty) ?? 1]));
     await insertBatched(client, "catalog_parts",
-      ["series", "model", "part_number", "description", "list_price", "call_out", "section", "ipl_description", "notes"],
+      ["series", "model", "part_number", "description", "list_price", "call_out", "section", "ipl_description", "notes", "source_url", "price_source", "ipl_qty"],
       partsCatalog.map((c) => [c.series ?? "", c.model ?? "", c.partNumber ?? "", c.description ?? "",
-        num(c.listPrice), c.callOut ?? "", c.section ?? "", c.iplDescription ?? "", c.notes ?? ""]));
+        num(c.listPrice), c.callOut ?? "", c.section ?? "", c.iplDescription ?? "", c.notes ?? "", c.sourceUrl || null, c.priceSource || null, c.iplQty || null]));
     for (const k of kept) {
       await client.query(
         `UPDATE catalog_parts SET notes=$5, notes_edited_at=$6

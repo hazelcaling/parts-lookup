@@ -77,9 +77,10 @@ for d in docs.values():
         prices = price_by_pn.get(r["partNumber"])
         # Never invent prices: only reuse the existing catalog list price for the same part number
         r["listPrice"] = collections.Counter(prices).most_common(1)[0][0] if prices else None
-        if prices:
-            r["notes"] = (r["notes"] + "; " if r["notes"] else "") + "List price from existing catalog entry"
-        r["notes"] = (r["notes"] + "; " if r["notes"] else "") + f"Source: Raypak IPL {d['file']} (obsolete model)"
+        r["priceSource"] = "existing catalog (same part number)" if prices else ""
+        r["iplQty"] = r.pop("notes", "").replace("Qty ", "")
+        r["notes"] = ""
+        r["sourceUrl"] = d["url"]
     added += rows
     entry["status"] = "added"; entry["added_rows"] = len(rows)
     entry["priced_rows"] = sum(1 for r in rows if r["listPrice"])

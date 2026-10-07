@@ -146,11 +146,13 @@ export default function MasterPriceList({ onAdd }) {
                   <div>{item.description}</div>
                   {item.call_out && <div style={{ fontSize: "12px", color: "#888", marginTop: 3, fontWeight: "bold" }}>Call Out: {item.call_out}</div>}
                   {item.ipl_description && <div style={{ fontSize: "12px", color: "#666", marginTop: 3 }}>IPL: {item.ipl_description}</div>}
-                  <div style={{ fontSize: "11px", color: "#0ea5e9", marginTop: 3 }}>
+                  <div style={{ fontSize: "11px", color: "#64748b", marginTop: 3 }}>
+                    Source:{" "}
                     {item.source === "catalog"
-                      ? `Raypak IPL · ${item.series}`
-                      : `${item.vendor || item.manufacturer} price list "${item.price_list_name}"${item.effective_date ? ` · eff. ${item.effective_date}` : ""}${item.series ? ` · ${item.series}` : ""}`}
-                    {item.category ? ` · ${item.category}` : ""}
+                      ? (item.source_url
+                        ? <a href={item.source_url} target="_blank" rel="noopener noreferrer">IPL</a>
+                        : "IPL")
+                      : item.price_list_name}
                   </div>
                 </td>
                 <td style={{ wordBreak: "break-word" }}>{item.model}</td>

@@ -4,7 +4,7 @@
 //        [--no-sheet-series] [--no-dedupe] [--report report.json]
 import fs from "node:fs";
 import * as XLSX from "xlsx";
-import { readSheet, cleanSheetName, guessSheetCategory, sheetItems, dedupeByPartNumber } from "../src/utils/priceListParse.js";
+import { readSheet, cleanSheetName, sheetItems, dedupeByPartNumber } from "../src/utils/priceListParse.js";
 
 const args = process.argv.slice(2);
 const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
@@ -14,7 +14,7 @@ if (!file || !BASE_URL || !APP_PASSWORD) { console.error("usage: see header"); p
 
 const wb = XLSX.read(fs.readFileSync(file), { type: "buffer" });
 const sheetSeries = !args.includes("--no-sheet-series");
-const sheets = wb.SheetNames.map((n) => ({ ...readSheet(XLSX, wb.Sheets[n], n), series: cleanSheetName(n), category: guessSheetCategory(n) }));
+const sheets = wb.SheetNames.map((n) => ({ ...readSheet(XLSX, wb.Sheets[n], n), series: cleanSheetName(n), category: "" }));
 let all = [];
 for (const s of sheets) {
   if (s.mapping.part_number < 0) { console.log(`sheet "${s.name}": no part number column found, skipped`); continue; }

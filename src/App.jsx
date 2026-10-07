@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useData } from "./DataContext";
 import QuoteHeaderFields from "./components/QuoteHeaderFields";
+import { api } from "./api";
 import MasterPriceList from "./components/MasterPriceList";
 import { jsPDF } from "jspdf";
 import {
@@ -10,7 +11,9 @@ import {
 } from "./utils/pdfHelpers";
 
 function App() {
-  const { partsData, partsCatalog } = useData();
+  const { partsData } = useData();
+  const pnReq = useRef(0);
+  const pnTimer = useRef(null);
   // ===== Annual Kit =====
   const [model, setModel] = useState("");
   const [annualResults, setAnnualResults] = useState([]);
@@ -206,28 +209,23 @@ function App() {
     updateRow(index, "pn", upper);
 
     if (upper.length < 2) {
+      pnReq.current++;
       setSuggestions([]);
       setActiveSuggestIndex(null);
       return;
     }
 
-    const seen = new Set();
-    const matches = [];
-
-    for (const item of partsCatalog) {
-      const pn = String(item.partNumber || "").toUpperCase();
-      const price = Number(item.listPrice || item.sellPrice) || 0;
-
-      if (price <= 0) continue;
-      if (!pn.includes(upper) || seen.has(pn)) continue;
-
-      seen.add(pn);
-      matches.push(item);
-      if (matches.length >= 10) break;
-    }
-
-    setSuggestions(matches);
-    setActiveSuggestIndex(index);
+    // Server-side search across the Master Price List (debounced, latest request wins)
+    const my = ++pnReq.current;
+    clearTimeout(pnTimer.current);
+    pnTimer.current = setTimeout(async () => {
+      try {
+        const matches = await api(`/parts/suggest?q=${encodeURIComponent(upper)}`);
+        if (my !== pnReq.current) return;
+        setSuggestions(matches);
+        setActiveSuggestIndex(index);
+      } catch { /* ignore */ }
+    }, 200);
   };
 
   const selectSuggestion = (index, item) => {

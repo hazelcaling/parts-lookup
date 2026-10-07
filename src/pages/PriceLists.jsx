@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { api } from "../api";
 import { inputStyle, btn } from "../components/styles";
 import {
-  FIELDS, readSheet, withHeaderRow, cleanSheetName, guessSheetCategory, sheetItems, dedupeByPartNumber,
+  FIELDS, readSheet, withHeaderRow, cleanSheetName, sheetItems, dedupeByPartNumber,
 } from "../utils/priceListParse";
 
 const box = { background: "#fff", border: "1px solid #ddd", borderRadius: "10px", padding: "18px", boxSizing: "border-box" };
@@ -33,7 +33,7 @@ export default function PriceLists() {
       const wb = XLSX.read(await f.arrayBuffer(), { type: "array" });
       const sheets = wb.SheetNames.map((n) => ({
         ...readSheet(XLSX, wb.Sheets[n], n),
-        include: true, series: cleanSheetName(n), category: guessSheetCategory(n),
+        include: true, series: cleanSheetName(n), category: "",
       })).filter((s) => s.rows.length > 0);
       if (!sheets.length) throw new Error("The file is empty.");
       setFile({ name: f.name, sheets });

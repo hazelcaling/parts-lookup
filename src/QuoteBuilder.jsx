@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { jsPDF } from "jspdf";
 import { generateQuoteNumber, money, drawQuoteHeader } from "./utils/pdfHelpers";
-import { useData } from "./DataContext";
+import { api } from "./api";
 import "./App.css";
 
 function QuoteBuilder() {
-  const { partsCatalog } = useData();
+  const pnReq = useRef(0);
+  const pnTimer = useRef(null);
   const [company, setCompany] = useState("");
   const [attn, setAttn] = useState("");
   const [email, setEmail] = useState("");
@@ -94,21 +95,22 @@ function QuoteBuilder() {
     updateRow(index, "pn", value.toUpperCase());
 
     if (value.length < 2) {
+      pnReq.current++;
       setSuggestions([]);
       setActiveSuggestIndex(null);
       return;
     }
 
-    const matches = partsCatalog
-      .filter((item) =>
-        String(item.partNumber || "")
-          .toUpperCase()
-          .includes(value.toUpperCase())
-      )
-      .slice(0, 8);
-
-    setSuggestions(matches);
-    setActiveSuggestIndex(index);
+    const my = ++pnReq.current;
+    clearTimeout(pnTimer.current);
+    pnTimer.current = setTimeout(async () => {
+      try {
+        const matches = await api(`/parts/suggest?q=${encodeURIComponent(value.toUpperCase())}&limit=8`);
+        if (my !== pnReq.current) return;
+        setSuggestions(matches);
+        setActiveSuggestIndex(index);
+      } catch { /* ignore */ }
+    }, 200);
   };
 
   const selectSuggestion = (index, item) => {

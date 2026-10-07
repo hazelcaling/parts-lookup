@@ -304,13 +304,39 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     SELECT 'catalog' AS source, c.id, NULL::int AS price_list_id, NULL::text AS price_list_name, NULL::date AS effective_date,
            c.part_number, c.description, c.list_price::numeric AS list_price, COALESCE(c.vendor,'') AS vendor,
            COALESCE(c.manufacturer,'') AS manufacturer, c.series, c.model, c.section, COALESCE(c.category,'') AS category,
-           c.call_out, c.ipl_description, c.notes, c.obsolete, COALESCE(c.replacement_pn,'') AS replacement_pn, c.updated_at
+           c.call_out, c.ipl_description, c.notes, c.obsolete, COALESCE(c.replacement_pn,'') AS replacement_pn, c.updated_at,
+           c.source_url
       FROM catalog_parts c
     UNION ALL
     SELECT 'pricelist', i.id, p.id, p.name, p.effective_date,
            i.part_number, i.description, i.list_price, i.vendor, i.manufacturer, i.series, i.model, '' AS section, i.category,
-           '' AS call_out, '' AS ipl_description, i.notes, i.obsolete, i.replacement_pn, i.updated_at
+           '' AS call_out, '' AS ipl_description, i.notes, i.obsolete, i.replacement_pn, i.updated_at,
+           NULL::text AS source_url
       FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id`;
+
+  // Part number autosuggest for the quote form: one suggestion per part number across the
+  // catalog and all vendor price lists (prefer a priced row, highest price wins)
+  r.get("/parts/suggest", wrap(async (req, res) => {
+    const q = str(req.query.q, 100).toUpperCase();
+    if (q.length < 2) return res.json([]);
+    const { rows } = await pool.query(
+      `SELECT part_number AS "partNumber", description, list_price::float8 AS "listPrice", source, source_name AS "sourceName"
+         FROM (
+           SELECT DISTINCT ON (upper(part_number)) part_number, description, list_price, source, source_name
+             FROM (
+               SELECT part_number, description, list_price::numeric AS list_price, 'catalog' AS source, 'Raypak' AS source_name
+                 FROM catalog_parts WHERE upper(part_number) LIKE $1
+               UNION ALL
+               SELECT i.part_number, i.description, i.list_price, 'pricelist', p.name
+                 FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id WHERE upper(i.part_number) LIKE $1
+             ) a
+            ORDER BY upper(part_number), (COALESCE(list_price,0) > 0) DESC, list_price DESC NULLS LAST
+         ) b
+        ORDER BY (upper(part_number) LIKE $2) DESC, (COALESCE(list_price,0) > 0) DESC, part_number
+        LIMIT $3`,
+      [like(q), q.replace(/[\\%_]/g, (c) => "\\" + c) + "%", limitOf(req.query.limit, 10, 30)]);
+    res.json(rows);
+  }));
 
   r.get("/master/facets", wrap(async (req, res) => {
     const [series, sections, categories] = await Promise.all([
