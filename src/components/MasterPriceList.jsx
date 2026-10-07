@@ -89,6 +89,11 @@ export default function MasterPriceList({ onAdd }) {
   }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, showUnpriced, page]);
 
   const totalPages = Math.max(1, Math.ceil(data.total / pageSize));
+  const hasFilters = !!(search || seriesFilter || modelFilter || sectionFilter || categoryFilter || showUnpriced);
+  const clearAll = () => {
+    setSearch(""); setSeriesFilter(""); setModelFilter(""); setSectionFilter(""); setCategoryFilter("");
+    setShowUnpriced(false); setPage(1);
+  };
   const setRowNotes = (row, notes) =>
     setData((d) => ({ ...d, rows: d.rows.map((x) => (x.source === row.source && x.id === row.id ? { ...x, notes } : x)) }));
 
@@ -96,13 +101,19 @@ export default function MasterPriceList({ onAdd }) {
     <div style={{ width: "100%", minWidth: 0, border: "1px solid #ddd", borderRadius: "10px", padding: "18px", background: "#fff", boxSizing: "border-box" }}>
       <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>Master Price List</h2>
 
-      <input
-        type="text"
-        placeholder="Search part number, description, IPL, notes, call out, vendor"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ width: "100%", padding: "10px 12px", marginBottom: "12px", boxSizing: "border-box" }}
-      />
+      <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
+        <input
+          type="text"
+          placeholder="Search part number, description, IPL, notes, call out, vendor"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ flex: 1, minWidth: 0, padding: "10px 12px", boxSizing: "border-box" }}
+        />
+        <button onClick={clearAll} disabled={!hasFilters} title="Clear search and all filters"
+          style={{ padding: "10px 14px", cursor: hasFilters ? "pointer" : "default", opacity: hasFilters ? 1 : 0.5 }}>
+          Clear
+        </button>
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1fr)", gap: "10px", marginBottom: "12px" }}>
         <select value={seriesFilter} onChange={(e) => setSeriesFilter(e.target.value)} style={{ padding: "10px", minWidth: 0 }}>
