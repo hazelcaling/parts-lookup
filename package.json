@@ -4,13 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -k -n api,web \"npm:dev:api\" \"npm:dev:web\"",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/index.js",
+    "seed": "node scripts/seed.js",
+    "dev:api": "node --env-file=.env --watch server/index.js",
+    "dev:web": "vite",
+    "seed:dev": "node --env-file=.env scripts/seed.js"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
     "jspdf": "^4.2.0",
+    "pg": "^8.23.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.1",
@@ -21,10 +29,14 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "concurrently": "^10.0.5",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "vite": "^7.3.1"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

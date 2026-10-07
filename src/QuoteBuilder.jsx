@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { jsPDF } from "jspdf";
 import { generateQuoteNumber, money, drawQuoteHeader } from "./utils/pdfHelpers";
-import partsCatalog from "./data/partsCatalog.json";
+import { useData } from "./DataContext";
 import "./App.css";
 
 function QuoteBuilder() {
+  const { partsCatalog } = useData();
   const [company, setCompany] = useState("");
   const [attn, setAttn] = useState("");
   const [email, setEmail] = useState("");

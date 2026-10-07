@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
-import { partsData } from "./data/partsData";
-import partsCatalog from "./data/partsCatalog.json";
+import { useData } from "./DataContext";
 import { jsPDF } from "jspdf";
 import {
   generateQuoteNumber,
@@ -9,6 +8,7 @@ import {
 } from "./utils/pdfHelpers";
 
 function App() {
+  const { partsData, partsCatalog } = useData();
   // ===== Annual Kit =====
   const [model, setModel] = useState("");
   const [annualResults, setAnnualResults] = useState([]);

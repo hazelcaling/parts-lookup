@@ -25,3 +25,11 @@ dist-ssr
 
 
 .vite/.vite/
+
+# Private data (lives in Postgres now)
+*.xlsx
+src/data/
+# Secrets / local env
+.env
+# Python virtualenv
+venv/
