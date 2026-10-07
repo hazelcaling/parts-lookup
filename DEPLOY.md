@@ -31,3 +31,8 @@ A removal commit does NOT remove data from history. After merging:
     git push --force --mirror
 Rewrites all history (re-clone everywhere). Simpler alternative: make the repo private.
 Forks/caches may keep old copies; treat the old data as already exposed.
+
+## Seeding over HTTPS (when port 5432 is blocked)
+    BASE_URL=https://<service>.onrender.com APP_PASSWORD="..." node scripts/upload-seed.js [dataDir]
+POSTs the local data files to `/api/admin/seed` (Bearer APP_PASSWORD, same lockout as login),
+which recreates/refills the tables in one transaction and clears the server cache.

@@ -4,6 +4,7 @@ import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { pool } from "./db.js";
+import { seedDatabase } from "./seedLib.js";
 
 const { APP_PASSWORD, SESSION_SECRET } = process.env;
 if (!APP_PASSWORD || !SESSION_SECRET) {
@@ -16,7 +17,6 @@ const isProd = process.env.NODE_ENV === "production";
 
 const app = express();
 app.set("trust proxy", 1);
-app.use(express.json());
 app.use(cookieParser(SESSION_SECRET));
 
 const safeEqual = (a, b) => {
@@ -37,6 +37,18 @@ const requireAuth = (req, res, next) =>
 
 // Very small brute-force guard: per-IP failed attempts
 const fails = new Map();
+app.use("/api/admin", express.json({ limit: "50mb" }));
+app.use(express.json());
+
+const locked = (ip) => {
+  const f = fails.get(ip);
+  return f && f.n >= 10 && Date.now() - f.t < 15 * 60 * 1000;
+};
+const recordFail = (ip) => {
+  const f = fails.get(ip) || { n: 0, t: 0 };
+  fails.set(ip, { n: f.n + 1, t: Date.now() });
+};
+
 app.post("/api/login", (req, res) => {
   const ip = req.ip;
   const f = fails.get(ip) || { n: 0, t: 0 };
@@ -57,6 +69,26 @@ app.post("/api/login", (req, res) => {
     maxAge: SESSION_DAYS * 86400000,
   });
   res.json({ ok: true });
+});
+
+app.post("/api/admin/seed", async (req, res) => {
+  const ip = req.ip;
+  if (locked(ip)) return res.status(429).json({ error: "Too many attempts. Try again later." });
+  const m = /^Bearer (.+)$/.exec(req.get("authorization") || "");
+  if (!m || !safeEqual(m[1], APP_PASSWORD)) {
+    recordFail(ip);
+    return res.status(401).json({ error: "unauthorized" });
+  }
+  fails.delete(ip);
+  try {
+    const { partsData, partsCatalog } = req.body || {};
+    const result = await seedDatabase(pool, partsData, partsCatalog);
+    cache = null;
+    res.json({ ok: true, ...result });
+  } catch (e) {
+    console.error("seed failed:", e.message);
+    res.status(400).json({ error: e.message });
+  }
 });
 
 app.post("/api/logout", (req, res) => {
