@@ -6,15 +6,21 @@ import './index.css'
 import App from './App.jsx'
 import QuoteBuilder from './QuoteBuilder.jsx'
 import { DataProvider } from './DataContext.jsx'
+import Nav from './components/Nav.jsx'
+import PriceLists from './pages/PriceLists.jsx'
+import MasterSearch from './pages/MasterSearch.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <DataProvider>
     <BrowserRouter>
+      <Nav />
 
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/quote" element={<QuoteBuilder />} />
+        <Route path="/pricelists" element={<PriceLists />} />
+        <Route path="/search" element={<MasterSearch />} />
       </Routes>
 
     </BrowserRouter>

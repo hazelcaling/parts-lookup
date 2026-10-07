@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS annual_parts (
+  id SERIAL PRIMARY KEY, series TEXT NOT NULL, model TEXT NOT NULL, pn TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '', price DOUBLE PRECISION,
+  annual BOOLEAN NOT NULL DEFAULT true, default_qty DOUBLE PRECISION NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS catalog_parts (
+  id SERIAL PRIMARY KEY, series TEXT NOT NULL DEFAULT '', model TEXT NOT NULL DEFAULT '',
+  part_number TEXT NOT NULL DEFAULT '', description TEXT NOT NULL DEFAULT '',
+  list_price DOUBLE PRECISION NOT NULL DEFAULT 0, call_out TEXT NOT NULL DEFAULT '',
+  section TEXT NOT NULL DEFAULT '', ipl_description TEXT NOT NULL DEFAULT '',
+  notes TEXT NOT NULL DEFAULT '');
+CREATE INDEX IF NOT EXISTS catalog_parts_pn_idx ON catalog_parts (part_number);

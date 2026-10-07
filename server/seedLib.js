@@ -1,3 +1,4 @@
+import { migrate } from "./migrate.js";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -46,23 +47,13 @@ async function insertBatched(client, table, cols, rows) {
 // Create tables, truncate, insert, all in one transaction
 export async function seedDatabase(pool, partsData, partsCatalog) {
   validate(partsData, partsCatalog);
+  await migrate(pool);
   const annual = flattenPartsData(partsData);
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS annual_parts (
-        id SERIAL PRIMARY KEY, series TEXT NOT NULL, model TEXT NOT NULL, pn TEXT NOT NULL,
-        description TEXT NOT NULL DEFAULT '', price DOUBLE PRECISION,
-        annual BOOLEAN NOT NULL DEFAULT true, default_qty DOUBLE PRECISION NOT NULL DEFAULT 1);
-      CREATE TABLE IF NOT EXISTS catalog_parts (
-        id SERIAL PRIMARY KEY, series TEXT NOT NULL DEFAULT '', model TEXT NOT NULL DEFAULT '',
-        part_number TEXT NOT NULL DEFAULT '', description TEXT NOT NULL DEFAULT '',
-        list_price DOUBLE PRECISION NOT NULL DEFAULT 0, call_out TEXT NOT NULL DEFAULT '',
-        section TEXT NOT NULL DEFAULT '', ipl_description TEXT NOT NULL DEFAULT '',
-        notes TEXT NOT NULL DEFAULT '');
-      CREATE INDEX IF NOT EXISTS catalog_parts_pn_idx ON catalog_parts (part_number);
-      TRUNCATE annual_parts, catalog_parts RESTART IDENTITY;`);
+    // Only the two parts tables are replaced; companies/quotes/price lists are untouched.
+    await client.query(`TRUNCATE annual_parts, catalog_parts RESTART IDENTITY;`);
     await insertBatched(client, "annual_parts",
       ["series", "model", "pn", "description", "price", "annual", "default_qty"],
       annual.map((p) => [p.series, p.model, String(p.pn ?? ""), String(p.description ?? ""),

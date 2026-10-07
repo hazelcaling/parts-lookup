@@ -5,6 +5,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { pool } from "./db.js";
 import { seedDatabase } from "./seedLib.js";
+import { migrate } from "./migrate.js";
+import { apiRouter } from "./routes/api.js";
 
 const { APP_PASSWORD, SESSION_SECRET } = process.env;
 if (!APP_PASSWORD || !SESSION_SECRET) {
@@ -38,6 +40,7 @@ const requireAuth = (req, res, next) =>
 // Very small brute-force guard: per-IP failed attempts
 const fails = new Map();
 app.use("/api/admin", express.json({ limit: "50mb" }));
+app.use("/api/pricelists", express.json({ limit: "50mb" }));
 app.use(express.json());
 
 const locked = (ip) => {
@@ -134,8 +137,13 @@ app.get("/api/data", requireAuth, async (req, res) => {
   }
 });
 
+app.use("/api", requireAuth, apiRouter(pool, { onCatalogChanged: () => { cache = null; } }));
+app.use("/api", (req, res) => res.status(404).json({ error: "not found" }));
+
 const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
 app.use(express.static(dist));
 app.get(/^(?!\/api\/).*/, (req, res) => res.sendFile(path.join(dist, "index.html")));
 
-app.listen(PORT, () => console.log(`parts-lookup listening on ${PORT}`));
+migrate(pool)
+  .then(() => app.listen(PORT, () => console.log(`parts-lookup listening on ${PORT}`)))
+  .catch((e) => { console.error(e.message); process.exit(1); });

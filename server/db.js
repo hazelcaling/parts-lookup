@@ -1,5 +1,8 @@
 import pg from "pg";
 
+// Return DATE columns as plain "YYYY-MM-DD" strings (no timezone shifting)
+pg.types.setTypeParser(1082, (v) => v);
+
 const url = process.env.DATABASE_URL;
 if (!url) throw new Error("DATABASE_URL is not set");
 

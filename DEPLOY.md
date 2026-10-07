@@ -36,3 +36,15 @@ Forks/caches may keep old copies; treat the old data as already exposed.
     BASE_URL=https://<service>.onrender.com APP_PASSWORD="..." node scripts/upload-seed.js [dataDir]
 POSTs the local data files to `/api/admin/seed` (Bearer APP_PASSWORD, same lockout as login),
 which recreates/refills the tables in one transaction and clears the server cache.
+
+## Migrations
+`server/migrations/*.sql` run automatically (in name order, once each, tracked in `schema_migrations`)
+when the server starts and before seeding. Seeding only replaces `annual_parts` and `catalog_parts`
+(companies, contacts, jobs and price lists are kept). Note: re-seeding resets catalog prices and the
+new part columns (vendor, obsolete, ...) to what's in the seed files, so re-import price lists with
+"update catalog" afterwards if needed. Requires the `pg_trgm` extension (available on Render).
+
+## New pages
+- `/` quote form: Company / Attn (contacts) / Model / Job autosuggest, "+ Add new company", "+ Add contact", "+ Save job".
+- `/pricelists`: drag & drop .xlsx/.xls/.csv, pick header row, map columns, vendor/manufacturer + effective date, save; delete lists.
+- `/search`: Master Price List search across catalog and imported price lists.

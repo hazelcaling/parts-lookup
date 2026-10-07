@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useData } from "./DataContext";
+import QuoteHeaderFields from "./components/QuoteHeaderFields";
 import { jsPDF } from "jspdf";
 import {
   generateQuoteNumber,
@@ -867,36 +868,12 @@ function App() {
     marginBottom: "20px",
   }}
 >
-  <input
-    placeholder="Company"
-    value={company}
-    onChange={(e) => setCompany(e.target.value)}
-    style={{ padding: "10px", width: "100%", boxSizing: "border-box" }}
-  />
-  <input
-    placeholder="Model"
-    value={modelField}
-    onChange={(e) => setModelField(e.target.value)}
-    style={{ padding: "10px", width: "100%", boxSizing: "border-box" }}
-  />
-  <input
-    placeholder="Attn"
-    value={attn}
-    onChange={(e) => setAttn(e.target.value)}
-    style={{ padding: "10px", width: "100%", boxSizing: "border-box" }}
-  />
-  <input
-    placeholder="Serial"
-    value={serial}
-    onChange={(e) => setSerial(e.target.value)}
-    style={{ padding: "10px", width: "100%", boxSizing: "border-box" }}
-  />
-  <div></div>
-  <input
-    placeholder="Job"
-    value={job}
-    onChange={(e) => setJob(e.target.value)}
-    style={{ padding: "10px", width: "100%", boxSizing: "border-box" }}
+  <QuoteHeaderFields
+    company={company} setCompany={setCompany}
+    attn={attn} setAttn={setAttn}
+    modelField={modelField} setModelField={setModelField}
+    serial={serial} setSerial={setSerial}
+    job={job} setJob={setJob}
   />
 </div>
 
