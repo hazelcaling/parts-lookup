@@ -15,6 +15,7 @@ const rows = JSON.parse(fs.readFileSync(rowsFile, "utf8")).filter((r) => r.partN
   iplDescription: r.iplDescription || "", notes: "",
   sourceUrl: r.sourceUrl || "", priceSource: r.priceSource || "", iplQty: r.iplQty || "",
   descNote: r.descNote || "", isOption: !!r.isOption, optionGroup: r.optionGroup || "",
+  parentCallOut: r.parentCallOut || "", includeNote: r.includeNote || "",
 }));
 const seriesSet = new Set(rows.map((r) => r.series));
 
@@ -33,12 +34,12 @@ if (process.env.DATABASE_URL) {
   try {
     await client.query("BEGIN");
     await client.query("DELETE FROM catalog_parts WHERE source_url IS NOT NULL OR series = ANY($1)", [[...seriesSet]]);
-    const cols = ["series", "model", "part_number", "description", "list_price", "call_out", "section", "ipl_description", "notes", "source_url", "price_source", "ipl_qty", "desc_note", "is_option", "option_group"];
+    const cols = ["series", "model", "part_number", "description", "list_price", "call_out", "section", "ipl_description", "notes", "source_url", "price_source", "ipl_qty", "desc_note", "is_option", "option_group", "parent_call_out", "include_note"];
     for (let i = 0; i < rows.length; i += 1000) {
       const chunk = rows.slice(i, i + 1000);
       const vals = [];
       const ph = chunk.map((r, j) => {
-        const v = [r.series, r.model, r.partNumber, r.description, r.listPrice, r.callOut, r.section, r.iplDescription, r.notes, r.sourceUrl || null, r.priceSource || null, r.iplQty || null, r.descNote, r.isOption, r.optionGroup || null];
+        const v = [r.series, r.model, r.partNumber, r.description, r.listPrice, r.callOut, r.section, r.iplDescription, r.notes, r.sourceUrl || null, r.priceSource || null, r.iplQty || null, r.descNote, r.isOption, r.optionGroup || null, r.parentCallOut || null, r.includeNote || ""];
         vals.push(...v);
         return "(" + v.map((_, k) => `$${j * v.length + k + 1}`).join(",") + ")";
       });

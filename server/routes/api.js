@@ -305,13 +305,13 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
            c.part_number, c.description, c.list_price::numeric AS list_price, COALESCE(c.vendor,'') AS vendor,
            COALESCE(c.manufacturer,'') AS manufacturer, c.series, c.model, c.section, COALESCE(c.category,'') AS category,
            c.call_out, c.ipl_description, c.notes, c.obsolete, COALESCE(c.replacement_pn,'') AS replacement_pn, c.updated_at,
-           c.source_url, c.desc_note, c.is_option, c.option_group
+           c.source_url, c.desc_note, c.is_option, c.option_group, c.include_note
       FROM catalog_parts c
     UNION ALL
     SELECT 'pricelist', i.id, p.id, p.name, p.effective_date,
            i.part_number, i.description, i.list_price, i.vendor, i.manufacturer, i.series, i.model, '' AS section, i.category,
            '' AS call_out, '' AS ipl_description, i.notes, i.obsolete, i.replacement_pn, i.updated_at,
-           NULL::text AS source_url, '' AS desc_note, false AS is_option, NULL::text AS option_group
+           NULL::text AS source_url, '' AS desc_note, false AS is_option, NULL::text AS option_group, '' AS include_note
       FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id`;
 
   // Part number autosuggest for the quote form: one suggestion per part number across the

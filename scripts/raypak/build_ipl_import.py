@@ -83,6 +83,7 @@ for d in docs.values():
         r["sourceUrl"] = d["url"]
         r["optionGroup"] = r["callOut"] if r.get("isOption") else ""
         r["descNote"] = ""
+        r.setdefault("parentCallOut", "")
     added += rows
     entry["status"] = "added"; entry["added_rows"] = len(rows)
     entry["priced_rows"] = sum(1 for r in rows if r["listPrice"])

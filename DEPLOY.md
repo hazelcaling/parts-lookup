@@ -52,8 +52,11 @@ new part columns (vendor, obsolete, ...) to what's in the seed files, so re-impo
 ## Raypak obsolete-model IPLs
     python3 scripts/raypak/build_ipl_import.py <dataDir>/partsCatalog.before-ipl.json <pdfDir> rows.json report.json
     DATABASE_URL=... node scripts/raypak/import-ipl.js rows.json <dataDir>
+    python3 scripts/raypak/include_notes.py <dataDir>/partsCatalog.json   # then reseed / upload-seed
 Parses the IPL PDFs linked from raypak.com "Model Number History", skips IPLs already in the catalog,
 and adds the rest (idempotent per series). Prices are only copied from existing catalog rows with the same PN.
+`include_notes.py` fills `include_note` ("Included in 1-J 007150F" / "Includes 2-J 006533F, ...") per model,
+from call-out indentation in the PDFs (IPL rows) or the "Included under"/"Includes" source notes (original rows).
 
 ## Multi-sheet vendor price lists from the command line
     BASE_URL=... APP_PASSWORD=... node scripts/import-pricelist.js file.xlsx --vendor Sussman --manufacturer Sussman

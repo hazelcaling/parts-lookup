@@ -4,6 +4,15 @@ import { money } from "../utils/pdfHelpers";
 
 const pageSize = 25;
 
+// Source note from the IPL plus generated assembly notes; an original "Includes / Included under"
+// note is not repeated when the generated note (with part numbers) covers it.
+function noteLines(item) {
+  const gen = (item.include_note || "").split("\n").filter(Boolean);
+  const src = item.desc_note || "";
+  const redundant = gen.length && /^(Includes|Included under)\b/.test(src);
+  return [...(src && !redundant ? [src] : []), ...gen];
+}
+
 function NotesCell({ row, onSaved }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(row.notes || "");
@@ -144,7 +153,6 @@ export default function MasterPriceList({ onAdd }) {
                 <td style={{ wordBreak: "break-word" }}>{item.part_number}</td>
                 <td style={{ wordBreak: "break-word" }}>
                   <div>{item.description}</div>
-                  {item.desc_note && <div style={{ fontSize: "12px", color: "#475569", marginTop: 3 }}>Note: {item.desc_note}</div>}
                   {(item.call_out || item.option_group) && (
                     <div style={{ fontSize: "12px", color: "#888", marginTop: 3, fontWeight: "bold" }}>
                       Call Out: {item.call_out || item.option_group}{item.is_option ? " (option)" : ""}
@@ -159,6 +167,9 @@ export default function MasterPriceList({ onAdd }) {
                         : "IPL")
                       : item.price_list_name}
                   </div>
+                  {noteLines(item).map((n, i) => (
+                    <div key={i} style={{ fontSize: "12px", color: "#334155", marginTop: 3 }}>Note: {n}</div>
+                  ))}
                 </td>
                 <td style={{ wordBreak: "break-word" }}>{item.model}</td>
                 <td>{item.list_price === null ? "—" : money(item.list_price)}</td>

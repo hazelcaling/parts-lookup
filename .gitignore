@@ -33,3 +33,4 @@ src/data/
 .env
 # Python virtualenv
 venv/
+__pycache__/

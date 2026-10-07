@@ -20,6 +20,7 @@ def parse(path, series):
     text = subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
     lines = text.split("\n")
     rows, cols, section, callout, prev = [], None, "", "", ""
+    parent, stack = "", []
     qty_mode = False
     model_sizes = ""
     for ln in lines:
@@ -67,7 +68,7 @@ def parse(path, series):
                     cols.append(((mm.start() + mm.end()) / 2 + base, mm.group()))
             else:
                 cols = merged
-            callout = ""
+            callout, parent, stack = "", "", []
             prev = ln
             continue
         prev = ln
@@ -77,13 +78,19 @@ def parse(path, series):
         tokens = list(PN_TOKEN.finditer(ln))
         if s and not tokens:
             section = s.group(2).strip()
-            callout = ""
-            continue
-        if not tokens:
+            callout, parent, stack = "", "", []
             continue
         c = CALLOUT.match(ln)
         if c:
             callout = norm_callout(c.group(1))
+            # Indented call outs are sub-parts of the nearest less-indented call out above
+            indent = c.start(1)
+            while stack and stack[-1][0] >= indent - 1:
+                stack.pop()
+            parent = stack[-1][1] if stack else ""
+            stack.append((indent, callout))
+        if not tokens:
+            continue
         is_option = not c and bool(callout)
         first = tokens[0].start()
         desc = ln[c.end() if c else 0:first].strip()
@@ -101,7 +108,7 @@ def parse(path, series):
                     rows.append({
                         "series": series, "model": model.upper(), "partNumber": pn, "description": desc.upper(),
                         "callOut": callout, "section": section, "iplDescription": desc,
-                        "notes": f"Qty {qty}" if qty else "", "isOption": is_option,
+                        "notes": f"Qty {qty}" if qty else "", "isOption": is_option, "parentCallOut": parent,
                     })
                 continue
             after = ln[tokens[0].end():]
@@ -112,7 +119,7 @@ def parse(path, series):
                 rows.append({
                     "series": series, "model": col[1].upper(), "partNumber": pn, "description": desc.upper(),
                     "callOut": callout, "section": section, "iplDescription": desc,
-                    "notes": f"Qty {q.group()}", "isOption": is_option,
+                    "notes": f"Qty {q.group()}", "isOption": is_option, "parentCallOut": parent,
                 })
             continue
         for t in tokens:
@@ -131,7 +138,7 @@ def parse(path, series):
             rows.append({
                 "series": series, "model": model.upper(), "partNumber": pn, "description": ipl.upper(),
                 "callOut": callout, "section": section, "iplDescription": ipl,
-                "notes": f"Qty {qty}" if qty else "", "isOption": is_option,
+                "notes": f"Qty {qty}" if qty else "", "isOption": is_option, "parentCallOut": parent,
             })
     # de-duplicate identical rows
     seen, out = set(), []
