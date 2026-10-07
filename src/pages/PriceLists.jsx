@@ -2,21 +2,29 @@ import React, { useEffect, useMemo, useState } from "react";
 import { api } from "../api";
 import { inputStyle, btn } from "../components/styles";
 import {
-  FIELDS, readSheet, withHeaderRow, cleanSheetName, sheetItems, dedupeByPartNumber,
+  FIELDS, readSheet, withHeaderRow, cleanSheetName, sheetItems, dedupeByPartNumber, vendorFromFileName, isRaypakName,
 } from "../utils/priceListParse";
 
 const box = { background: "#fff", border: "1px solid #ddd", borderRadius: "10px", padding: "18px", boxSizing: "border-box" };
 const th = { padding: "8px", background: "#f3f3f3", textAlign: "left", whiteSpace: "nowrap" };
 const td = { padding: "6px 8px", borderTop: "1px solid #e2e8f0", fontSize: "13px" };
 
+// File -> base64 (without the data: URL prefix), so the original file can be stored with the list
+const fileToBase64 = (f) => new Promise((resolve, reject) => {
+  const fr = new FileReader();
+  fr.onload = () => resolve(String(fr.result).replace(/^data:[^,]*,/, ""));
+  fr.onerror = () => reject(new Error("Could not read the file"));
+  fr.readAsDataURL(f);
+});
+
 export default function PriceLists() {
   const [lists, setLists] = useState([]);
   const [drag, setDrag] = useState(false);
-  const [file, setFile] = useState(null); // {name, sheets:[{..., include, series, category}]}
+  const [file, setFile] = useState(null); // {name, blob (original File), sheets:[{..., include, series, category}]}
   const [active, setActive] = useState(0);
   const [meta, setMeta] = useState({
     name: "", vendor: "", manufacturer: "", effective_date: "", update_catalog: false,
-    sheetAsSeries: true, dedupe: true,
+    sheetAsSeries: true, dedupe: true, is_raypak: false,
   });
   const [status, setStatus] = useState({ msg: "", err: false });
   const [busy, setBusy] = useState(false);
@@ -36,9 +44,12 @@ export default function PriceLists() {
         include: true, series: cleanSheetName(n), category: "",
       })).filter((s) => s.rows.length > 0);
       if (!sheets.length) throw new Error("The file is empty.");
-      setFile({ name: f.name, sheets });
+      setFile({ name: f.name, blob: f, sheets });
       setActive(0);
-      setMeta((m) => ({ ...m, name: f.name.replace(/\.(xlsx|xls|csv)$/i, ""), sheetAsSeries: sheets.length > 1 }));
+      // Vendor comes from the file name ("Sussman.xlsx" -> "Sussman"); Manufacturer is left blank
+      const vendor = vendorFromFileName(f.name);
+      // A Raypak file updates the Raypak catalog prices (Raypak/Sussman Price List) instead of being a separate list
+      setMeta((m) => ({ ...m, name: `${vendor} Price List`, vendor, manufacturer: "", sheetAsSeries: sheets.length > 1, is_raypak: isRaypakName(f.name, vendor) }));
     } catch (e) {
       setStatus({ msg: `Could not read file: ${e.message}`, err: true });
     }
@@ -64,11 +75,16 @@ export default function PriceLists() {
     if (!meta.vendor.trim() && !meta.manufacturer.trim()) return setStatus({ msg: "Enter a vendor or manufacturer.", err: true });
     setBusy(true); setStatus({ msg: "Saving...", err: false });
     try {
-      const r = await api("/pricelists", { method: "POST", body: { ...meta, file_name: file.name, items: result.items } });
+      const file_base64 = await fileToBase64(file.blob);
+      const body = { ...meta, update_catalog: meta.update_catalog && !meta.is_raypak, file_name: file.name, file_base64, items: result.items };
+      const r = await api("/pricelists", { method: "POST", body });
+      const rp = r.raypak;
       setStatus({
         msg: `Saved "${r.name}" with ${r.row_count} rows` +
           (result.removed.length ? ` (${result.removed.length} duplicate part numbers removed)` : "") +
-          (meta.update_catalog ? `; updated ${r.catalog_updated} catalog parts` : "") + ".",
+          (body.update_catalog ? `; updated ${r.catalog_updated} catalog parts` : "") +
+          (rp ? `; Raypak prices updated: ${rp.rows_updated} catalog rows priced from this list, ${rp.parts_added} new parts added, ` +
+            `${rp.rows_cleared} rows not in this list now have no price (${rp.priced_rows_cleared} of them had a price)` : "") + ".",
         err: false,
       });
       setFile(null); refresh();
@@ -77,7 +93,10 @@ export default function PriceLists() {
   };
 
   const del = async (pl) => {
-    if (!window.confirm(`Delete price list "${pl.name}" (${pl.row_count} rows)?`)) return;
+    const warn = pl.is_raypak
+      ? "Raypak prices will come from the newest remaining Raypak list; if there is none, Raypak parts will have no price until a new Raypak list is uploaded."
+      : "Its parts are also removed from the Raypak/Sussman Price List.";
+    if (!window.confirm(`Delete price list "${pl.name}" (${pl.row_count} rows)? ${warn}`)) return;
     try { await api(`/pricelists/${pl.id}`, { method: "DELETE" }); refresh(); }
     catch (e) { setStatus({ msg: e.message, err: true }); }
   };
@@ -120,7 +139,12 @@ export default function PriceLists() {
             <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", fontSize: "13px", marginBottom: "14px" }}>
               <label><input type="checkbox" checked={meta.sheetAsSeries} onChange={(e) => setMeta({ ...meta, sheetAsSeries: e.target.checked })} /> Use each sheet name as the Series</label>
               <label><input type="checkbox" checked={meta.dedupe} onChange={(e) => setMeta({ ...meta, dedupe: e.target.checked })} /> Remove duplicate part numbers (keep the higher list price)</label>
-              <label><input type="checkbox" checked={meta.update_catalog} onChange={(e) => setMeta({ ...meta, update_catalog: e.target.checked })} /> Also update list prices of matching catalog parts</label>
+              <label title="Every Raypak part number in this file gets its price and description from the file; Raypak parts not in the file get no price; new part numbers are added.">
+                <input type="checkbox" checked={meta.is_raypak} onChange={(e) => setMeta({ ...meta, is_raypak: e.target.checked })} /> Raypak price list (replaces all Raypak prices in the Raypak/Sussman Price List)
+              </label>
+              {!meta.is_raypak && (
+                <label><input type="checkbox" checked={meta.update_catalog} onChange={(e) => setMeta({ ...meta, update_catalog: e.target.checked })} /> Also update list prices of matching catalog parts</label>
+              )}
             </div>
 
             {file.sheets.length > 1 && (
@@ -212,11 +236,18 @@ export default function PriceLists() {
             <tbody>
               {lists.map((pl) => (
                 <tr key={pl.id}>
-                  <td style={td}><strong>{pl.name}</strong></td>
+                  <td style={td}>
+                    <strong>{pl.name}</strong>
+                    {pl.is_raypak && <span title="Sets the Raypak prices in the Raypak/Sussman Price List" style={{ marginLeft: "6px", fontSize: "11px", padding: "1px 6px", borderRadius: "8px", background: "#e0f2fe", color: "#0369a1" }}>Raypak prices</span>}
+                  </td>
                   <td style={td}>{pl.vendor}</td>
                   <td style={td}>{pl.manufacturer}</td>
                   <td style={td}>{pl.effective_date || ""}</td>
-                  <td style={td}>{pl.file_name}</td>
+                  <td style={td}>
+                    {pl.has_file
+                      ? <a href={`/api/pricelists/${pl.id}/file`} download={pl.file_name} title="Download the original file">{pl.file_name}</a>
+                      : pl.file_name}
+                  </td>
                   <td style={td}>{pl.row_count}</td>
                   <td style={td}>{new Date(pl.uploaded_at).toLocaleString()}</td>
                   <td style={{ ...td, textAlign: "right" }}>

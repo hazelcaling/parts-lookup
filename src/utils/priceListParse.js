@@ -8,7 +8,8 @@ export const FIELDS = [
 ];
 
 const GUESS = {
-  part_number: /^(part ?(no\.?|num|number|#)?|pn|p\/n|item ?(no|number|#)?|sku|catalog ?(no|number))$/i,
+  // "Part Number", "PART #", "Item Number", "Item No.", "Raypak Part No", "Catalog #", "PN", "SKU" ...
+  part_number: /^([a-z]+ )?(part|item|catalog|stock|product)[ _]?(no\.?|num\.?|number|#)?$|^(pn|p\/n|p\/n #|sku)$/i,
   description: /^(desc|description|item description|part description)$/i,
   list_price: /(list|price|cost|msrp)/i,
   vendor: /^vendor/i, manufacturer: /^(manufacturer|mfr|mfg|brand)/i, category: /^(category|cat|group|class)/i,
@@ -103,3 +104,16 @@ export function guessSheetCategory(name) {
   if (/\b(BOILERS?|BLR)\b/i.test(name)) return "Boilers";
   return "";
 }
+
+// "Sussman.xlsx" -> "Sussman", "sussman-pricelist.xlsx" -> "Sussman", "Acme_Price_List_2026-01.xlsx" -> "Acme 2026-01"
+export function vendorFromFileName(fileName) {
+  const base = String(fileName ?? "").replace(/^.*[\\/]/, "").replace(/\.(xlsx|xls|csv)$/i, "").trim();
+  let s = base.replace(/(?<![a-z])(price[\s_-]*lists?|price[\s_-]*sheets?|list[\s_-]*prices?|prices?)(?![a-z])/gi, " ");
+  s = s.replace(/_+/g, " ").replace(/\s*-\s*(?=\s|$)/g, " ").replace(/(^|\s)-\s*/g, " ").replace(/\s+/g, " ").trim();
+  if (!s) s = base.replace(/_+/g, " ").trim();
+  if (s === s.toLowerCase()) s = s.replace(/(^|\s)([a-z])/g, (m, a, b) => a + b.toUpperCase());
+  return s;
+}
+
+// Raypak price list (updates the Raypak catalog prices): detected from the file / vendor name
+export const isRaypakName = (...names) => names.some((n) => /raypak/i.test(String(n ?? "")));

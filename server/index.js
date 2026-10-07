@@ -40,7 +40,7 @@ const requireAuth = (req, res, next) =>
 // Very small brute-force guard: per-IP failed attempts
 const fails = new Map();
 app.use("/api/admin", express.json({ limit: "50mb" }));
-app.use("/api/pricelists", express.json({ limit: "50mb" }));
+app.use("/api/pricelists", express.json({ limit: "100mb" })); // items + base64 original file (max 25 MB)
 app.use(express.json());
 
 const locked = (ip) => {

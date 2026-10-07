@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { pool } from "../../server/db.js";
 import { migrate } from "../../server/migrate.js";
+import { applyLatestRaypakList } from "../../server/raypak.js";
 
 const [rowsFile, ...dirs] = process.argv.slice(2);
 if (!rowsFile) { console.error("usage: import-ipl.js rows.json [dataDir ...]"); process.exit(1); }
@@ -46,6 +47,9 @@ if (process.env.DATABASE_URL) {
       await client.query(`INSERT INTO catalog_parts (${cols.join(",")}) VALUES ${ph.join(",")}`, vals);
     }
     await client.query("UPDATE catalog_parts SET manufacturer='Raypak', vendor='Raypak' WHERE series = ANY($1)", [[...seriesSet]]);
+    // prices come from the newest uploaded Raypak price list (if any), not the borrowed IPL prices
+    const raypak = await applyLatestRaypakList(client);
+    if (raypak) console.log("Raypak price list re-applied:", raypak);
     await client.query("COMMIT");
     console.log(`database: ${rows.length} rows in ${seriesSet.size} series (restart the server to refresh its cache)`);
   } catch (e) { await client.query("ROLLBACK"); throw e; }

@@ -1,4 +1,5 @@
 import { migrate } from "./migrate.js";
+import { applyLatestRaypakList } from "./raypak.js";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -69,6 +70,8 @@ export async function seedDatabase(pool, partsData, partsCatalog) {
       partsCatalog.map((c) => [c.series ?? "", c.model ?? "", c.partNumber ?? "", c.description ?? "",
         num(c.listPrice), c.callOut ?? "", c.section ?? "", c.iplDescription ?? "", c.notes ?? "", c.sourceUrl || null, c.priceSource || null, c.iplQty || null,
         c.descNote ?? "", !!c.isOption, c.optionGroup || null, c.parentCallOut || null, c.includeNote ?? ""]));
+    // Raypak prices come from the newest uploaded Raypak price list (if any), not from the seed data
+    const raypak = await applyLatestRaypakList(client);
     for (const k of kept) {
       await client.query(
         `UPDATE catalog_parts SET notes=$5, notes_edited_at=$6
@@ -76,7 +79,7 @@ export async function seedDatabase(pool, partsData, partsCatalog) {
         [k.series, k.model, k.part_number, k.call_out, k.notes, k.notes_edited_at]);
     }
     await client.query("COMMIT");
-    return { notesKept: kept.length, annual: annual.length, catalog: partsCatalog.length };
+    return { notesKept: kept.length, annual: annual.length, catalog: partsCatalog.length, raypak };
   } catch (e) {
     await client.query("ROLLBACK");
     throw e;

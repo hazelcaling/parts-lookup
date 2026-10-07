@@ -1,4 +1,5 @@
 import express from "express";
+import { applyRaypakList, applyLatestRaypakList } from "../raypak.js";
 
 // Small validation helpers -------------------------------------------------
 class BadRequest extends Error {}
@@ -60,6 +61,17 @@ function contactInput(b) {
 // Price list item fields that can be mapped from a spreadsheet column
 export const ITEM_FIELDS = ["part_number", "description", "list_price", "vendor", "manufacturer", "category",
   "weight_lbs", "freight_usd", "notes", "obsolete", "replacement_pn", "series", "model"];
+
+// Original price list files: content type is decided by the server from the extension, never by the client
+const FILE_TYPES = {
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  xls: "application/vnd.ms-excel",
+  csv: "text/csv",
+};
+const MAX_FILE_BYTES = 25 * 1024 * 1024;
+// Price list columns returned to the client (everything except the stored file bytes)
+const PL_COLS = `id, name, vendor, manufacturer, effective_date, file_name, uploaded_at, row_count, file_mime, file_size,
+  (file_data IS NOT NULL) AS has_file, is_raypak`;
 
 export function apiRouter(pool, { onCatalogChanged } = {}) {
   const r = express.Router();
@@ -168,7 +180,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
 
   // ---------- Price lists ----------
   r.get("/pricelists", wrap(async (req, res) => {
-    const { rows } = await pool.query("SELECT * FROM price_lists ORDER BY uploaded_at DESC, id DESC");
+    const { rows } = await pool.query(`SELECT ${PL_COLS} FROM price_lists ORDER BY uploaded_at DESC, id DESC`);
     res.json(rows);
   }));
   r.get("/pricelists/:id/items", wrap(async (req, res) => {
@@ -185,7 +197,20 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     if (!vendor && !manufacturer) throw new BadRequest("vendor or manufacturer is required");
     const effective = optDate(b.effective_date, "effective_date");
     const fileName = str(b.file_name, 300, { field: "file_name" });
-    const updateCatalog = b.update_catalog === true;
+    // Raypak price list: drives the Raypak catalog prices instead of being a separate vendor list
+    const isRaypak = b.is_raypak === true;
+    const updateCatalog = b.update_catalog === true && !isRaypak;
+    // Optional original file (base64) so it can be downloaded later
+    let fileData = null, fileMime = "";
+    if (b.file_base64 !== undefined && b.file_base64 !== null && b.file_base64 !== "") {
+      if (typeof b.file_base64 !== "string" || !/^[A-Za-z0-9+/]+={0,2}$/.test(b.file_base64)) throw new BadRequest("file_base64 is invalid");
+      const ext = (/\.([a-z0-9]+)$/i.exec(fileName)?.[1] || "").toLowerCase();
+      if (!FILE_TYPES[ext]) throw new BadRequest("file_name must end in .xlsx, .xls or .csv");
+      fileData = Buffer.from(b.file_base64, "base64");
+      if (!fileData.length) throw new BadRequest("file is empty");
+      if (fileData.length > MAX_FILE_BYTES) throw new BadRequest("file is too large (max 25 MB)");
+      fileMime = FILE_TYPES[ext];
+    }
     if (!Array.isArray(b.items) || b.items.length === 0) throw new BadRequest("items must be a non-empty array");
     if (b.items.length > 200000) throw new BadRequest("too many rows (max 200000)");
 
@@ -221,9 +246,9 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     try {
       await client.query("BEGIN");
       const pl = (await client.query(
-        `INSERT INTO price_lists (name,vendor,manufacturer,effective_date,file_name,row_count)
-         VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
-        [name, vendor, manufacturer, effective, fileName, items.length])).rows[0];
+        `INSERT INTO price_lists (name,vendor,manufacturer,effective_date,file_name,row_count,file_data,file_mime,file_size,is_raypak)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING ${PL_COLS}`,
+        [name, vendor, manufacturer, effective, fileName, items.length, fileData, fileMime, fileData ? fileData.length : null, isRaypak])).rows[0];
       const cols = ["price_list_id", ...ITEM_FIELDS, "raw"];
       for (let i = 0; i < items.length; i += 500) {
         const chunk = items.slice(i, i + 500);
@@ -249,9 +274,10 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
            WHERE upper(c.part_number) = i.part_number`, [pl.id]);
         catalogUpdated = u.rowCount;
       }
+      const raypak = isRaypak ? await applyRaypakList(client, pl.id) : null;
       await client.query("COMMIT");
-      if (catalogUpdated) onCatalogChanged?.();
-      res.status(201).json({ ...pl, catalog_updated: catalogUpdated, duplicates_removed: duplicatesRemoved });
+      if (catalogUpdated || raypak) onCatalogChanged?.();
+      res.status(201).json({ ...pl, catalog_updated: catalogUpdated, duplicates_removed: duplicatesRemoved, raypak });
     } catch (e) {
       await client.query("ROLLBACK");
       throw e;
@@ -259,9 +285,41 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
       client.release();
     }
   }));
+  // Original uploaded file, byte for byte (auth: same session cookie as the rest of /api)
+  r.get("/pricelists/:id/file", wrap(async (req, res) => {
+    const { rows } = await pool.query(
+      "SELECT file_name, file_mime, file_data FROM price_lists WHERE id=$1 AND file_data IS NOT NULL", [id(req.params.id)]);
+    if (!rows[0]) return res.status(404).json({ error: "no stored file for this price list" });
+    const { file_name: fname, file_mime: mime, file_data: data } = rows[0];
+    const ascii = (fname || "pricelist").replace(/[^\x20-\x7e]|["\\]/g, "_");
+    res.set({
+      "Content-Type": mime || "application/octet-stream",
+      "Content-Length": String(data.length),
+      "Content-Disposition": `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(fname || "pricelist").replace(/['()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase())}`,
+      "X-Content-Type-Options": "nosniff",
+      "Cache-Control": "private, no-store",
+    });
+    res.end(data);
+  }));
+  // Deleting a list also removes its rows from the Raypak/Sussman Price List search (price_list_items ON DELETE CASCADE)
+  // A deleted Raypak list hands the catalog prices to the newest remaining Raypak list, or clears them if none is left.
   r.delete("/pricelists/:id", wrap(async (req, res) => {
-    const { rowCount } = await pool.query("DELETE FROM price_lists WHERE id=$1", [id(req.params.id)]);
-    rowCount ? res.json({ ok: true }) : res.status(404).json({ error: "not found" });
+    const plId = id(req.params.id);
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      const { rows } = await client.query("DELETE FROM price_lists WHERE id=$1 RETURNING is_raypak", [plId]);
+      if (!rows[0]) { await client.query("ROLLBACK"); return res.status(404).json({ error: "not found" }); }
+      const raypak = rows[0].is_raypak ? await applyLatestRaypakList(client, { clearIfNone: true, deletedId: plId }) : null;
+      await client.query("COMMIT");
+      if (raypak) onCatalogChanged?.();
+      res.json({ ok: true, raypak });
+    } catch (e) {
+      await client.query("ROLLBACK");
+      throw e;
+    } finally {
+      client.release();
+    }
   }));
 
   // ---------- Master price list search ----------
@@ -284,7 +342,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
          SELECT 'Price list', p.id, p.name, p.effective_date,
                 i.part_number, i.description, i.list_price, i.vendor, i.manufacturer, i.series, i.model, i.obsolete, i.replacement_pn
            FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id
-          WHERE $5 IN ('', 'pricelist')
+          WHERE $5 IN ('', 'pricelist') AND NOT p.is_raypak
             AND ($1 = '' OR i.part_number ILIKE $2 OR i.description ILIKE $2)
             AND ($3 = '' OR i.vendor ILIKE $4 OR i.manufacturer ILIKE $4 OR p.vendor ILIKE $4 OR p.manufacturer ILIKE $4)
        ) x ORDER BY (upper(part_number) = upper($1)) DESC, part_number, effective_date DESC NULLS LAST LIMIT $6`,
@@ -301,18 +359,19 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
 
   // ---------- Master Price List (catalog + vendor price lists) ----------
   const masterSql = `
-    SELECT 'catalog' AS source, c.id, NULL::int AS price_list_id, NULL::text AS price_list_name, NULL::date AS effective_date,
+    SELECT 'catalog' AS source, c.id, c.price_list_id, rp.name AS price_list_name, rp.effective_date,
            c.part_number, c.description, c.list_price::numeric AS list_price, COALESCE(c.vendor,'') AS vendor,
            COALESCE(c.manufacturer,'') AS manufacturer, c.series, c.model, c.section, COALESCE(c.category,'') AS category,
            c.call_out, c.ipl_description, c.notes, c.obsolete, COALESCE(c.replacement_pn,'') AS replacement_pn, c.updated_at,
-           c.source_url, c.desc_note, c.is_option, c.option_group, c.include_note
-      FROM catalog_parts c
+           c.source_url, c.desc_note, c.is_option, c.option_group, c.include_note, c.from_price_list
+      FROM catalog_parts c LEFT JOIN price_lists rp ON rp.id = c.price_list_id
     UNION ALL
     SELECT 'pricelist', i.id, p.id, p.name, p.effective_date,
            i.part_number, i.description, i.list_price, i.vendor, i.manufacturer, i.series, i.model, '' AS section, i.category,
            '' AS call_out, '' AS ipl_description, i.notes, i.obsolete, i.replacement_pn, i.updated_at,
-           NULL::text AS source_url, '' AS desc_note, false AS is_option, NULL::text AS option_group, '' AS include_note
-      FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id`;
+           NULL::text AS source_url, '' AS desc_note, false AS is_option, NULL::text AS option_group, '' AS include_note,
+           false AS from_price_list
+      FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak`;
 
   // Part number autosuggest for the quote form: one suggestion per part number across the
   // catalog and all vendor price lists (prefer a priced row, highest price wins)
@@ -328,7 +387,8 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
                  FROM catalog_parts WHERE upper(part_number) LIKE $1
                UNION ALL
                SELECT i.part_number, i.description, i.list_price, 'pricelist', p.name
-                 FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id WHERE upper(i.part_number) LIKE $1
+                 FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id
+                WHERE NOT p.is_raypak AND upper(i.part_number) LIKE $1
              ) a
             ORDER BY upper(part_number), (COALESCE(list_price,0) > 0) DESC, list_price DESC NULLS LAST
          ) b
@@ -340,9 +400,9 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
 
   r.get("/master/facets", wrap(async (req, res) => {
     const [series, sections, categories] = await Promise.all([
-      pool.query(`SELECT DISTINCT series FROM (SELECT series FROM catalog_parts UNION SELECT series FROM price_list_items) t WHERE series <> '' ORDER BY 1`),
+      pool.query(`SELECT DISTINCT series FROM (SELECT series FROM catalog_parts UNION SELECT i.series FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak) t WHERE series <> '' ORDER BY 1`),
       pool.query(`SELECT DISTINCT section FROM catalog_parts WHERE section <> '' ORDER BY 1`),
-      pool.query(`SELECT DISTINCT category FROM (SELECT category FROM catalog_parts UNION SELECT category FROM price_list_items) t WHERE category <> '' ORDER BY 1`),
+      pool.query(`SELECT DISTINCT category FROM (SELECT category FROM catalog_parts UNION SELECT i.category FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak) t WHERE category <> '' ORDER BY 1`),
     ]);
     res.json({
       series: series.rows.map((x) => x.series),

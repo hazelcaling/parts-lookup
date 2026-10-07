@@ -576,7 +576,7 @@ function App() {
           {searched && annualResults.length === 0 && <p>No parts found</p>}
         </div>
 
-        {/* RIGHT - Master Price List */}
+        {/* RIGHT - Raypak/Sussman Price List (MasterPriceList component) */}
         <MasterPriceList onAdd={addCatalogItemToQuote} />
       </div>
 

@@ -55,7 +55,7 @@ function NotesCell({ row, onSaved }) {
   );
 }
 
-// Master Price List: Raypak catalog (IPL) + imported vendor price lists, searched on the server.
+// Raypak/Sussman Price List (formerly "Master Price List"): Raypak catalog (IPL) + imported vendor price lists, searched on the server.
 export default function MasterPriceList({ onAdd }) {
   const [search, setSearch] = useState("");
   const [seriesFilter, setSeriesFilter] = useState("");
@@ -99,7 +99,7 @@ export default function MasterPriceList({ onAdd }) {
 
   return (
     <div style={{ width: "100%", minWidth: 0, border: "1px solid #ddd", borderRadius: "10px", padding: "18px", background: "#fff", boxSizing: "border-box" }}>
-      <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>Master Price List</h2>
+      <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>Raypak/Sussman Price List</h2>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
         <input
@@ -172,7 +172,9 @@ export default function MasterPriceList({ onAdd }) {
                   {item.ipl_description && <div style={{ fontSize: "12px", color: "#666", marginTop: 3 }}>IPL: {item.ipl_description}</div>}
                   <div style={{ fontSize: "11px", color: "#64748b", marginTop: 3 }}>
                     Source:{" "}
-                    {item.source === "catalog"
+                    {item.source === "catalog" && item.from_price_list
+                      ? (item.price_list_name || "Raypak Price List")
+                      : item.source === "catalog"
                       ? (item.source_url
                         ? <a href={item.source_url} target="_blank" rel="noopener noreferrer">IPL</a>
                         : "IPL")
