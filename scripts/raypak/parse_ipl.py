@@ -84,6 +84,7 @@ def parse(path, series):
         c = CALLOUT.match(ln)
         if c:
             callout = norm_callout(c.group(1))
+        is_option = not c and bool(callout)
         first = tokens[0].start()
         desc = ln[c.end() if c else 0:first].strip()
         desc = re.sub(r"\s{2,}", " ", desc)
@@ -100,7 +101,7 @@ def parse(path, series):
                     rows.append({
                         "series": series, "model": model.upper(), "partNumber": pn, "description": desc.upper(),
                         "callOut": callout, "section": section, "iplDescription": desc,
-                        "notes": f"Qty {qty}" if qty else "",
+                        "notes": f"Qty {qty}" if qty else "", "isOption": is_option,
                     })
                 continue
             after = ln[tokens[0].end():]
@@ -111,7 +112,7 @@ def parse(path, series):
                 rows.append({
                     "series": series, "model": col[1].upper(), "partNumber": pn, "description": desc.upper(),
                     "callOut": callout, "section": section, "iplDescription": desc,
-                    "notes": f"Qty {q.group()}",
+                    "notes": f"Qty {q.group()}", "isOption": is_option,
                 })
             continue
         for t in tokens:
@@ -130,7 +131,7 @@ def parse(path, series):
             rows.append({
                 "series": series, "model": model.upper(), "partNumber": pn, "description": ipl.upper(),
                 "callOut": callout, "section": section, "iplDescription": ipl,
-                "notes": f"Qty {qty}" if qty else "",
+                "notes": f"Qty {qty}" if qty else "", "isOption": is_option,
             })
     # de-duplicate identical rows
     seen, out = set(), []

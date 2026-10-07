@@ -54,7 +54,7 @@ for d in docs.values():
     path = os.path.join(pdf_dir, d["file"])
     if not os.path.exists(path):
         subprocess.run(["curl", "-sfL", "-o", path, d["url"]])
-    line = sorted(set(d["lines"]), key=len)[0].upper()
+    line = sorted(set(d["lines"]), key=lambda x: (len(x), x))[0].upper()
     models = list(dict.fromkeys(d["models"]))
     lm = d["longest"]
     series = f'{line} {lm[0]}{" - " + lm[-1] if len(lm) > 1 else ""} TYPE {" ".join(sorted(d["types"]))} (IPL {d["file"][:-4]})'
@@ -81,6 +81,8 @@ for d in docs.values():
         r["iplQty"] = r.pop("notes", "").replace("Qty ", "")
         r["notes"] = ""
         r["sourceUrl"] = d["url"]
+        r["optionGroup"] = r["callOut"] if r.get("isOption") else ""
+        r["descNote"] = ""
     added += rows
     entry["status"] = "added"; entry["added_rows"] = len(rows)
     entry["priced_rows"] = sum(1 for r in rows if r["listPrice"])

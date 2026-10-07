@@ -305,13 +305,13 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
            c.part_number, c.description, c.list_price::numeric AS list_price, COALESCE(c.vendor,'') AS vendor,
            COALESCE(c.manufacturer,'') AS manufacturer, c.series, c.model, c.section, COALESCE(c.category,'') AS category,
            c.call_out, c.ipl_description, c.notes, c.obsolete, COALESCE(c.replacement_pn,'') AS replacement_pn, c.updated_at,
-           c.source_url
+           c.source_url, c.desc_note, c.is_option, c.option_group
       FROM catalog_parts c
     UNION ALL
     SELECT 'pricelist', i.id, p.id, p.name, p.effective_date,
            i.part_number, i.description, i.list_price, i.vendor, i.manufacturer, i.series, i.model, '' AS section, i.category,
            '' AS call_out, '' AS ipl_description, i.notes, i.obsolete, i.replacement_pn, i.updated_at,
-           NULL::text AS source_url
+           NULL::text AS source_url, '' AS desc_note, false AS is_option, NULL::text AS option_group
       FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id`;
 
   // Part number autosuggest for the quote form: one suggestion per part number across the
@@ -365,21 +365,40 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
     const sections = section ? [section, ...Object.keys(FRENCH_SECTIONS).filter((f) => FRENCH_SECTIONS[f] === section)] : [];
     const modelRe = model ? `(^|[\\s,;/|])${model.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[\\s,;/|])` : "";
+    // Filters other than the text search; rows of the same call out (parent + options) are
+    // pulled in together when the text search hits any of them.
     const { rows } = await pool.query(
-      `SELECT m.*, count(*) OVER() AS total FROM (${masterSql}) m
-        WHERE ($1 = '' OR m.part_number ILIKE $2 OR m.description ILIKE $2 OR m.ipl_description ILIKE $2
-                      OR m.notes ILIKE $2 OR m.call_out ILIKE $2 OR m.vendor ILIKE $2 OR m.manufacturer ILIKE $2)
-          AND ($3 = '' OR m.series = $3)
-          AND ($4 = '' OR upper(m.model) ~ $4)
-          AND (cardinality($5::text[]) = 0 OR m.section = ANY($5))
-          AND ($6 = '' OR m.category = $6)
-          AND ($7 = '' OR m.source = $7)
-          AND ($8 OR COALESCE(m.list_price, 0) > 0)
-        ORDER BY (upper(m.part_number) = upper($1)) DESC, m.source, m.series, m.part_number, m.id
+      `WITH m AS (${masterSql}),
+       f AS (
+         SELECT * FROM m
+          WHERE ($3 = '' OR m.series = $3)
+            AND ($4 = '' OR upper(m.model) ~ $4)
+            AND (cardinality($5::text[]) = 0 OR m.section = ANY($5))
+            AND ($6 = '' OR m.category = $6)
+            AND ($7 = '' OR m.source = $7)
+            AND ($8 OR COALESCE(m.list_price, 0) > 0)),
+       hits AS (
+         SELECT * FROM f
+          WHERE $1 = '' OR f.part_number ILIKE $2 OR f.description ILIKE $2 OR f.ipl_description ILIKE $2
+             OR f.notes ILIKE $2 OR f.call_out ILIKE $2 OR f.vendor ILIKE $2 OR f.manufacturer ILIKE $2
+             OR f.desc_note ILIKE $2),
+       groups AS (
+         SELECT DISTINCT h.series, h.call_out FROM hits h
+          WHERE $1 <> '' AND h.source = 'catalog' AND h.call_out <> ''
+            AND EXISTS (SELECT 1 FROM catalog_parts o WHERE o.series = h.series AND o.call_out = h.call_out AND o.is_option)
+          LIMIT 200),
+       res AS (
+         SELECT * FROM hits
+         UNION
+         SELECT f.* FROM f JOIN groups g ON g.series = f.series AND g.call_out = f.call_out WHERE f.source = 'catalog')
+       SELECT res.*, (upper(res.part_number) = upper($1)) AS exact, count(*) OVER() AS total FROM res
+        ORDER BY res.source, res.series,
+                 substring(res.call_out from '[A-Z]+$'), NULLIF(substring(res.call_out from '^[0-9]+'), '')::int,
+                 res.call_out, res.is_option, res.ipl_description, res.model, res.part_number, res.id
         LIMIT $9 OFFSET $10`,
       [q, like(q), series, modelRe, sections, category, source, includeUnpriced, pageSize, (page - 1) * pageSize]);
     const total = rows[0] ? Number(rows[0].total) : 0;
-    res.json({ total, page, pageSize, rows: rows.map((x) => { delete x.total; return x; }) });
+    res.json({ total, page, pageSize, rows: rows.map((x) => { delete x.total; delete x.exact; return x; }) });
   }));
 
   r.patch("/master/:source/:id/notes", wrap(async (req, res) => {

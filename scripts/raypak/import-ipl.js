@@ -9,18 +9,20 @@ import { migrate } from "../../server/migrate.js";
 
 const [rowsFile, ...dirs] = process.argv.slice(2);
 if (!rowsFile) { console.error("usage: import-ipl.js rows.json [dataDir ...]"); process.exit(1); }
-const rows = JSON.parse(fs.readFileSync(rowsFile, "utf8")).map((r) => ({
+const rows = JSON.parse(fs.readFileSync(rowsFile, "utf8")).filter((r) => r.partNumber && !/^N\/?A$/i.test(r.partNumber)).map((r) => ({
   series: r.series, model: r.model, partNumber: r.partNumber, description: r.description,
   listPrice: r.listPrice ?? null, callOut: r.callOut || "", section: r.section || "",
   iplDescription: r.iplDescription || "", notes: "",
   sourceUrl: r.sourceUrl || "", priceSource: r.priceSource || "", iplQty: r.iplQty || "",
+  descNote: r.descNote || "", isOption: !!r.isOption, optionGroup: r.optionGroup || "",
 }));
 const seriesSet = new Set(rows.map((r) => r.series));
 
 for (const dir of dirs.length ? dirs : ["/workspace/parts-lookup-data-backup"]) {
   const f = path.join(dir, "partsCatalog.json");
   if (!fs.existsSync(f)) continue;
-  const cur = JSON.parse(fs.readFileSync(f, "utf8")).filter((r) => !seriesSet.has(r.series));
+  // replace every previously imported IPL row (they carry sourceUrl) plus any same-named series
+  const cur = JSON.parse(fs.readFileSync(f, "utf8")).filter((r) => !r.sourceUrl && !seriesSet.has(r.series));
   fs.writeFileSync(f, JSON.stringify([...cur, ...rows], null, 2));
   console.log(`${f}: ${cur.length} existing + ${rows.length} IPL rows`);
 }
@@ -30,13 +32,13 @@ if (process.env.DATABASE_URL) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    await client.query("DELETE FROM catalog_parts WHERE series = ANY($1)", [[...seriesSet]]);
-    const cols = ["series", "model", "part_number", "description", "list_price", "call_out", "section", "ipl_description", "notes", "source_url", "price_source", "ipl_qty"];
+    await client.query("DELETE FROM catalog_parts WHERE source_url IS NOT NULL OR series = ANY($1)", [[...seriesSet]]);
+    const cols = ["series", "model", "part_number", "description", "list_price", "call_out", "section", "ipl_description", "notes", "source_url", "price_source", "ipl_qty", "desc_note", "is_option", "option_group"];
     for (let i = 0; i < rows.length; i += 1000) {
       const chunk = rows.slice(i, i + 1000);
       const vals = [];
       const ph = chunk.map((r, j) => {
-        const v = [r.series, r.model, r.partNumber, r.description, r.listPrice, r.callOut, r.section, r.iplDescription, r.notes, r.sourceUrl || null, r.priceSource || null, r.iplQty || null];
+        const v = [r.series, r.model, r.partNumber, r.description, r.listPrice, r.callOut, r.section, r.iplDescription, r.notes, r.sourceUrl || null, r.priceSource || null, r.iplQty || null, r.descNote, r.isOption, r.optionGroup || null];
         vals.push(...v);
         return "(" + v.map((_, k) => `$${j * v.length + k + 1}`).join(",") + ")";
       });

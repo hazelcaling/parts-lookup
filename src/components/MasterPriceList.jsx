@@ -144,7 +144,12 @@ export default function MasterPriceList({ onAdd }) {
                 <td style={{ wordBreak: "break-word" }}>{item.part_number}</td>
                 <td style={{ wordBreak: "break-word" }}>
                   <div>{item.description}</div>
-                  {item.call_out && <div style={{ fontSize: "12px", color: "#888", marginTop: 3, fontWeight: "bold" }}>Call Out: {item.call_out}</div>}
+                  {item.desc_note && <div style={{ fontSize: "12px", color: "#475569", marginTop: 3 }}>Note: {item.desc_note}</div>}
+                  {(item.call_out || item.option_group) && (
+                    <div style={{ fontSize: "12px", color: "#888", marginTop: 3, fontWeight: "bold" }}>
+                      Call Out: {item.call_out || item.option_group}{item.is_option ? " (option)" : ""}
+                    </div>
+                  )}
                   {item.ipl_description && <div style={{ fontSize: "12px", color: "#666", marginTop: 3 }}>IPL: {item.ipl_description}</div>}
                   <div style={{ fontSize: "11px", color: "#64748b", marginTop: 3 }}>
                     Source:{" "}
