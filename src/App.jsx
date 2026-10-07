@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useData } from "./DataContext";
 import QuoteHeaderFields from "./components/QuoteHeaderFields";
+import MasterPriceList from "./components/MasterPriceList";
 import { jsPDF } from "jspdf";
 import {
   generateQuoteNumber,
@@ -18,11 +19,6 @@ function App() {
   const [searchedModel, setSearchedModel] = useState("");
 
   // ===== Catalog =====
-  const [catalogSearch, setCatalogSearch] = useState("");
-  const [seriesFilter, setSeriesFilter] = useState("");
-  const [modelFilter, setModelFilter] = useState("");
-  const [sectionFilter, setSectionFilter] = useState("");
-  const [catalogPage, setCatalogPage] = useState(1);
 
   // ===== Create Quote form =====
   const [company, setCompany] = useState("");
@@ -63,20 +59,6 @@ function App() {
 
   // ---------- Helpers ----------
   const normalizeModel = (value) => String(value || "").trim().toUpperCase();
-
-  const splitModels = (value) =>
-    normalizeModel(value)
-      .split(/[\s,;/|]+/)
-      .map((m) => m.trim())
-      .filter(Boolean);
-
-  const modelMatches = (itemModelValue, targetModel) => {
-    const target = normalizeModel(targetModel);
-    if (!target) return true;
-    const itemModels = splitModels(itemModelValue);
-    if (itemModels.length === 0) return false;
-    return itemModels.includes(target);
-  };
 
   const toNumber = (value, fallback = 0) => {
     const num = Number(value);
@@ -178,56 +160,7 @@ function App() {
     }, 100);
   };
 
-  // ---------- Catalog ----------
-  const uniqueSeries = useMemo(
-    () =>
-      [...new Set(partsCatalog.map((item) => item.series).filter(Boolean))].sort(),
-    []
-  );
-
-  const uniqueSections = useMemo(
-    () =>
-      [...new Set(partsCatalog.map((item) => item.section).filter(Boolean))].sort(),
-    []
-  );
-
-  const filteredCatalog = useMemo(() => {
-    const q = catalogSearch.trim().toLowerCase();
-    const normalizedModelFilter = normalizeModel(modelFilter);
-
-    return partsCatalog.filter((item) => {
-      const price = Number(item.listPrice || item.sellPrice) || 0;
-      if (price <= 0) return false;
-
-      const matchesSearch =
-        !q ||
-        String(item.partNumber || "").toLowerCase().includes(q) ||
-        String(item.description || "").toLowerCase().includes(q) ||
-        String(item.iplDescription || "").toLowerCase().includes(q) ||
-        String(item.notes || "").toLowerCase().includes(q) ||
-        String(item.callOut || "").toLowerCase().includes(q);
-
-      const matchesSeries = !seriesFilter || item.series === seriesFilter;
-      const matchesModel = !normalizedModelFilter
-        ? true
-        : modelMatches(item.model, normalizedModelFilter);
-      const matchesSection = !sectionFilter || item.section === sectionFilter;
-
-      return matchesSearch && matchesSeries && matchesModel && matchesSection;
-    });
-  }, [catalogSearch, seriesFilter, modelFilter, sectionFilter]);
-
-  useEffect(() => {
-    setCatalogPage(1);
-  }, [catalogSearch, seriesFilter, modelFilter, sectionFilter]);
-
-  const pageSize = 25;
-  const totalPages = Math.max(1, Math.ceil(filteredCatalog.length / pageSize));
-  const pagedCatalog = filteredCatalog.slice(
-    (catalogPage - 1) * pageSize,
-    catalogPage * pageSize
-  );
-
+  // ---------- Master Price List ----------
   const addCatalogItemToQuote = (item) => {
     const list = Number(item.listPrice || item.sellPrice) || 0;
 
@@ -645,206 +578,8 @@ function App() {
           {searched && annualResults.length === 0 && <p>No parts found</p>}
         </div>
 
-        {/* RIGHT - Raypak IPL Parts */}
-        <div
-          style={{
-            width: "100%",
-            minWidth: 0,
-            border: "1px solid #ddd",
-            borderRadius: "10px",
-            padding: "18px",
-            background: "#fff",
-            boxSizing: "border-box",
-          }}
-        >
-          <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>
-            Raypak IPL Parts
-          </h2>
-
-          <input
-            type="text"
-            placeholder="Search part number, description, IPL, notes, call out"
-            value={catalogSearch}
-            onChange={(e) => setCatalogSearch(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              marginBottom: "12px",
-              boxSizing: "border-box",
-            }}
-          />
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr)",
-              gap: "10px",
-              marginBottom: "12px",
-            }}
-          >
-            <select
-              value={seriesFilter}
-              onChange={(e) => setSeriesFilter(e.target.value)}
-              style={{ padding: "10px", minWidth: 0 }}
-            >
-              <option value="">All Series</option>
-              {uniqueSeries.map((series) => (
-                <option key={series} value={series}>
-                  {series}
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="text"
-              placeholder="Filter model"
-              value={modelFilter}
-              onChange={(e) => setModelFilter(e.target.value.toUpperCase())}
-              style={{ padding: "10px", minWidth: 0, boxSizing: "border-box" }}
-            />
-
-            <select
-              value={sectionFilter}
-              onChange={(e) => setSectionFilter(e.target.value)}
-              style={{ padding: "10px", minWidth: 0 }}
-            >
-              <option value="">All Sections</option>
-              {uniqueSections.map((section) => (
-                <option key={section} value={section}>
-                  {section}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ fontSize: "13px", color: "#666", marginBottom: "10px" }}>
-            Showing {pagedCatalog.length} of {filteredCatalog.length} items
-          </div>
-
-          <div
-            style={{
-              maxHeight: "620px",
-              overflowY: "auto",
-              overflowX: "auto",
-              border: "1px solid #ddd",
-              background: "white",
-            }}
-          >
-            <table
-              border="1"
-              cellPadding="6"
-              style={{
-                borderCollapse: "collapse",
-                width: "100%",
-                minWidth: "680px",
-                fontSize: "13px",
-                tableLayout: "fixed",
-              }}
-            >
-              <thead
-                style={{
-                  position: "sticky",
-                  top: 0,
-                  background: "#f3f3f3",
-                  zIndex: 1,
-                }}
-              >
-                <tr>
-                  <th style={{ width: "65px" }}>Add</th>
-                  <th style={{ width: "90px" }}>Part Number</th>
-                  <th>Description</th>
-                  <th style={{ width: "85px" }}>Model</th>
-                  <th style={{ width: "95px" }}>List Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pagedCatalog.map((item, index) => {
-                  const globalIndex = (catalogPage - 1) * pageSize + index;
-                  return (
-                    <tr key={`${item.partNumber}-${globalIndex}`}>
-                      <td style={{ textAlign: "center" }}>
-                        <button
-                          onClick={() => addCatalogItemToQuote(item)}
-                          style={{
-                            padding: "5px 10px",
-                            background: "#059669",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                            fontSize: "12px",
-                          }}
-                        >
-                          Add
-                        </button>
-                      </td>
-                      <td>{item.partNumber}</td>
-                      <td style={{ wordBreak: "break-word" }}>
-                        <div>{item.description}</div>
-                        {item.callOut && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#888",
-                              marginTop: 3,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Call Out: {item.callOut}
-                          </div>
-                        )}
-                        {item.iplDescription && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#666",
-                              marginTop: 3,
-                            }}
-                          >
-                            IPL: {item.iplDescription}
-                          </div>
-                        )}
-                      </td>
-                      <td>{item.model}</td>
-                      <td>{money(item.listPrice || 0)}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "14px",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
-            <div>
-              <button
-                onClick={() => setCatalogPage((p) => Math.max(1, p - 1))}
-                disabled={catalogPage === 1}
-                style={{ padding: "8px 12px", marginRight: "8px" }}
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => setCatalogPage((p) => Math.min(totalPages, p + 1))}
-                disabled={catalogPage === totalPages}
-                style={{ padding: "8px 12px" }}
-              >
-                Next
-              </button>
-            </div>
-            <div style={{ fontSize: "13px" }}>
-              Page {catalogPage} of {totalPages}
-            </div>
-          </div>
-        </div>
+        {/* RIGHT - Master Price List */}
+        <MasterPriceList onAdd={addCatalogItemToQuote} />
       </div>
 
       {/* ========== CREATE QUOTE FORM ========== */}

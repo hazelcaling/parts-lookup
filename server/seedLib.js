@@ -53,6 +53,10 @@ export async function seedDatabase(pool, partsData, partsCatalog) {
   try {
     await client.query("BEGIN");
     // Only the two parts tables are replaced; companies/quotes/price lists are untouched.
+    // Keep notes that users edited inline (matched by series/model/part number/call out)
+    const kept = (await client.query(
+      `SELECT series, model, part_number, call_out, notes, notes_edited_at FROM catalog_parts WHERE notes_edited_at IS NOT NULL`
+    )).rows;
     await client.query(`TRUNCATE annual_parts, catalog_parts RESTART IDENTITY;`);
     await insertBatched(client, "annual_parts",
       ["series", "model", "pn", "description", "price", "annual", "default_qty"],
@@ -61,9 +65,15 @@ export async function seedDatabase(pool, partsData, partsCatalog) {
     await insertBatched(client, "catalog_parts",
       ["series", "model", "part_number", "description", "list_price", "call_out", "section", "ipl_description", "notes"],
       partsCatalog.map((c) => [c.series ?? "", c.model ?? "", c.partNumber ?? "", c.description ?? "",
-        num(c.listPrice) ?? 0, c.callOut ?? "", c.section ?? "", c.iplDescription ?? "", c.notes ?? ""]));
+        num(c.listPrice), c.callOut ?? "", c.section ?? "", c.iplDescription ?? "", c.notes ?? ""]));
+    for (const k of kept) {
+      await client.query(
+        `UPDATE catalog_parts SET notes=$5, notes_edited_at=$6
+          WHERE series=$1 AND model=$2 AND part_number=$3 AND call_out=$4`,
+        [k.series, k.model, k.part_number, k.call_out, k.notes, k.notes_edited_at]);
+    }
     await client.query("COMMIT");
-    return { annual: annual.length, catalog: partsCatalog.length };
+    return { notesKept: kept.length, annual: annual.length, catalog: partsCatalog.length };
   } catch (e) {
     await client.query("ROLLBACK");
     throw e;

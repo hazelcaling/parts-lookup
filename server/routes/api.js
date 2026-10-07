@@ -204,6 +204,18 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
       ]);
     });
     if (!items.length) throw new BadRequest("no rows with a part number");
+    let duplicatesRemoved = 0;
+    if (b.dedupe === true) {
+      // one row per part number: keep the higher list price (tie: first row)
+      const best = new Map();
+      for (const row of items) {
+        const cur = best.get(row[0]);
+        if (!cur) best.set(row[0], row);
+        else { duplicatesRemoved++; if ((row[2] ?? -Infinity) > (cur[2] ?? -Infinity)) best.set(row[0], row); }
+      }
+      items.length = 0;
+      items.push(...best.values());
+    }
 
     const client = await pool.connect();
     try {
@@ -239,7 +251,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
       }
       await client.query("COMMIT");
       if (catalogUpdated) onCatalogChanged?.();
-      res.status(201).json({ ...pl, catalog_updated: catalogUpdated });
+      res.status(201).json({ ...pl, catalog_updated: catalogUpdated, duplicates_removed: duplicatesRemoved });
     } catch (e) {
       await client.query("ROLLBACK");
       throw e;
@@ -287,5 +299,88 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     res.json(rows.map((x) => x.v));
   }));
 
+  // ---------- Master Price List (catalog + vendor price lists) ----------
+  const masterSql = `
+    SELECT 'catalog' AS source, c.id, NULL::int AS price_list_id, NULL::text AS price_list_name, NULL::date AS effective_date,
+           c.part_number, c.description, c.list_price::numeric AS list_price, COALESCE(c.vendor,'') AS vendor,
+           COALESCE(c.manufacturer,'') AS manufacturer, c.series, c.model, c.section, COALESCE(c.category,'') AS category,
+           c.call_out, c.ipl_description, c.notes, c.obsolete, COALESCE(c.replacement_pn,'') AS replacement_pn, c.updated_at
+      FROM catalog_parts c
+    UNION ALL
+    SELECT 'pricelist', i.id, p.id, p.name, p.effective_date,
+           i.part_number, i.description, i.list_price, i.vendor, i.manufacturer, i.series, i.model, '' AS section, i.category,
+           '' AS call_out, '' AS ipl_description, i.notes, i.obsolete, i.replacement_pn, i.updated_at
+      FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id`;
+
+  r.get("/master/facets", wrap(async (req, res) => {
+    const [series, sections, categories] = await Promise.all([
+      pool.query(`SELECT DISTINCT series FROM (SELECT series FROM catalog_parts UNION SELECT series FROM price_list_items) t WHERE series <> '' ORDER BY 1`),
+      pool.query(`SELECT DISTINCT section FROM catalog_parts WHERE section <> '' ORDER BY 1`),
+      pool.query(`SELECT DISTINCT category FROM (SELECT category FROM catalog_parts UNION SELECT category FROM price_list_items) t WHERE category <> '' ORDER BY 1`),
+    ]);
+    res.json({
+      series: series.rows.map((x) => x.series),
+      // French section names (bilingual IPL) are folded into their English equivalent
+      sections: sections.rows.map((x) => x.section).filter((x) => !FRENCH_SECTIONS[x]),
+      categories: categories.rows.map((x) => x.category),
+    });
+  }));
+
+  r.get("/master", wrap(async (req, res) => {
+    const q = str(req.query.q, 200);
+    const series = str(req.query.series, 300);
+    const model = str(req.query.model, 100).toUpperCase();
+    const section = str(req.query.section, 200);
+    const category = str(req.query.category, 200);
+    const source = str(req.query.source, 20);
+    if (source && !["catalog", "pricelist"].includes(source)) throw new BadRequest("invalid source");
+    const includeUnpriced = req.query.unpriced === "1";
+    const pageSize = limitOf(req.query.pageSize, 25, 200);
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const sections = section ? [section, ...Object.keys(FRENCH_SECTIONS).filter((f) => FRENCH_SECTIONS[f] === section)] : [];
+    const modelRe = model ? `(^|[\\s,;/|])${model.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[\\s,;/|])` : "";
+    const { rows } = await pool.query(
+      `SELECT m.*, count(*) OVER() AS total FROM (${masterSql}) m
+        WHERE ($1 = '' OR m.part_number ILIKE $2 OR m.description ILIKE $2 OR m.ipl_description ILIKE $2
+                      OR m.notes ILIKE $2 OR m.call_out ILIKE $2 OR m.vendor ILIKE $2 OR m.manufacturer ILIKE $2)
+          AND ($3 = '' OR m.series = $3)
+          AND ($4 = '' OR upper(m.model) ~ $4)
+          AND (cardinality($5::text[]) = 0 OR m.section = ANY($5))
+          AND ($6 = '' OR m.category = $6)
+          AND ($7 = '' OR m.source = $7)
+          AND ($8 OR COALESCE(m.list_price, 0) > 0)
+        ORDER BY (upper(m.part_number) = upper($1)) DESC, m.source, m.series, m.part_number, m.id
+        LIMIT $9 OFFSET $10`,
+      [q, like(q), series, modelRe, sections, category, source, includeUnpriced, pageSize, (page - 1) * pageSize]);
+    const total = rows[0] ? Number(rows[0].total) : 0;
+    res.json({ total, page, pageSize, rows: rows.map((x) => { delete x.total; return x; }) });
+  }));
+
+  r.patch("/master/:source/:id/notes", wrap(async (req, res) => {
+    const table = { catalog: "catalog_parts", pricelist: "price_list_items" }[req.params.source];
+    if (!table) throw new BadRequest("invalid source");
+    if (typeof req.body?.notes !== "string") throw new BadRequest("notes must be text");
+    const notes = str(req.body.notes, 4000, { field: "notes" });
+    const { rows } = await pool.query(
+      `UPDATE ${table} SET notes=$1, notes_edited_at=now() WHERE id=$2 RETURNING id, notes, updated_at`,
+      [notes, id(req.params.id)]);
+    if (!rows[0]) return res.status(404).json({ error: "not found" });
+    if (table === "catalog_parts") onCatalogChanged?.();
+    res.json(rows[0]);
+  }));
+
   return r;
 }
+
+// French section names found in the bilingual XTHERM 1005A-2005A IPL -> English equivalent
+export const FRENCH_SECTIONS = {
+  "BOÎTIER DE CONTRÔLE": "CONTROL BOX",
+  "COMPOSANTES DIVERSES": "MISCELLANEOUS COMPONENTS",
+  "CONTRÔLES": "CONTROLS",
+  "ENSEMBLE BRÛLEUR": "BURNER ASSEMBLY",
+  "POMPES*": "PUMPS*",
+  "TRAIN DE GAZ": "GAS TRAIN",
+  "TÔLERIE": "SHEET METAL",
+  "VENTILATEUR": "FAN",
+  "ÉCHANGEUR DE CHALEUR (primaire)": "HEAT EXCHANGER",
+};
