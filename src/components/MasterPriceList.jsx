@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import SearchableSelect from "./SearchableSelect";
 import { api } from "../api";
 import { money } from "../utils/pdfHelpers";
 
@@ -55,22 +56,23 @@ function NotesCell({ row, onSaved }) {
   );
 }
 
-// Raypak/Sussman Price List (formerly "Master Price List"): Raypak catalog (IPL) + imported vendor price lists, searched on the server.
+// Master Price List: Raypak catalog (IPL) + imported vendor price lists, searched on the server.
 export default function MasterPriceList({ onAdd }) {
   const [search, setSearch] = useState("");
   const [seriesFilter, setSeriesFilter] = useState("");
   const [modelFilter, setModelFilter] = useState("");
   const [sectionFilter, setSectionFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [vendorFilter, setVendorFilter] = useState("");
   const [showUnpriced, setShowUnpriced] = useState(false);
   const [page, setPage] = useState(1);
-  const [facets, setFacets] = useState({ series: [], sections: [], categories: [] });
+  const [facets, setFacets] = useState({ series: [], sections: [], categories: [], models: [], vendors: [] });
   const [data, setData] = useState({ total: 0, rows: [] });
   const [loading, setLoading] = useState(false);
   const reqId = useRef(0);
 
   useEffect(() => { api("/master/facets").then(setFacets).catch(() => {}); }, []);
-  useEffect(() => { setPage(1); }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, showUnpriced]);
+  useEffect(() => { setPage(1); }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter, showUnpriced]);
   useEffect(() => {
     const my = ++reqId.current;
     const t = setTimeout(async () => {
@@ -78,7 +80,7 @@ export default function MasterPriceList({ onAdd }) {
       try {
         const p = new URLSearchParams({
           q: search.trim(), series: seriesFilter, model: modelFilter.trim(), section: sectionFilter,
-          category: categoryFilter, unpriced: showUnpriced ? "1" : "", page: String(page), pageSize: String(pageSize),
+          category: categoryFilter, vendor: vendorFilter, unpriced: showUnpriced ? "1" : "", page: String(page), pageSize: String(pageSize),
         });
         const r = await api(`/master?${p}`);
         if (my === reqId.current) setData(r);
@@ -86,12 +88,12 @@ export default function MasterPriceList({ onAdd }) {
       finally { if (my === reqId.current) setLoading(false); }
     }, 200);
     return () => clearTimeout(t);
-  }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, showUnpriced, page]);
+  }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter, showUnpriced, page]);
 
   const totalPages = Math.max(1, Math.ceil(data.total / pageSize));
-  const hasFilters = !!(search || seriesFilter || modelFilter || sectionFilter || categoryFilter || showUnpriced);
+  const hasFilters = !!(search || seriesFilter || modelFilter || sectionFilter || categoryFilter || vendorFilter || showUnpriced);
   const clearAll = () => {
-    setSearch(""); setSeriesFilter(""); setModelFilter(""); setSectionFilter(""); setCategoryFilter("");
+    setSearch(""); setSeriesFilter(""); setModelFilter(""); setSectionFilter(""); setCategoryFilter(""); setVendorFilter("");
     setShowUnpriced(false); setPage(1);
   };
   const setRowNotes = (row, notes) =>
@@ -99,12 +101,12 @@ export default function MasterPriceList({ onAdd }) {
 
   return (
     <div style={{ width: "100%", minWidth: 0, border: "1px solid #ddd", borderRadius: "10px", padding: "18px", background: "#fff", boxSizing: "border-box" }}>
-      <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>Raypak/Sussman Price List</h2>
+      <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>Master Price List</h2>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
         <input
           type="text"
-          placeholder="Search part number, description, IPL, notes, call out, vendor"
+          placeholder="Search part number, description, IPL description, notes"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ flex: 1, minWidth: 0, padding: "10px 12px", boxSizing: "border-box" }}
@@ -115,22 +117,12 @@ export default function MasterPriceList({ onAdd }) {
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1fr)", gap: "10px", marginBottom: "12px" }}>
-        <select value={seriesFilter} onChange={(e) => setSeriesFilter(e.target.value)} style={{ padding: "10px", minWidth: 0 }}>
-          <option value="">All Series</option>
-          {facets.series.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-        <input type="text" placeholder="Filter model" value={modelFilter}
-          onChange={(e) => setModelFilter(e.target.value.toUpperCase())}
-          style={{ padding: "10px", minWidth: 0, boxSizing: "border-box" }} />
-        <select value={sectionFilter} onChange={(e) => setSectionFilter(e.target.value)} style={{ padding: "10px", minWidth: 0 }}>
-          <option value="">All Sections</option>
-          {facets.sections.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} style={{ padding: "10px", minWidth: 0 }}>
-          <option value="">All Categories</option>
-          {facets.categories.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: "10px", marginBottom: "12px" }}>
+        <SearchableSelect value={seriesFilter} onChange={setSeriesFilter} options={facets.series || []} allLabel="All Series" placeholder="Search series" />
+        <SearchableSelect value={modelFilter} onChange={setModelFilter} options={facets.models || []} allLabel="All Models" placeholder="Search model" />
+        <SearchableSelect value={sectionFilter} onChange={setSectionFilter} options={facets.sections || []} allLabel="All Sections" placeholder="Search section" />
+        <SearchableSelect value={categoryFilter} onChange={setCategoryFilter} options={facets.categories || []} allLabel="All Categories" placeholder="Search category" />
+        <SearchableSelect value={vendorFilter} onChange={setVendorFilter} options={facets.vendors || []} allLabel="All Vendors" placeholder="Search vendor" />
       </div>
 
       <div style={{ fontSize: "13px", color: "#666", marginBottom: "10px", display: "flex", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>

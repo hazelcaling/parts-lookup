@@ -60,7 +60,7 @@ function contactInput(b) {
 
 // Price list item fields that can be mapped from a spreadsheet column
 export const ITEM_FIELDS = ["part_number", "description", "list_price", "vendor", "manufacturer", "category",
-  "weight_lbs", "freight_usd", "notes", "obsolete", "replacement_pn", "series", "model"];
+  "weight_lbs", "freight_usd", "notes", "obsolete", "replacement_pn", "series", "model", "annual_kit", "qty"];
 
 // Original price list files: content type is decided by the server from the extension, never by the client
 const FILE_TYPES = {
@@ -215,9 +215,12 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     if (b.items.length > 200000) throw new BadRequest("too many rows (max 200000)");
 
     const items = [];
+    const missing = [];
     b.items.forEach((it, i) => {
       const pn = str(it.part_number, 100, { field: `row ${i + 1} part_number` }).toUpperCase();
       if (!pn) return; // skip blank rows
+      if (!String(it.description ?? "").trim()) missing.push(`row ${i + 1} (${pn}): Description is missing`);
+      if (String(it.list_price ?? "").trim() === "") missing.push(`row ${i + 1} (${pn}): List Price is missing`);
       items.push([
         pn, str(it.description, 1000, { field: `row ${i + 1} description` }),
         optNum(it.list_price, `row ${i + 1} list_price`),
@@ -225,12 +228,14 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
         str(it.category, 200), optNum(it.weight_lbs, `row ${i + 1} weight_lbs`),
         optNum(it.freight_usd, `row ${i + 1} freight_usd`), str(it.notes, 4000), bool(it.obsolete),
         str(it.replacement_pn, 100).toUpperCase(), str(it.series, 300), str(it.model, 300).toUpperCase(),
+        bool(it.annual_kit), optNum(it.qty, `row ${i + 1} qty`),
         JSON.stringify(it.raw && typeof it.raw === "object" ? it.raw : {}),
       ]);
     });
-    if (!items.length) throw new BadRequest("no rows with a part number");
+    if (!items.length) throw new BadRequest("No rows with a Part Number. Required columns: Part Number, Description, List Price.");
+    if (missing.length) throw new BadRequest(`Required columns are Part Number, Description and List Price. ${missing.length} row(s) are incomplete: ${missing.slice(0, 5).join("; ")}${missing.length > 5 ? "; ..." : ""}`);
     let duplicatesRemoved = 0;
-    if (b.dedupe === true) {
+    {
       // one row per part number: keep the higher list price (tie: first row)
       const best = new Map();
       for (const row of items) {
@@ -274,10 +279,20 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
            WHERE upper(c.part_number) = i.part_number`, [pl.id]);
         catalogUpdated = u.rowCount;
       }
+      // Annual Kit (Y) rows with a model: add them to that model's annual kit if not there yet
+      // (never deletes or replaces existing annual kit rows)
+      const annualAdded = (await client.query(
+        `INSERT INTO annual_parts (series, model, pn, description, price, annual, default_qty)
+         SELECT COALESCE(NULLIF(i.series,''), (SELECT a.series FROM annual_parts a WHERE upper(a.model) = upper(trim(m)) LIMIT 1), $2),
+                upper(trim(m)), i.part_number, i.description, COALESCE(i.list_price, 0), true, COALESCE(i.qty, 1)
+           FROM price_list_items i, regexp_split_to_table(i.model, '[\\s,;/|]+') m
+          WHERE i.price_list_id = $1 AND i.annual_kit AND trim(m) <> ''
+            AND NOT EXISTS (SELECT 1 FROM annual_parts a WHERE upper(a.model) = upper(trim(m)) AND upper(trim(a.pn)) = i.part_number)`,
+        [pl.id, vendor || manufacturer])).rowCount;
       const raypak = isRaypak ? await applyRaypakList(client, pl.id) : null;
       await client.query("COMMIT");
-      if (catalogUpdated || raypak) onCatalogChanged?.();
-      res.status(201).json({ ...pl, catalog_updated: catalogUpdated, duplicates_removed: duplicatesRemoved, raypak });
+      if (catalogUpdated || raypak || annualAdded) onCatalogChanged?.();
+      res.status(201).json({ ...pl, catalog_updated: catalogUpdated, duplicates_removed: duplicatesRemoved, annual_added: annualAdded, raypak });
     } catch (e) {
       await client.query("ROLLBACK");
       throw e;
@@ -399,16 +414,24 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
   }));
 
   r.get("/master/facets", wrap(async (req, res) => {
-    const [series, sections, categories] = await Promise.all([
+    const [series, sections, categories, models, vendors] = await Promise.all([
       pool.query(`SELECT DISTINCT series FROM (SELECT series FROM catalog_parts UNION SELECT i.series FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak) t WHERE series <> '' ORDER BY 1`),
       pool.query(`SELECT DISTINCT section FROM catalog_parts WHERE section <> '' ORDER BY 1`),
       pool.query(`SELECT DISTINCT category FROM (SELECT category FROM catalog_parts UNION SELECT i.category FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak) t WHERE category <> '' ORDER BY 1`),
+      pool.query(`SELECT DISTINCT upper(trim(m)) AS model FROM (SELECT model FROM catalog_parts UNION SELECT i.model FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak) t,
+                    regexp_split_to_table(COALESCE(t.model,''), '[\\s,;/|]+') m WHERE trim(m) <> '' ORDER BY 1`),
+      pool.query(`SELECT DISTINCT v FROM (SELECT vendor v FROM catalog_parts UNION SELECT manufacturer FROM catalog_parts
+                    UNION SELECT i.vendor FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak
+                    UNION SELECT i.manufacturer FROM price_list_items i JOIN price_lists p ON p.id = i.price_list_id AND NOT p.is_raypak) t
+                   WHERE v IS NOT NULL AND v <> '' ORDER BY 1`),
     ]);
     res.json({
       series: series.rows.map((x) => x.series),
       // French section names (bilingual IPL) are folded into their English equivalent
       sections: sections.rows.map((x) => x.section).filter((x) => !FRENCH_SECTIONS[x]),
       categories: categories.rows.map((x) => x.category),
+      models: models.rows.map((x) => x.model),
+      vendors: vendors.rows.map((x) => x.v),
     });
   }));
 
@@ -419,6 +442,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     const section = str(req.query.section, 200);
     const category = str(req.query.category, 200);
     const source = str(req.query.source, 20);
+    const vendorF = str(req.query.vendor, 200);
     if (source && !["catalog", "pricelist"].includes(source)) throw new BadRequest("invalid source");
     const includeUnpriced = req.query.unpriced === "1";
     const pageSize = limitOf(req.query.pageSize, 25, 200);
@@ -436,12 +460,12 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
             AND (cardinality($5::text[]) = 0 OR m.section = ANY($5))
             AND ($6 = '' OR m.category = $6)
             AND ($7 = '' OR m.source = $7)
+            AND ($11 = '' OR m.vendor = $11 OR m.manufacturer = $11)
             AND ($8 OR COALESCE(m.list_price, 0) > 0 OR (m.source = 'catalog' AND m.obsolete))),
        hits AS (
          SELECT * FROM f
           WHERE $1 = '' OR f.part_number ILIKE $2 OR f.description ILIKE $2 OR f.ipl_description ILIKE $2
-             OR f.notes ILIKE $2 OR f.call_out ILIKE $2 OR f.vendor ILIKE $2 OR f.manufacturer ILIKE $2
-             OR f.desc_note ILIKE $2),
+             OR f.notes ILIKE $2),
        groups AS (
          SELECT DISTINCT h.series, h.call_out FROM hits h
           WHERE $1 <> '' AND h.source = 'catalog' AND h.call_out <> ''
@@ -456,7 +480,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
                  substring(res.call_out from '[A-Z]+$'), NULLIF(substring(res.call_out from '^[0-9]+'), '')::int,
                  res.call_out, res.is_option, res.ipl_description, res.model, res.part_number, res.id
         LIMIT $9 OFFSET $10`,
-      [q, like(q), series, modelRe, sections, category, source, includeUnpriced, pageSize, (page - 1) * pageSize]);
+      [q, like(q), series, modelRe, sections, category, source, includeUnpriced, pageSize, (page - 1) * pageSize, vendorF]);
     const total = rows[0] ? Number(rows[0].total) : 0;
     res.json({ total, page, pageSize, rows: rows.map((x) => { delete x.total; delete x.exact; return x; }) });
   }));

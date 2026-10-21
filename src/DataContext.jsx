@@ -25,6 +25,17 @@ export function DataProvider({ children }) {
   };
 
   useEffect(() => { load(); }, []);
+  // Auto-logout: sessions expire after 10 hours; check every minute and return to the login screen
+  useEffect(() => {
+    if (state.status !== "ready") return;
+    const t = setInterval(async () => {
+      try {
+        const r = await fetch("/api/session", { credentials: "same-origin" });
+        if (r.ok && !(await r.json()).loggedIn) setState({ status: "login" });
+      } catch { /* offline: try again later */ }
+    }, 60000);
+    return () => clearInterval(t);
+  }, [state.status]);
 
   const login = async (e) => {
     e.preventDefault();

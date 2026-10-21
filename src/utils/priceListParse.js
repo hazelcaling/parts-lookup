@@ -1,21 +1,21 @@
 // Shared price list parsing (used by the Vendor Price Lists page and scripts/import-pricelist.js)
 
+// Upload columns. Required: Part Number, Description, List Price. The rest are optional.
 export const FIELDS = [
-  ["part_number", "Part Number *"], ["description", "Description"], ["list_price", "List Price"],
-  ["vendor", "Vendor"], ["manufacturer", "Manufacturer"], ["category", "Category"],
-  ["weight_lbs", "Weight (lbs)"], ["freight_usd", "Freight ($)"], ["notes", "Notes"],
-  ["obsolete", "Obsolete (Y/N)"], ["replacement_pn", "Replacement PN"], ["series", "Series"], ["model", "Model"],
+  ["part_number", "Part Number *"], ["description", "Description *"], ["list_price", "List Price *"],
+  ["series", "Series"], ["model", "Model"], ["category", "Category"],
+  ["annual_kit", "Annual Kit (Y/N)"], ["qty", "Qty"],
 ];
+export const REQUIRED_FIELDS = [["part_number", "Part Number"], ["description", "Description"], ["list_price", "List Price"]];
 
 const GUESS = {
   // "Part Number", "PART #", "Item Number", "Item No.", "Raypak Part No", "Catalog #", "PN", "SKU" ...
   part_number: /^([a-z]+ )?(part|item|catalog|stock|product)[ _]?(no\.?|num\.?|number|#)?$|^(pn|p\/n|p\/n #|sku)$/i,
   description: /^(desc|description|item description|part description)$/i,
   list_price: /(list|price|cost|msrp)/i,
-  vendor: /^vendor/i, manufacturer: /^(manufacturer|mfr|mfg|brand)/i, category: /^(category|cat|group|class)/i,
-  weight_lbs: /weight|wt|lbs/i, freight_usd: /freight|shipping/i, notes: /^(notes?|comments?|remarks?)$/i,
-  obsolete: /obsolete|discontinued/i, replacement_pn: /replace|superseded|supersede/i,
+  category: /^(category|cat|group|class)/i,
   series: /^series/i, model: /^models?$/i,
+  annual_kit: /annual/i, qty: /^(qty|quantity|default qty)\b/i,
 };
 
 export function guessMapping(headers) {

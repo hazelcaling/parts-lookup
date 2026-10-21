@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { api } from "../api";
 import { inputStyle, btn } from "../components/styles";
 import {
-  FIELDS, readSheet, withHeaderRow, cleanSheetName, sheetItems, dedupeByPartNumber, vendorFromFileName, isRaypakName,
+  FIELDS, REQUIRED_FIELDS, readSheet, withHeaderRow, cleanSheetName, sheetItems, dedupeByPartNumber, vendorFromFileName, isRaypakName,
 } from "../utils/priceListParse";
 
 const box = { background: "#fff", border: "1px solid #ddd", borderRadius: "10px", padding: "18px", boxSizing: "border-box" };
@@ -48,7 +48,7 @@ export default function PriceLists() {
       setActive(0);
       // Vendor comes from the file name ("Sussman.xlsx" -> "Sussman"); Manufacturer is left blank
       const vendor = vendorFromFileName(f.name);
-      // A Raypak file updates the Raypak catalog prices (Raypak/Sussman Price List) instead of being a separate list
+      // A Raypak file updates the Raypak catalog prices (Master Price List) instead of being a separate list
       setMeta((m) => ({ ...m, name: `${vendor} Price List`, vendor, manufacturer: "", sheetAsSeries: sheets.length > 1, is_raypak: isRaypakName(f.name, vendor) }));
     } catch (e) {
       setStatus({ msg: `Could not read file: ${e.message}`, err: true });
@@ -64,14 +64,17 @@ export default function PriceLists() {
     const all = file.sheets.filter((s) => s.include).flatMap((s) =>
       sheetItems(s, { series: meta.sheetAsSeries ? s.series : "", category: s.category })
     ).filter((r) => r.part_number);
-    if (!meta.dedupe) return { items: all, removed: [], ties: 0, total: all.length };
     return { ...dedupeByPartNumber(all), total: all.length };
-  }, [file, meta.sheetAsSeries, meta.dedupe]);
+  }, [file, meta.sheetAsSeries]);
   const preview = useMemo(() => (sheet ? sheetItems(sheet, { series: meta.sheetAsSeries ? sheet.series : "", category: sheet.category }) : []), [sheet, meta.sheetAsSeries]);
 
   const save = async () => {
-    const bad = file.sheets.find((s) => s.include && s.mapping.part_number < 0);
-    if (bad) return setStatus({ msg: `Map the Part Number column for sheet "${bad.name}".`, err: true });
+    for (const s of file.sheets.filter((x) => x.include)) {
+      const miss = REQUIRED_FIELDS.filter(([f]) => s.mapping[f] < 0).map(([, l]) => l);
+      if (miss.length) return setStatus({ msg: `Sheet "${s.name}" is missing the required column${miss.length > 1 ? "s" : ""}: ${miss.join(", ")}. Map ${miss.length > 1 ? "them" : "it"} below, or add ${miss.length > 1 ? "them" : "it"} to the file.`, err: true });
+    }
+    const incomplete = result.items.filter((r) => !String(r.description || "").trim() || !String(r.list_price || "").trim());
+    if (incomplete.length) return setStatus({ msg: `${incomplete.length} row(s) are missing a Description or List Price (e.g. ${incomplete.slice(0, 3).map((r) => r.part_number).join(", ")}). Fill them in and upload again.`, err: true });
     if (!meta.vendor.trim() && !meta.manufacturer.trim()) return setStatus({ msg: "Enter a vendor or manufacturer.", err: true });
     setBusy(true); setStatus({ msg: "Saving...", err: false });
     try {
@@ -83,8 +86,9 @@ export default function PriceLists() {
         msg: `Saved "${r.name}" with ${r.row_count} rows` +
           (result.removed.length ? ` (${result.removed.length} duplicate part numbers removed)` : "") +
           (body.update_catalog ? `; updated ${r.catalog_updated} catalog parts` : "") +
-          (rp ? `; Raypak prices updated: ${rp.rows_updated} catalog rows priced from this list, ${rp.parts_added} new parts added, ` +
-            `${rp.rows_cleared} rows not in this list now have no price (${rp.priced_rows_cleared} of them had a price)` : "") + ".",
+          (r.annual_added ? `; ${r.annual_added} parts added to annual kits` : "") +
+          (rp ? `; Raypak prices updated: ${rp.rows_updated} IPL/catalog rows and ${rp.annual_updated} annual kit rows priced from this list, ${rp.parts_added} new parts added, ` +
+            `${rp.rows_cleared} IPL rows and ${rp.annual_obsolete} annual kit rows not in this list set to $0 / Obsolete` : "") + ".",
         err: false,
       });
       setFile(null); refresh();
@@ -95,7 +99,7 @@ export default function PriceLists() {
   const del = async (pl) => {
     const warn = pl.is_raypak
       ? "Raypak prices will come from the newest remaining Raypak list; if there is none, Raypak parts will have no price until a new Raypak list is uploaded."
-      : "Its parts are also removed from the Raypak/Sussman Price List.";
+      : "Its parts are also removed from the Master Price List.";
     if (!window.confirm(`Delete price list "${pl.name}" (${pl.row_count} rows)? ${warn}`)) return;
     try { await api(`/pricelists/${pl.id}`, { method: "DELETE" }); refresh(); }
     catch (e) { setStatus({ msg: e.message, err: true }); }
@@ -107,6 +111,21 @@ export default function PriceLists() {
     <div style={{ padding: "16px 20px 28px", fontFamily: "Arial, sans-serif", maxWidth: "1900px", margin: "0 auto", boxSizing: "border-box" }}>
       <div style={box}>
         <h2 style={{ marginTop: 0, marginBottom: "16px" }}>Import Vendor Price List</h2>
+        <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "12px 16px", marginBottom: "16px", fontSize: "13px", color: "#334155", lineHeight: 1.5 }}>
+          <b>Upload instructions</b> (Excel .xlsx/.xls or .csv, first row = column headers):
+          <table style={{ borderCollapse: "collapse", margin: "8px 0", fontSize: "13px" }}>
+            <tbody>
+              {[["Part Number", "Required"], ["Description", "Required"], ["List Price", "Required (number, e.g. 125.50)"],
+                ["Series", "Optional"], ["Model", "Optional (several models: separate with commas)"], ["Category", "Optional"],
+                ["Annual Kit", "Optional: Y = part belongs to the annual kit of the Model, N or blank = no"],
+                ["Qty", "Optional: default quantity of the part in the annual kit (blank = 1)"]].map(([c, d]) => (
+                <tr key={c}><td style={{ padding: "2px 12px 2px 0", fontWeight: "bold" }}>{c}</td><td style={{ padding: "2px 0" }}>{d}</td></tr>
+              ))}
+            </tbody>
+          </table>
+          If the same part number appears more than once, one row is kept (the higher list price).
+          For a Raypak price list, every Raypak IPL and annual kit part takes its price from this list; parts not in it are set to $0 with the note "Obsolete". IPL and annual kit parts are never deleted.
+        </div>
         <label
           onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
           onDragLeave={() => setDrag(false)}
@@ -138,9 +157,9 @@ export default function PriceLists() {
             </div>
             <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", fontSize: "13px", marginBottom: "14px" }}>
               <label><input type="checkbox" checked={meta.sheetAsSeries} onChange={(e) => setMeta({ ...meta, sheetAsSeries: e.target.checked })} /> Use each sheet name as the Series</label>
-              <label><input type="checkbox" checked={meta.dedupe} onChange={(e) => setMeta({ ...meta, dedupe: e.target.checked })} /> Remove duplicate part numbers (keep the higher list price)</label>
+              <span style={{ fontSize: "13px", color: "#475569" }}>Duplicate part numbers are removed automatically (the higher list price is kept).</span>
               <label title="Every Raypak part number in this file gets its price and description from the file; Raypak parts not in the file get no price; new part numbers are added.">
-                <input type="checkbox" checked={meta.is_raypak} onChange={(e) => setMeta({ ...meta, is_raypak: e.target.checked })} /> Raypak price list (replaces all Raypak prices in the Raypak/Sussman Price List)
+                <input type="checkbox" checked={meta.is_raypak} onChange={(e) => setMeta({ ...meta, is_raypak: e.target.checked })} /> Raypak price list (replaces all Raypak prices in the Master Price List)
               </label>
               {!meta.is_raypak && (
                 <label><input type="checkbox" checked={meta.update_catalog} onChange={(e) => setMeta({ ...meta, update_catalog: e.target.checked })} /> Also update list prices of matching catalog parts</label>
@@ -238,7 +257,7 @@ export default function PriceLists() {
                 <tr key={pl.id}>
                   <td style={td}>
                     <strong>{pl.name}</strong>
-                    {pl.is_raypak && <span title="Sets the Raypak prices in the Raypak/Sussman Price List" style={{ marginLeft: "6px", fontSize: "11px", padding: "1px 6px", borderRadius: "8px", background: "#e0f2fe", color: "#0369a1" }}>Raypak prices</span>}
+                    {pl.is_raypak && <span title="Sets the Raypak prices in the Master Price List" style={{ marginLeft: "6px", fontSize: "11px", padding: "1px 6px", borderRadius: "8px", background: "#e0f2fe", color: "#0369a1" }}>Raypak prices</span>}
                   </td>
                   <td style={td}>{pl.vendor}</td>
                   <td style={td}>{pl.manufacturer}</td>

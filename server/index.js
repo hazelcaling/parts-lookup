@@ -14,7 +14,7 @@ if (!APP_PASSWORD || !SESSION_SECRET) {
   throw new Error("APP_PASSWORD and SESSION_SECRET must be set");
 }
 const PORT = process.env.PORT || 3000;
-const SESSION_DAYS = 30;
+const SESSION_MS = 10 * 60 * 60 * 1000; // auto-logout after 10 hours
 const COOKIE = "pl_session";
 const isProd = process.env.NODE_ENV === "production";
 
@@ -32,7 +32,8 @@ const isLoggedIn = (req) => {
   const v = req.signedCookies?.[COOKIE];
   if (!v) return false;
   const exp = Number(v);
-  return Number.isFinite(exp) && exp > Date.now();
+  // also rejects old 30-day cookies: expiry must be within 10 hours of now
+  return Number.isFinite(exp) && exp > Date.now() && exp <= Date.now() + SESSION_MS;
 };
 
 const requireAuth = (req, res, next) =>
@@ -64,13 +65,13 @@ app.post("/api/login", (req, res) => {
     return res.status(401).json({ error: "Incorrect password" });
   }
   fails.delete(ip);
-  const exp = Date.now() + SESSION_DAYS * 86400000;
+  const exp = Date.now() + SESSION_MS;
   res.cookie(COOKIE, String(exp), {
     signed: true,
     httpOnly: true,
     sameSite: "lax",
     secure: isProd,
-    maxAge: SESSION_DAYS * 86400000,
+    maxAge: SESSION_MS,
   });
   res.json({ ok: true });
 });
@@ -113,7 +114,7 @@ app.get("/api/health", async (req, res) => {
               (SELECT count(*) FROM annual_parts WHERE price = 0 AND notes ~* '\\mobsolete\\M')::int AS annual_obsolete_zero,
               (SELECT count(*) FROM price_lists WHERE is_raypak)::int AS raypak_lists,
               (SELECT count(*) FROM price_lists)::int AS price_lists`);
-    res.json({ ok: true, rule: "raypak-obsolete-v1", ...rows[0], startup_raypak: startupRaypak });
+    res.json({ ok: true, rule: "raypak-obsolete-v2", ...rows[0], startup_raypak: startupRaypak });
   } catch (e) {
     res.status(500).json({ ok: false, error: "database error" });
   }
