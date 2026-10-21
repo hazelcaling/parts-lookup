@@ -539,7 +539,10 @@ function App() {
                         </td>
                         <td style={{ textAlign: "center" }}>{index + 1}</td>
                         <td>{part.pn}</td>
-                        <td style={{ wordBreak: "break-word" }}>{part.description}</td>
+                        <td style={{ wordBreak: "break-word" }}>
+                          {part.description}
+                          {part.notes && <div style={{ fontSize: "12px", color: part.notes.match(/obsolete/i) ? "#b91c1c" : "#666", marginTop: 3 }}>Note: {part.notes}</div>}
+                        </td>
                         <td>{money(part.price)}</td>
                         <td style={{ textAlign: "center" }}>
                           <input

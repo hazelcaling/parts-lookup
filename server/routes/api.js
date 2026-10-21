@@ -436,7 +436,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
             AND (cardinality($5::text[]) = 0 OR m.section = ANY($5))
             AND ($6 = '' OR m.category = $6)
             AND ($7 = '' OR m.source = $7)
-            AND ($8 OR COALESCE(m.list_price, 0) > 0)),
+            AND ($8 OR COALESCE(m.list_price, 0) > 0 OR (m.source = 'catalog' AND m.obsolete))),
        hits AS (
          SELECT * FROM f
           WHERE $1 = '' OR f.part_number ILIKE $2 OR f.description ILIKE $2 OR f.ipl_description ILIKE $2

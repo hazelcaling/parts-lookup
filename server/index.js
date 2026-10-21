@@ -7,6 +7,7 @@ import { pool } from "./db.js";
 import { seedDatabase } from "./seedLib.js";
 import { migrate } from "./migrate.js";
 import { apiRouter } from "./routes/api.js";
+import { applyLatestRaypakList } from "./raypak.js";
 
 const { APP_PASSWORD, SESSION_SECRET } = process.env;
 if (!APP_PASSWORD || !SESSION_SECRET) {
@@ -99,6 +100,25 @@ app.post("/api/logout", (req, res) => {
   res.json({ ok: true });
 });
 
+// Public health check: row counts only (no part data)
+app.get("/api/health", async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT (SELECT count(*) FROM annual_parts)::int AS annual_rows,
+              (SELECT count(*) FROM catalog_parts)::int AS catalog_rows,
+              (SELECT count(*) FROM catalog_parts WHERE NOT from_price_list)::int AS ipl_rows,
+              (SELECT count(*) FROM catalog_parts WHERE NOT from_price_list AND source_url IS NOT NULL)::int AS ipl_rows_with_link,
+              (SELECT count(*) FROM catalog_parts WHERE COALESCE(list_price, 0) > 0)::int AS catalog_priced,
+              (SELECT count(*) FROM catalog_parts WHERE list_price = 0 AND notes ~* '\\mobsolete\\M')::int AS catalog_obsolete_zero,
+              (SELECT count(*) FROM annual_parts WHERE price = 0 AND notes ~* '\\mobsolete\\M')::int AS annual_obsolete_zero,
+              (SELECT count(*) FROM price_lists WHERE is_raypak)::int AS raypak_lists,
+              (SELECT count(*) FROM price_lists)::int AS price_lists`);
+    res.json({ ok: true, rule: "raypak-obsolete-v1", ...rows[0], startup_raypak: startupRaypak });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "database error" });
+  }
+});
+
 app.get("/api/session", (req, res) => res.json({ loggedIn: isLoggedIn(req) }));
 
 // Cache data in memory (data only changes when re-seeded; restart to refresh)
@@ -106,7 +126,7 @@ let cache = null;
 async function loadData() {
   if (cache) return cache;
   const annual = await pool.query(
-    "SELECT series, model, pn, description, price, annual, default_qty FROM annual_parts ORDER BY id"
+    "SELECT series, model, pn, description, price, annual, default_qty, notes FROM annual_parts ORDER BY id"
   );
   const partsData = {};
   for (const r of annual.rows) {
@@ -116,6 +136,7 @@ async function loadData() {
       price: r.price,
       annual: r.annual,
       defaultQty: r.default_qty,
+      notes: r.notes || "",
     });
   }
   const cat = await pool.query(
@@ -144,6 +165,26 @@ const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "dist
 app.use(express.static(dist));
 app.get(/^(?!\/api\/).*/, (req, res) => res.sendFile(path.join(dist, "index.html")));
 
+// Re-apply the newest Raypak price list on boot (idempotent) so rule changes take effect on existing data
+let startupRaypak = null;
+async function applyRaypakOnBoot() {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    startupRaypak = await applyLatestRaypakList(client);
+    await client.query("COMMIT");
+    cache = null;
+    console.log("raypak list re-applied:", JSON.stringify(startupRaypak));
+  } catch (e) {
+    await client.query("ROLLBACK").catch(() => {});
+    startupRaypak = { error: e.message };
+    console.error("raypak re-apply failed:", e.message);
+  } finally {
+    client.release();
+  }
+}
+
 migrate(pool)
+  .then(applyRaypakOnBoot)
   .then(() => app.listen(PORT, () => console.log(`parts-lookup listening on ${PORT}`)))
   .catch((e) => { console.error(e.message); process.exit(1); });
