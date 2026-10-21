@@ -12,9 +12,11 @@
     "seed": "node scripts/seed.js",
     "dev:api": "node --env-file=.env --watch server/index.js",
     "dev:web": "vite",
-    "seed:dev": "node --env-file=.env scripts/seed.js"
+    "seed:dev": "node --env-file=.env scripts/seed.js",
+    "test": "node --test test/"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
     "jspdf": "^4.2.0",
@@ -22,11 +24,11 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.1",
-    "xlsx": "^0.18.5",
     "vite": "^7.3.1",
-    "@vitejs/plugin-react": "^5.1.1"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.11",
     "@eslint/js": "^9.39.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

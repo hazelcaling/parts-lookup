@@ -4,6 +4,7 @@
 //  - every other catalog row gets price 0 and "Obsolete" appended to its notes (once)
 //  - annual kit rows (annual_parts) follow the same rule (price + description from the list, else 0 + "Obsolete")
 //  - part numbers in the list that are not in the catalog are added (no IPL info), series "Raypak Price List"
+//  - catalog_parts / annual_parts rows are NEVER deleted by a price list upload, update or delete: prices only
 // IPL data (links, call outs, include notes, options, series/model/section) and user notes are not touched.
 
 export const RAYPAK_ADDED_SERIES = "Raypak Price List";
@@ -58,8 +59,12 @@ export async function applyRaypakList(client, listId) {
   const annualObsolete = (await client.query(
     `UPDATE annual_parts a SET price = 0, obsolete = true, notes = ${ADD_OBSOLETE.replace(/c\.notes/g, "a.notes")}
       WHERE trim(a.pn) <> '' AND NOT EXISTS (SELECT 1 FROM _raypak_new r WHERE r.pn = upper(trim(a.pn)))`)).rowCount;
-  // parts a previous Raypak list added that are no longer listed
-  const removed = (await client.query(`DELETE FROM catalog_parts c WHERE c.from_price_list AND NOT ${inList}`)).rowCount;
+  // parts a previous Raypak list added that are no longer listed: price 0 + "Obsolete" (rows are NEVER deleted)
+  const removed = 0;
+  const addedObsolete = (await client.query(
+    `UPDATE catalog_parts c SET list_price = 0, obsolete = true, price_source = 'not in raypak price list', price_list_id = $1,
+            notes = ${ADD_OBSOLETE}
+      WHERE c.from_price_list AND NOT ${inList}`, [id])).rowCount;
   const added = (await client.query(
     `INSERT INTO catalog_parts (series, part_number, description, list_price, vendor, manufacturer,
                                 price_source, price_list_id, from_price_list)
@@ -68,7 +73,7 @@ export async function applyRaypakList(client, listId) {
       WHERE NOT EXISTS (SELECT 1 FROM catalog_parts c WHERE upper(trim(c.part_number)) = r.pn)`, [id, RAYPAK_ADDED_SERIES])).rowCount;
   const listParts = await count(client, "SELECT count(*) n FROM _raypak_new");
   await client.query("DROP TABLE IF EXISTS _raypak_new");
-  return { price_list_id: id, list_parts: listParts, rows_updated: updated, rows_cleared: cleared, priced_rows_cleared: lostPrice, parts_added: added, parts_removed: removed,
+  return { price_list_id: id, list_parts: listParts, rows_updated: updated, rows_cleared: cleared, priced_rows_cleared: lostPrice, parts_added: added, parts_removed: removed, added_parts_obsolete: addedObsolete,
            annual_updated: annualUpdated, annual_obsolete: annualObsolete };
 }
 
@@ -78,9 +83,10 @@ export async function applyLatestRaypakList(client, { clearIfNone = false, delet
   const latest = await latestRaypakListId(client);
   if (latest) return applyRaypakList(client, latest);
   if (!clearIfNone) return null;
-  const removed = (await client.query("DELETE FROM catalog_parts WHERE from_price_list")).rowCount;
+  // No Raypak list left: Raypak prices become 0. Rows are NEVER deleted (IPL, annual kit, list-added parts).
   const cleared = (await client.query(
-    `UPDATE catalog_parts SET list_price = NULL, price_source = 'raypak price list deleted', price_list_id = NULL
-      WHERE price_list_id IS NOT NULL OR price_source IN ('raypak price list', 'not in raypak price list')`)).rowCount;
-  return { price_list_id: null, deleted_list_id: deletedId, rows_cleared: cleared, parts_removed: removed };
+    `UPDATE catalog_parts SET list_price = 0, price_source = 'raypak price list deleted', price_list_id = NULL
+      WHERE from_price_list OR price_list_id IS NOT NULL OR price_source IN ('raypak price list', 'not in raypak price list')`)).rowCount;
+  const annualCleared = (await client.query("UPDATE annual_parts SET price = 0")).rowCount;
+  return { price_list_id: null, deleted_list_id: deletedId, rows_cleared: cleared, annual_cleared: annualCleared, parts_removed: 0 };
 }

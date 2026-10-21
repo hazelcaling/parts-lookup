@@ -98,8 +98,8 @@ export default function PriceLists() {
 
   const del = async (pl) => {
     const warn = pl.is_raypak
-      ? "Raypak prices will come from the newest remaining Raypak list; if there is none, Raypak parts will have no price until a new Raypak list is uploaded."
-      : "Its parts are also removed from the Master Price List.";
+      ? "Raypak prices will come from the newest remaining Raypak list; if there is none, Raypak prices become $0. Annual Kit and IPL parts are never deleted."
+      : "Its rows are removed from the vendor price list search. Annual Kit and IPL parts are never deleted.";
     if (!window.confirm(`Delete price list "${pl.name}" (${pl.row_count} rows)? ${warn}`)) return;
     try { await api(`/pricelists/${pl.id}`, { method: "DELETE" }); refresh(); }
     catch (e) { setStatus({ msg: e.message, err: true }); }

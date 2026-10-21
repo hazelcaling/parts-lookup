@@ -316,7 +316,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     });
     res.end(data);
   }));
-  // Deleting a list also removes its rows from the Raypak/Sussman Price List search (price_list_items ON DELETE CASCADE)
+  // Deleting a list removes only its own price_list_items (ON DELETE CASCADE); annual kit / IPL rows are never deleted
   // A deleted Raypak list hands the catalog prices to the newest remaining Raypak list, or clears them if none is left.
   r.delete("/pricelists/:id", wrap(async (req, res) => {
     const plId = id(req.params.id);
