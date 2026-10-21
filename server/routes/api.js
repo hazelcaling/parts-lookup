@@ -120,19 +120,38 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
   }));
 
   // ---------- Contacts ----------
-  r.get("/companies/:id/contacts", wrap(async (req, res) => {
-    const q = str(req.query.q, 200);
-    const { rows } = await pool.query(
-      `SELECT * FROM contacts WHERE company_id=$1 AND ($2 = '' OR name ILIKE $3) ORDER BY name LIMIT $4`,
-      [id(req.params.id), q, like(q), limitOf(req.query.limit, 20)]);
-    res.json(rows);
-  }));
-  r.post("/companies/:id/contacts", wrap(async (req, res) => {
-    const c = contactInput(req.body || {});
+  // Contacts of a company (or, for /contacts, contacts without a company). Name match ignores case,
+  // extra spaces and curly vs straight quotes, like companies.
+  const findContacts = async (companyId, q, limit) => (await pool.query(
+    `SELECT * FROM contacts WHERE company_id IS NOT DISTINCT FROM $1 AND ($2 = '' OR ${NORM_SQL("name")} LIKE $3)
+      ORDER BY (${NORM_SQL("name")} = $2) DESC, name LIMIT $4`,
+    [companyId, q, like(q), limit])).rows;
+  // Add by name (other fields optional); an existing contact with the same name in the same company is returned instead
+  const addContact = async (companyId, body, res) => {
+    const c = contactInput(body || {});
+    if (companyId !== null) {
+      const co = await pool.query("SELECT 1 FROM companies WHERE id=$1", [companyId]);
+      if (!co.rowCount) return res.status(404).json({ error: "company not found" });
+    }
+    const existing = (await pool.query(
+      `SELECT * FROM contacts WHERE company_id IS NOT DISTINCT FROM $1 AND ${NORM_SQL("name")} = $2 ORDER BY id LIMIT 1`,
+      [companyId, normName(c.name)])).rows[0];
+    if (existing) return res.status(200).json({ ...existing, existing: true });
     const { rows } = await pool.query(
       `INSERT INTO contacts (company_id,name,title,email,phone) VALUES ($1,$2,$3,$4,$5) RETURNING *`,
-      [id(req.params.id), c.name, c.title, c.email, c.phone]);
+      [companyId, c.name, c.title, c.email, c.phone]);
     res.status(201).json(rows[0]);
+  };
+  r.get("/companies/:id/contacts", wrap(async (req, res) => {
+    res.json(await findContacts(id(req.params.id), normName(str(req.query.q, 200)), limitOf(req.query.limit, 10)));
+  }));
+  r.post("/companies/:id/contacts", wrap(async (req, res) => addContact(id(req.params.id), req.body, res)));
+  r.get("/contacts", wrap(async (req, res) => {
+    res.json(await findContacts(null, normName(str(req.query.q, 200)), limitOf(req.query.limit, 10)));
+  }));
+  r.post("/contacts", wrap(async (req, res) => {
+    const cid = req.body?.company_id;
+    return addContact(cid === undefined || cid === null || cid === "" ? null : id(cid), req.body, res);
   }));
   r.put("/contacts/:id", wrap(async (req, res) => {
     const c = contactInput(req.body || {});

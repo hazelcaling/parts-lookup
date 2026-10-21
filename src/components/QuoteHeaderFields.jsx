@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Autosuggest from "./Autosuggest";
 import { normName } from "../utils/names";
-import ContactModal from "./ContactModal";
 import { api } from "../api";
 
 const sub = { color: "#475569", marginTop: 2 };
@@ -13,13 +12,13 @@ const q = (s) => encodeURIComponent(s);
 export default function QuoteHeaderFields({
   company, setCompany, attn, setAttn, modelField, setModelField, serial, setSerial, job, setJob,
 }) {
-  const [selCompany, setSelCompany] = useState(null); // {id, name, ...}
-  const [modal, setModal] = useState(null); // {kind:'company'|'contact', name}
+  const [selCompanyState, setSelCompanyState] = useState(null); // {id, name, ...}
   const [msg, setMsg] = useState("");
 
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(""), 2500); };
-  // header Clear button resets the company -> forget the selected company too
-  useEffect(() => { if (!company) setSelCompany(null); }, [company]);
+  // header Clear button empties the company -> the selected company no longer applies
+  const [selRaw, setSelCompany] = [selCompanyState, setSelCompanyState];
+  const selCompany = company ? selRaw : null;
 
   // Save just the name (no details pop-up). The server returns the existing company if the name is already saved.
   const addCompany = async (name) => {
@@ -27,6 +26,18 @@ export default function QuoteHeaderFields({
       const c = await api("/companies", { method: "POST", body: { name } });
       setSelCompany(c); setCompany(c.name);
       flash(c.existing ? "Company already saved" : "Company saved");
+    } catch (e) { flash(e.message); }
+  };
+
+  // Save just the contact name (no details pop-up), linked to the selected company if there is one.
+  // The server returns the existing contact if that name is already saved for the company.
+  const addContact = async (name) => {
+    try {
+      const c = selCompany
+        ? await api(`/companies/${selCompany.id}/contacts`, { method: "POST", body: { name } })
+        : await api("/contacts", { method: "POST", body: { name } });
+      setAttn(c.name);
+      flash(c.existing ? "Contact already saved" : "Contact saved");
     } catch (e) { flash(e.message); }
   };
 
@@ -60,11 +71,11 @@ export default function QuoteHeaderFields({
         onSelect={(m) => setModelField(m)}
       />
       <Autosuggest
-        placeholder={selCompany ? "Attn" : "Attn (select a saved company to see contacts)"}
+        placeholder="Attn"
         value={attn}
         onChange={setAttn}
         minChars={0}
-        fetchItems={(s) => (selCompany ? api(`/companies/${selCompany.id}/contacts?q=${q(s)}`) : Promise.resolve([]))}
+        fetchItems={(s) => api(selCompany ? `/companies/${selCompany.id}/contacts?q=${q(s)}` : `/contacts?q=${q(s)}`)}
         renderItem={(c) => (
           <>
             <strong style={{ color: "#0f172a" }}>{c.name}</strong>
@@ -72,8 +83,9 @@ export default function QuoteHeaderFields({
           </>
         )}
         onSelect={(c) => setAttn(c.name)}
-        addLabel={selCompany ? (s) => `+ Add contact "${s}" to ${selCompany.name}` : null}
-        onAdd={selCompany ? (s) => setModal({ kind: "contact", name: s }) : null}
+        addLabel={(s) => (selCompany ? `+ Add contact "${s}" to ${selCompany.name}` : `+ Add new contact "${s}"`)}
+        onAdd={addContact}
+        hideAdd={(items, s) => items.some((c) => normName(c.name) === normName(s))}
       />
       <input
         placeholder="Serial"
@@ -98,14 +110,6 @@ export default function QuoteHeaderFields({
         }}
       />
 
-      {modal?.kind === "contact" && selCompany && (
-        <ContactModal
-          company={selCompany}
-          initialName={modal.name}
-          onClose={() => setModal(null)}
-          onSaved={(c) => { setAttn(c.name); setModal(null); flash("Contact saved"); }}
-        />
-      )}
     </>
   );
 }
