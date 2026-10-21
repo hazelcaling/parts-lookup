@@ -115,10 +115,10 @@ export default function PriceLists() {
           <b>Upload instructions</b> (Excel .xlsx/.xls or .csv, first row = column headers):
           <table style={{ borderCollapse: "collapse", margin: "8px 0", fontSize: "13px" }}>
             <tbody>
-              {[["Part Number", "Required"], ["Description", "Required"], ["List Price", "Required (number, e.g. 125.50)"],
-                ["Series", "Optional"], ["Model", "Optional (several models: separate with commas)"], ["Category", "Optional"],
-                ["Annual Kit", "Optional: Y = part belongs to the annual kit of the Model, N or blank = no"],
-                ["Qty", "Optional: default quantity of the part in the annual kit (blank = 1)"]].map(([c, d]) => (
+              {[["Part Number", "Required"], ["Description", "Required"], ["List Price", "Required"],
+                ["Series", "Optional"], ["Model", "Optional"], ["Category", "Optional"],
+                ["Annual Kit", "Optional (Y/N)"],
+                ["Qty", "Optional"]].map(([c, d]) => (
                 <tr key={c}><td style={{ padding: "2px 12px 2px 0", fontWeight: "bold" }}>{c}</td><td style={{ padding: "2px 0" }}>{d}</td></tr>
               ))}
             </tbody>
