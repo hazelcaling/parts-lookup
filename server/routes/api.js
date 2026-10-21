@@ -445,7 +445,7 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
     const source = str(req.query.source, 20);
     const vendorF = str(req.query.vendor, 200);
     if (source && !["catalog", "pricelist"].includes(source)) throw new BadRequest("invalid source");
-    const includeUnpriced = req.query.unpriced === "1";
+    const includeUnpriced = true; // every part shows, including $0 / Obsolete
     const pageSize = limitOf(req.query.pageSize, 25, 200);
     const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
     const sections = section ? [section, ...Object.keys(FRENCH_SECTIONS).filter((f) => FRENCH_SECTIONS[f] === section)] : [];
@@ -487,15 +487,16 @@ export function apiRouter(pool, { onCatalogChanged } = {}) {
   }));
 
   r.patch("/master/:source/:id/notes", wrap(async (req, res) => {
-    const table = { catalog: "catalog_parts", pricelist: "price_list_items" }[req.params.source];
+    // notes are per record: catalog = IPL/catalog row, pricelist = vendor price list row, annual = annual kit row
+    const table = { catalog: "catalog_parts", pricelist: "price_list_items", annual: "annual_parts" }[req.params.source];
     if (!table) throw new BadRequest("invalid source");
     if (typeof req.body?.notes !== "string") throw new BadRequest("notes must be text");
     const notes = str(req.body.notes, 4000, { field: "notes" });
     const { rows } = await pool.query(
-      `UPDATE ${table} SET notes=$1, notes_edited_at=now() WHERE id=$2 RETURNING id, notes, updated_at`,
+      `UPDATE ${table} SET notes=$1, notes_edited_at=now() WHERE id=$2 RETURNING id, notes, obsolete, updated_at`,
       [notes, id(req.params.id)]);
     if (!rows[0]) return res.status(404).json({ error: "not found" });
-    if (table === "catalog_parts") onCatalogChanged?.();
+    if (table !== "price_list_items") onCatalogChanged?.();
     res.json(rows[0]);
   }));
 

@@ -1,7 +1,8 @@
 // Raypak price list -> Raypak catalog (catalog_parts) prices.
 // The newest saved Raypak price list is the only source of Raypak list prices:
 //  - every catalog row whose part number is in the list gets the list's price and description
-//  - every other catalog row gets price 0 and "Obsolete" appended to its notes (once)
+//  - every other catalog row gets price 0 and obsolete = true (shown as "Obsolete" next to the notes;
+//    notes themselves are IPL / user text and are never changed here)
 //  - annual kit rows (annual_parts) follow the same rule (price + description from the list, else 0 + "Obsolete")
 //  - part numbers in the list that are not in the catalog are added (no IPL info), series "Raypak Price List"
 //  - catalog_parts / annual_parts rows are NEVER deleted by a price list upload, update or delete: prices only
@@ -9,10 +10,6 @@
 
 export const RAYPAK_ADDED_SERIES = "Raypak Price List";
 
-// SQL expressions on c.notes: append / remove the "Obsolete" note
-const ADD_OBSOLETE = `CASE WHEN COALESCE(c.notes, '') ~* '\\mobsolete\\M' THEN c.notes
-                          WHEN COALESCE(c.notes, '') = '' THEN 'Obsolete' ELSE c.notes || '; Obsolete' END`;
-const DROP_OBSOLETE = `regexp_replace(COALESCE(c.notes, ''), '(^|; )Obsolete$', '')`;
 
 const count = async (client, sql, params) => Number((await client.query(sql, params)).rows[0].n);
 
@@ -40,30 +37,26 @@ export async function applyRaypakList(client, listId) {
   const updated = (await client.query(
     `UPDATE catalog_parts c SET list_price = r.list_price,
             description = COALESCE(NULLIF(r.description, ''), c.description),
-            price_source = 'raypak price list', price_list_id = $1
+            price_source = 'raypak price list', price_list_id = $1,
+            -- back in the list: no longer obsolete (only if this rule had flagged it)
+            obsolete = CASE WHEN c.price_source = 'not in raypak price list' THEN false ELSE c.obsolete END
        FROM _raypak_new r WHERE upper(trim(c.part_number)) = r.pn`, [id])).rowCount;
-  // Not in the list: price 0, "Obsolete" appended to the notes (never duplicated)
+  // Not in the list: price 0 + obsolete flag
   const cleared = (await client.query(
-    `UPDATE catalog_parts c SET list_price = 0, obsolete = true, price_source = 'not in raypak price list', price_list_id = $1,
-            notes = ${ADD_OBSOLETE}
+    `UPDATE catalog_parts c SET list_price = 0, obsolete = true, price_source = 'not in raypak price list', price_list_id = $1
       WHERE NOT c.from_price_list AND NOT ${inList}`, [id])).rowCount;
-  // Back in the list: drop the "Obsolete" marker this rule added earlier
-  await client.query(
-    `UPDATE catalog_parts c SET obsolete = false, notes = ${DROP_OBSOLETE}
-      WHERE ${inList} AND c.notes ~ '(^|; )Obsolete$'`);
   // Annual kit
   const annualUpdated = (await client.query(
     `UPDATE annual_parts a SET price = r.list_price, description = COALESCE(NULLIF(r.description, ''), a.description),
-            obsolete = (a.obsolete AND a.notes !~ '(^|; )Obsolete$'), notes = ${DROP_OBSOLETE.replace(/c\.notes/g, "a.notes")}
+            obsolete = false
        FROM _raypak_new r WHERE upper(trim(a.pn)) = r.pn`)).rowCount;
   const annualObsolete = (await client.query(
-    `UPDATE annual_parts a SET price = 0, obsolete = true, notes = ${ADD_OBSOLETE.replace(/c\.notes/g, "a.notes")}
+    `UPDATE annual_parts a SET price = 0, obsolete = true
       WHERE trim(a.pn) <> '' AND NOT EXISTS (SELECT 1 FROM _raypak_new r WHERE r.pn = upper(trim(a.pn)))`)).rowCount;
-  // parts a previous Raypak list added that are no longer listed: price 0 + "Obsolete" (rows are NEVER deleted)
+  // parts a previous Raypak list added that are no longer listed: price 0 + obsolete (rows are NEVER deleted)
   const removed = 0;
   const addedObsolete = (await client.query(
-    `UPDATE catalog_parts c SET list_price = 0, obsolete = true, price_source = 'not in raypak price list', price_list_id = $1,
-            notes = ${ADD_OBSOLETE}
+    `UPDATE catalog_parts c SET list_price = 0, obsolete = true, price_source = 'not in raypak price list', price_list_id = $1
       WHERE c.from_price_list AND NOT ${inList}`, [id])).rowCount;
   const added = (await client.query(
     `INSERT INTO catalog_parts (series, part_number, description, list_price, vendor, manufacturer,

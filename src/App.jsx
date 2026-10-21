@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useData } from "./DataContext";
 import QuoteHeaderFields from "./components/QuoteHeaderFields";
 import { api } from "./api";
-import MasterPriceList from "./components/MasterPriceList";
+import MasterPriceList, { NotesCell } from "./components/MasterPriceList";
 import { jsPDF } from "jspdf";
 import {
   generateQuoteNumber,
@@ -546,7 +546,15 @@ function App() {
                         <td>{part.pn}</td>
                         <td style={{ wordBreak: "break-word" }}>
                           {part.description}
-                          {part.notes && <div style={{ fontSize: "12px", color: part.notes.match(/obsolete/i) ? "#b91c1c" : "#666", marginTop: 3 }}>Note: {part.notes}</div>}
+                          <div style={{ fontSize: "12px", color: "#666", marginTop: 3 }}>
+                            <NotesCell row={{ source: "annual", id: part.id, notes: part.notes, obsolete: part.obsolete }}
+                              onSaved={(notes) => {
+                                setAnnualResults((rs) => rs.map((x) => (x.id === part.id ? { ...x, notes } : x)));
+                                // keep the loaded data in sync for the next search
+                                for (const ser of Object.values(partsData)) for (const ps of Object.values(ser))
+                                  for (const p of ps) if (p.id === part.id) p.notes = notes;
+                              }} />
+                          </div>
                         </td>
                         <td>{money(part.price)}</td>
                         <td style={{ textAlign: "center" }}>

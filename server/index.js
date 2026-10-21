@@ -110,11 +110,11 @@ app.get("/api/health", async (req, res) => {
               (SELECT count(*) FROM catalog_parts WHERE NOT from_price_list)::int AS ipl_rows,
               (SELECT count(*) FROM catalog_parts WHERE NOT from_price_list AND source_url IS NOT NULL)::int AS ipl_rows_with_link,
               (SELECT count(*) FROM catalog_parts WHERE COALESCE(list_price, 0) > 0)::int AS catalog_priced,
-              (SELECT count(*) FROM catalog_parts WHERE list_price = 0 AND notes ~* '\\mobsolete\\M')::int AS catalog_obsolete_zero,
-              (SELECT count(*) FROM annual_parts WHERE price = 0 AND notes ~* '\\mobsolete\\M')::int AS annual_obsolete_zero,
+              (SELECT count(*) FROM catalog_parts WHERE list_price = 0 AND obsolete)::int AS catalog_obsolete_zero,
+              (SELECT count(*) FROM annual_parts WHERE price = 0 AND obsolete)::int AS annual_obsolete_zero,
               (SELECT count(*) FROM price_lists WHERE is_raypak)::int AS raypak_lists,
               (SELECT count(*) FROM price_lists)::int AS price_lists`);
-    res.json({ ok: true, rule: "raypak-obsolete-v2", ...rows[0], startup_raypak: startupRaypak });
+    res.json({ ok: true, rule: "raypak-obsolete-v3", ...rows[0], startup_raypak: startupRaypak });
   } catch (e) {
     res.status(500).json({ ok: false, error: "database error" });
   }
@@ -127,7 +127,7 @@ let cache = null;
 async function loadData() {
   if (cache) return cache;
   const annual = await pool.query(
-    "SELECT series, model, pn, description, price, annual, default_qty, notes FROM annual_parts ORDER BY id"
+    "SELECT id, series, model, pn, description, price, annual, default_qty, notes, obsolete FROM annual_parts ORDER BY id"
   );
   const partsData = {};
   for (const r of annual.rows) {
@@ -137,7 +137,9 @@ async function loadData() {
       price: r.price,
       annual: r.annual,
       defaultQty: r.default_qty,
+      id: r.id,
       notes: r.notes || "",
+      obsolete: r.obsolete,
     });
   }
   const cat = await pool.query(

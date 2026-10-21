@@ -14,44 +14,55 @@ function noteLines(item) {
   return [...(src && !redundant ? [src] : []), ...gen];
 }
 
-function NotesCell({ row, onSaved }) {
+// Inline notes editor: click to edit; Enter or leaving the field saves, Shift+Enter = new line, Esc cancels.
+// The "Obsolete" tag comes from the part's obsolete flag, so it always shows, whatever the note says.
+export function NotesCell({ row, onSaved }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(row.notes || "");
-  const [state, setState] = useState(""); // "", "saving", "error"
+  const [state, setState] = useState(""); // "", "saving", "saved", "error"
+  const [err, setErr] = useState("");
+  const cancelled = useRef(false);
 
   const save = async () => {
+    if (cancelled.current) { cancelled.current = false; return; }
     if (value === (row.notes || "")) return setEditing(false);
     setState("saving");
     try {
       const r = await api(`/master/${row.source}/${row.id}/notes`, { method: "PATCH", body: { notes: value } });
       onSaved(r.notes);
-      setState(""); setEditing(false);
-    } catch { setState("error"); }
+      setEditing(false); setState("saved");
+      setTimeout(() => setState((s) => (s === "saved" ? "" : s)), 2000);
+    } catch (e) { setErr(e.message || "Could not save"); setState("error"); }
   };
+  const tag = row.obsolete
+    ? <span style={{ display: "inline-block", fontSize: "11px", fontWeight: 600, color: "#b91c1c", background: "#fee2e2", borderRadius: "8px", padding: "0 6px", marginRight: "4px" }}>Obsolete</span>
+    : null;
 
   if (!editing) {
     return (
-      <div onClick={() => { setValue(row.notes || ""); setEditing(true); }} title="Click to add / edit notes"
-        style={{ cursor: "text", minHeight: "20px", whiteSpace: "pre-wrap", wordBreak: "break-word", color: row.notes ? undefined : "#94a3b8" }}>
-        {row.notes || "+ note"}
+      <div>
+        {tag}
+        <div onClick={() => { setValue(row.notes || ""); setState(""); setEditing(true); }} title="Click to add / edit notes"
+          style={{ display: "inline", cursor: "text", whiteSpace: "pre-wrap", wordBreak: "break-word", color: row.notes ? undefined : "#94a3b8" }}>
+          {row.notes || "+ note"}
+        </div>
+        {state === "saved" && <div style={{ color: "#059669", fontSize: "11px" }}>Saved</div>}
       </div>
     );
   }
   return (
     <div>
-      <textarea autoFocus value={value} rows={3} onChange={(e) => setValue(e.target.value)}
+      {tag}
+      <textarea autoFocus value={value} rows={3} disabled={state === "saving"} onChange={(e) => setValue(e.target.value)}
+        onBlur={save}
         onKeyDown={(e) => {
-          if (e.key === "Escape") { setValue(row.notes || ""); setEditing(false); }
-          if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) save();
+          if (e.key === "Escape") { cancelled.current = true; setValue(row.notes || ""); setEditing(false); setState(""); }
+          else if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); e.currentTarget.blur(); }
         }}
         style={{ width: "100%", boxSizing: "border-box", fontSize: "12px", padding: "4px" }} />
-      <div style={{ display: "flex", gap: "4px", marginTop: "2px" }}>
-        <button onClick={save} disabled={state === "saving"} style={{ padding: "3px 8px", fontSize: "12px", background: "#059669", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
-          {state === "saving" ? "..." : "Save"}
-        </button>
-        <button onClick={() => { setValue(row.notes || ""); setEditing(false); setState(""); }} style={{ padding: "3px 8px", fontSize: "12px" }}>Cancel</button>
+      <div style={{ fontSize: "11px", color: state === "error" ? "#dc2626" : "#64748b" }}>
+        {state === "saving" ? "Saving..." : state === "error" ? `${err} (Enter to retry, Esc to cancel)` : "Enter = save, Shift+Enter = new line, Esc = cancel"}
       </div>
-      {state === "error" && <div style={{ color: "#dc2626", fontSize: "12px" }}>Could not save</div>}
     </div>
   );
 }
@@ -64,7 +75,6 @@ export default function MasterPriceList({ onAdd }) {
   const [sectionFilter, setSectionFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [vendorFilter, setVendorFilter] = useState("");
-  const [showUnpriced, setShowUnpriced] = useState(false);
   const [page, setPage] = useState(1);
   const [facets, setFacets] = useState({ series: [], sections: [], categories: [], models: [], vendors: [] });
   const [data, setData] = useState({ total: 0, rows: [] });
@@ -72,7 +82,7 @@ export default function MasterPriceList({ onAdd }) {
   const reqId = useRef(0);
 
   useEffect(() => { api("/master/facets").then(setFacets).catch(() => {}); }, []);
-  useEffect(() => { setPage(1); }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter, showUnpriced]);
+  useEffect(() => { setPage(1); }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter]);
   useEffect(() => {
     const my = ++reqId.current;
     const t = setTimeout(async () => {
@@ -80,7 +90,7 @@ export default function MasterPriceList({ onAdd }) {
       try {
         const p = new URLSearchParams({
           q: search.trim(), series: seriesFilter, model: modelFilter.trim(), section: sectionFilter,
-          category: categoryFilter, vendor: vendorFilter, unpriced: showUnpriced ? "1" : "", page: String(page), pageSize: String(pageSize),
+          category: categoryFilter, vendor: vendorFilter, page: String(page), pageSize: String(pageSize),
         });
         const r = await api(`/master?${p}`);
         if (my === reqId.current) setData(r);
@@ -88,13 +98,12 @@ export default function MasterPriceList({ onAdd }) {
       finally { if (my === reqId.current) setLoading(false); }
     }, 200);
     return () => clearTimeout(t);
-  }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter, showUnpriced, page]);
+  }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter, page]);
 
   const totalPages = Math.max(1, Math.ceil(data.total / pageSize));
-  const hasFilters = !!(search || seriesFilter || modelFilter || sectionFilter || categoryFilter || vendorFilter || showUnpriced);
+  const hasFilters = !!(search || seriesFilter || modelFilter || sectionFilter || categoryFilter || vendorFilter);
   const clearAll = () => {
-    setSearch(""); setSeriesFilter(""); setModelFilter(""); setSectionFilter(""); setCategoryFilter(""); setVendorFilter("");
-    setShowUnpriced(false); setPage(1);
+    setSearch(""); setSeriesFilter(""); setModelFilter(""); setSectionFilter(""); setCategoryFilter(""); setVendorFilter(""); setPage(1);
   };
   const setRowNotes = (row, notes) =>
     setData((d) => ({ ...d, rows: d.rows.map((x) => (x.source === row.source && x.id === row.id ? { ...x, notes } : x)) }));
@@ -127,7 +136,6 @@ export default function MasterPriceList({ onAdd }) {
 
       <div style={{ fontSize: "13px", color: "#666", marginBottom: "10px", display: "flex", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>
         <span>Showing {data.rows.length} of {data.total} items{loading ? " …" : ""}</span>
-        <label><input type="checkbox" checked={showUnpriced} onChange={(e) => setShowUnpriced(e.target.checked)} /> Include parts without a list price</label>
       </div>
 
       <div style={{ maxHeight: "620px", overflowY: "auto", overflowX: "auto", border: "1px solid #ddd", background: "white" }}>

@@ -40,9 +40,9 @@ async function setup() {
   const counts = async () => (await db.query(
     `SELECT (SELECT count(*) FROM annual_parts)::int a, (SELECT count(*) FROM catalog_parts WHERE NOT from_price_list)::int ipl,
             (SELECT count(*) FROM catalog_parts WHERE source_url IS NOT NULL)::int links`)).rows[0];
-  const cat = async () => (await db.query("SELECT part_number, model, list_price::float8 p, notes, call_out, source_url FROM catalog_parts ORDER BY id")).rows;
-  const ann = async () => (await db.query("SELECT pn, price, notes FROM annual_parts ORDER BY id")).rows;
-  return { upload, del, counts, cat, ann };
+  const cat = async () => (await db.query("SELECT id, part_number, model, list_price::float8 p, notes, obsolete, call_out, source_url FROM catalog_parts ORDER BY id")).rows;
+  const ann = async () => (await db.query("SELECT pn, price, notes, obsolete FROM annual_parts ORDER BY id")).rows;
+  return { db, upload, del, counts, cat, ann };
 }
 
 test("upload, re-upload and delete of Raypak price lists keep all annual kit and IPL rows", async () => {
@@ -54,10 +54,10 @@ test("upload, re-upload and delete of Raypak price lists keep all annual kit and
   let c = await t.cat();
   assert.deepEqual(c.filter((r) => r.part_number === "A1").map((r) => r.p), [10, 10]); // same price for every model
   const c3 = c.find((r) => r.part_number === "C3");
-  assert.equal(c3.p, 0); assert.equal(c3.notes, "see manual; Obsolete");
+  assert.equal(c3.p, 0); assert.equal(c3.obsolete, true); assert.equal(c3.notes, "see manual"); // notes untouched
   assert.equal(c3.call_out, "2B"); assert.equal(c3.source_url, "http://ipl/2");
   let a = await t.ann();
-  assert.equal(a[0].price, 10); assert.equal(a[1].price, 0); assert.equal(a[1].notes, "Obsolete");
+  assert.equal(a[0].price, 10); assert.equal(a[1].price, 0); assert.equal(a[1].obsolete, true); assert.equal(a[1].notes, "");
 
   // second list without B2: B2 (added by list 1) is kept with price 0, notes not duplicated
   const l2 = await t.upload([["A1", "New A1", 12]]);
@@ -65,7 +65,7 @@ test("upload, re-upload and delete of Raypak price lists keep all annual kit and
   c = await t.cat();
   assert.equal(c.length, 4);
   assert.equal(c.find((r) => r.part_number === "B2").p, 0);
-  assert.equal(c.find((r) => r.part_number === "C3").notes, "see manual; Obsolete");
+  assert.equal(c.find((r) => r.part_number === "C3").notes, "see manual");
 
   await t.del(l2); // falls back to list 1
   assert.deepEqual(await t.counts(), before);
@@ -78,6 +78,21 @@ test("upload, re-upload and delete of Raypak price lists keep all annual kit and
   assert.equal(c.length, 4);
   assert.ok(c.every((r) => r.p === 0));
   assert.ok((await t.ann()).every((r) => r.price === 0));
+});
+
+test("user-edited notes survive price list uploads; obsolete flag still set and cleared", async () => {
+  const t = await setup();
+  await t.upload([["A1", "New A1", 10]]);
+  const c3 = (await t.cat()).find((r) => r.part_number === "C3");
+  // same UPDATE as PATCH /api/master/catalog/:id/notes
+  await t.db.query("UPDATE catalog_parts SET notes=$1 WHERE id=$2", ["Use C4 instead - not obsolete!", c3.id]);
+  await t.upload([["A1", "New A1", 11]]);
+  let r = (await t.cat()).find((x) => x.id === c3.id);
+  assert.equal(r.notes, "Use C4 instead - not obsolete!"); assert.equal(r.obsolete, true); assert.equal(r.p, 0);
+  await t.upload([["A1", "New A1", 11], ["C3", "C3 back", 9]]); // back in the list
+  r = (await t.cat()).find((x) => x.id === c3.id);
+  assert.equal(r.notes, "Use C4 instead - not obsolete!"); assert.equal(r.obsolete, false); assert.equal(r.p, 9);
+  assert.equal(r.call_out, "2B"); assert.equal(r.source_url, "http://ipl/2");
 });
 
 test("price list code never deletes annual_parts or catalog_parts rows", () => {

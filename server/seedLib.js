@@ -60,6 +60,9 @@ export async function seedDatabase(pool, partsData, partsCatalog) {
     const kept = (await client.query(
       `SELECT series, model, part_number, call_out, notes, notes_edited_at FROM catalog_parts WHERE notes_edited_at IS NOT NULL`
     )).rows;
+    const keptAnnual = (await client.query(
+      `SELECT series, model, pn, notes, notes_edited_at FROM annual_parts WHERE notes_edited_at IS NOT NULL`
+    )).rows;
     await client.query(`TRUNCATE annual_parts, catalog_parts RESTART IDENTITY;`);
     await insertBatched(client, "annual_parts",
       ["series", "model", "pn", "description", "price", "annual", "default_qty"],
@@ -76,11 +79,16 @@ export async function seedDatabase(pool, partsData, partsCatalog) {
           WHERE series=$1 AND model=$2 AND part_number=$3 AND call_out=$4`,
         [k.series, k.model, k.part_number, k.call_out, k.notes, k.notes_edited_at]);
     }
+    for (const k of keptAnnual) {
+      await client.query(
+        `UPDATE annual_parts SET notes=$4, notes_edited_at=$5 WHERE series=$1 AND model=$2 AND pn=$3`,
+        [k.series, k.model, k.pn, k.notes, k.notes_edited_at]);
+    }
     // Raypak prices come from the newest uploaded Raypak price list (if any), not from the seed data
     // (after restoring edited notes so the "Obsolete" note is kept)
     const raypak = await applyLatestRaypakList(client);
     await client.query("COMMIT");
-    return { notesKept: kept.length, annual: annual.length, catalog: partsCatalog.length, raypak };
+    return { notesKept: kept.length, annualNotesKept: keptAnnual.length, annual: annual.length, catalog: partsCatalog.length, raypak };
   } catch (e) {
     await client.query("ROLLBACK");
     throw e;
