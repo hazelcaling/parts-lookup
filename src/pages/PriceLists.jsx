@@ -123,8 +123,6 @@ export default function PriceLists() {
               ))}
             </tbody>
           </table>
-          If the same part number appears more than once, one row is kept (the higher list price).
-          For a Raypak price list, every Raypak IPL and annual kit part takes its price from this list; parts not in it are set to $0 with the note "Obsolete". IPL and annual kit parts are never deleted.
         </div>
         <label
           onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
