@@ -7,7 +7,7 @@ const TYPES = ["contractor", "wholesaler", "end user", "vendor"];
 
 export default function CompanyModal({ initialName = "", onSaved, onClose }) {
   const [f, setF] = useState({
-    name: initialName, type: "contractor", address1: "", address2: "", city: "",
+    name: initialName, type: "", address1: "", address2: "", city: "",
     state: "", zipcode: "", phone: "", email: "", notes: "",
   });
   const [error, setError] = useState("");
@@ -26,7 +26,8 @@ export default function CompanyModal({ initialName = "", onSaved, onClose }) {
     <Modal title="Add New Company" onClose={onClose}>
       <form onSubmit={save} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
         <input style={{ ...inputStyle, gridColumn: "1 / -1" }} placeholder="Company name *" value={f.name} onChange={set("name")} autoFocus required />
-        <select style={inputStyle} value={f.type} onChange={set("type")}>
+        <select style={inputStyle} value={f.type ?? ""} onChange={set("type")}>
+          <option value="">— No type —</option>
           {TYPES.map((t) => <option key={t} value={t}>{t[0].toUpperCase() + t.slice(1)}</option>)}
         </select>
         <input style={inputStyle} placeholder="Phone" value={f.phone} onChange={set("phone")} />

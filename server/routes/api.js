@@ -38,8 +38,8 @@ const limitOf = (v, def = 10, max = 200) => Math.min(Math.max(parseInt(v, 10) ||
 
 const COMPANY_TYPES = ["contractor", "wholesaler", "end user", "vendor"];
 function companyInput(b) {
-  const type = str(b.type, 20, { field: "type" }) || "contractor";
-  if (!COMPANY_TYPES.includes(type)) throw new BadRequest(`type must be one of: ${COMPANY_TYPES.join(", ")}`);
+  const type = str(b.type, 20, { field: "type" }) || null; // blank = no type
+  if (type !== null && !COMPANY_TYPES.includes(type)) throw new BadRequest(`type must be one of: ${COMPANY_TYPES.join(", ")}`);
   const email = str(b.email, 200, { field: "email" });
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new BadRequest("email is invalid");
   return {
