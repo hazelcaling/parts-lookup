@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Autosuggest from "./Autosuggest";
-import CompanyModal from "./CompanyModal";
+import { normName } from "../utils/names";
 import ContactModal from "./ContactModal";
 import { api } from "../api";
 
@@ -18,6 +18,17 @@ export default function QuoteHeaderFields({
   const [msg, setMsg] = useState("");
 
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(""), 2500); };
+  // header Clear button resets the company -> forget the selected company too
+  useEffect(() => { if (!company) setSelCompany(null); }, [company]);
+
+  // Save just the name (no details pop-up). The server returns the existing company if the name is already saved.
+  const addCompany = async (name) => {
+    try {
+      const c = await api("/companies", { method: "POST", body: { name } });
+      setSelCompany(c); setCompany(c.name);
+      flash(c.existing ? "Company already saved" : "Company saved");
+    } catch (e) { flash(e.message); }
+  };
 
   return (
     <>
@@ -37,7 +48,8 @@ export default function QuoteHeaderFields({
         )}
         onSelect={(c) => { setSelCompany(c); setCompany(c.name); }}
         addLabel={(s) => `+ Add new company "${s}"`}
-        onAdd={(s) => setModal({ kind: "company", name: s })}
+        onAdd={addCompany}
+        hideAdd={(items, s) => items.some((c) => normName(c.name) === normName(s))}
       />
       <Autosuggest
         placeholder="Model"
@@ -86,13 +98,6 @@ export default function QuoteHeaderFields({
         }}
       />
 
-      {modal?.kind === "company" && (
-        <CompanyModal
-          initialName={modal.name}
-          onClose={() => setModal(null)}
-          onSaved={(c) => { setSelCompany(c); setCompany(c.name); setModal(null); flash("Company saved"); }}
-        />
-      )}
       {modal?.kind === "contact" && selCompany && (
         <ContactModal
           company={selCompany}

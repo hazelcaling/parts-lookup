@@ -1,4 +1,5 @@
 import express from "express";
+import { normName, normNameSql as NORM_SQL } from "../names.js";
 import { applyRaypakList, applyLatestRaypakList } from "../raypak.js";
 
 // Small validation helpers -------------------------------------------------

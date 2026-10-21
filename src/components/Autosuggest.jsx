@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 // addLabel(q) / onAdd(q): optional "+ Add ..." entry shown at the bottom.
 export default function Autosuggest({
   value, onChange, placeholder, fetchItems, renderItem, onSelect,
-  addLabel, onAdd, minChars = 1, style, disabled,
+  addLabel, onAdd, hideAdd, minChars = 1, style, disabled,
 }) {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
@@ -31,7 +31,8 @@ export default function Autosuggest({
     }, 150);
   };
 
-  const showAdd = onAdd && addLabel && String(value || "").trim() !== "";
+  // hideAdd(items, text): e.g. don't offer "+ Add" when the text already matches an existing item
+  const showAdd = onAdd && addLabel && String(value || "").trim() !== "" && !(hideAdd && hideAdd(items, String(value || "")));
   const entries = [...items.map((it) => ({ it })), ...(showAdd ? [{ add: true }] : [])];
 
   const choose = (e) => {

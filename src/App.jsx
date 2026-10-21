@@ -392,6 +392,11 @@ function App() {
   const allAnnualSelected =
     annualResults.length > 0 && annualResults.every((item) => item.selected);
 
+  // Quote header Clear: header fields only, line items are kept
+  const clearHeader = () => {
+    setCompany(""); setAttn(""); setModelField(""); setSerial(""); setJob("");
+  };
+
   const scrollToQuoteForm = () => {
     quoteFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -595,7 +600,13 @@ function App() {
           minHeight: "520px",
         }}
       >
-        <h2 style={{ marginTop: 0, marginBottom: "16px" }}>Create Quote</h2>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", marginBottom: "16px" }}>
+          <h2 style={{ margin: 0 }}>Create Quote</h2>
+          <button type="button" onClick={clearHeader} title="Clear company, attn, model, serial and job (line items are kept)"
+            style={{ padding: "8px 14px", cursor: "pointer" }}>
+            Clear
+          </button>
+        </div>
 <div
   style={{
     display: "grid",
