@@ -7,7 +7,15 @@
     <title>parts-lookup</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown until the app's JavaScript starts (replaced by React) -->
+      <div style="max-width:380px;margin:15vh auto;padding:24px;text-align:center;font-family:system-ui,Arial,sans-serif">
+        <h2 style="margin-top:0">Parts Lookup</h2>
+        <div style="display:inline-block;width:32px;height:32px;border:3px solid #cbd5e1;border-top-color:#2563eb;border-radius:50%;animation:pl-boot-spin .8s linear infinite"></div>
+        <p style="font-weight:600">Opening Parts Lookup…</p>
+        <style>@keyframes pl-boot-spin{to{transform:rotate(360deg)}}</style>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

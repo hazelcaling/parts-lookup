@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 // Dropdown with a search box inside it to type-filter its options.
-export default function SearchableSelect({ value, onChange, options, allLabel, placeholder = "Search..." }) {
+export default function SearchableSelect({ value, onChange, options, allLabel, placeholder = "Search...", loading = false }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const ref = useRef(null);
@@ -35,7 +35,7 @@ export default function SearchableSelect({ value, onChange, options, allLabel, p
                 {l}
               </div>
             ))}
-            {!shown.length && <div style={{ padding: "6px 8px", color: "#94a3b8" }}>No matches</div>}
+            {!shown.length && <div style={{ padding: "6px 8px", color: "#94a3b8" }}>{loading ? "Loading options…" : "No matches"}</div>}
           </div>
         </div>
       )}

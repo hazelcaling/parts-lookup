@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import SearchableSelect from "./SearchableSelect";
 import { api } from "../api";
+import Spinner from "./Spinner";
+import { statusText } from "../utils/statusText";
 import { money } from "../utils/pdfHelpers";
 
 const pageSize = 25;
@@ -67,6 +69,8 @@ export function NotesCell({ row, onSaved }) {
   );
 }
 
+const SEARCH_DELAY_MS = 300; // wait until the user pauses typing before searching
+
 // Master Price List: Raypak catalog (IPL) + imported vendor price lists, searched on the server.
 export default function MasterPriceList({ onAdd }) {
   const [search, setSearch] = useState("");
@@ -77,49 +81,81 @@ export default function MasterPriceList({ onAdd }) {
   const [vendorFilter, setVendorFilter] = useState("");
   const [page, setPage] = useState(1);
   const [facets, setFacets] = useState({ series: [], sections: [], categories: [], models: [], vendors: [] });
+  const [facetsLoading, setFacetsLoading] = useState(true);
   const [data, setData] = useState({ total: 0, rows: [] });
-  const [loading, setLoading] = useState(false);
-  const reqId = useRef(0);
+  const [loaded, setLoaded] = useState(false); // first results have arrived
+  // busy: "" when idle, otherwise why results are loading: initial | searching | filtering | clearing | page | retry
+  const [busy, setBusy] = useState("initial");
+  const [error, setError] = useState("");
+  const [retryTick, setRetryTick] = useState(0);
+  const nextKind = useRef("initial");
 
-  useEffect(() => { api("/master/facets").then(setFacets).catch(() => {}); }, []);
-  useEffect(() => { setPage(1); }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter]);
   useEffect(() => {
-    const my = ++reqId.current;
+    api("/master/facets").then(setFacets).catch(() => {}).finally(() => setFacetsLoading(false));
+  }, []);
+
+  // Every change says right away what is happening and goes back to page 1 (except paging itself)
+  // (picking the value that is already selected changes nothing, so it doesn't show a message)
+  const change = (kind, cur, set) => (v) => {
+    if (v === cur && page === 1) return;
+    nextKind.current = kind; setBusy(kind); setError(""); set(v); setPage(1);
+  };
+  const onSearch = change("searching", search, setSearch);
+  const onSeries = change("filtering", seriesFilter, setSeriesFilter);
+  const onModel = change("filtering", modelFilter, setModelFilter);
+  const onSection = change("filtering", sectionFilter, setSectionFilter);
+  const onCategory = change("filtering", categoryFilter, setCategoryFilter);
+  const onVendor = change("filtering", vendorFilter, setVendorFilter);
+  const goPage = (p) => { if (p === page) return; nextKind.current = "page"; setBusy("page"); setError(""); setPage(p); };
+
+  useEffect(() => {
+    const kind = nextKind.current;
+    setBusy(kind);
+    const ctl = new AbortController();
     const t = setTimeout(async () => {
-      setLoading(true);
       try {
         const p = new URLSearchParams({
           q: search.trim(), series: seriesFilter, model: modelFilter.trim(), section: sectionFilter,
           category: categoryFilter, vendor: vendorFilter, page: String(page), pageSize: String(pageSize),
         });
-        const r = await api(`/master?${p}`);
-        if (my === reqId.current) setData(r);
-      } catch { /* keep previous */ }
-      finally { if (my === reqId.current) setLoading(false); }
-    }, 200);
-    return () => clearTimeout(t);
-  }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter, page]);
+        const r = await api(`/master?${p}`, { signal: ctl.signal });
+        if (ctl.signal.aborted) return;
+        setData(r); setLoaded(true); setError(""); setBusy("");
+      } catch (e) {
+        if (ctl.signal.aborted || e.name === "AbortError") return; // a newer search replaced this one
+        setError(e.message || "Could not load results"); setBusy("");
+      }
+    }, kind === "searching" ? SEARCH_DELAY_MS : 0);
+    return () => { clearTimeout(t); ctl.abort(); };
+  }, [search, seriesFilter, modelFilter, sectionFilter, categoryFilter, vendorFilter, page, retryTick]);
 
   const totalPages = Math.max(1, Math.ceil(data.total / pageSize));
   const hasFilters = !!(search || seriesFilter || modelFilter || sectionFilter || categoryFilter || vendorFilter);
   const clearAll = () => {
+    nextKind.current = "clearing"; setBusy("clearing"); setError("");
     setSearch(""); setSeriesFilter(""); setModelFilter(""); setSectionFilter(""); setCategoryFilter(""); setVendorFilter(""); setPage(1);
   };
+  const retry = () => { nextKind.current = "retry"; setBusy("retry"); setError(""); setRetryTick((n) => n + 1); };
   const setRowNotes = (row, notes) =>
     setData((d) => ({ ...d, rows: d.rows.map((x) => (x.source === row.source && x.id === row.id ? { ...x, notes } : x)) }));
+  const isBusy = !!busy;
 
   return (
     <div style={{ width: "100%", minWidth: 0, border: "1px solid #ddd", borderRadius: "10px", padding: "18px", background: "#fff", boxSizing: "border-box" }}>
       <h2 style={{ marginTop: 0, marginBottom: "16px", textAlign: "center" }}>Master Price List</h2>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
-        <input
-          type="text"
-          placeholder="Search part number, description, IPL description, notes"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ flex: 1, minWidth: 0, padding: "10px 12px", boxSizing: "border-box" }}
-        />
+        <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
+          <input
+            type="text"
+            placeholder="Search part number, description, IPL description, notes"
+            value={search}
+            onChange={(e) => onSearch(e.target.value)}
+            aria-busy={busy === "searching"}
+            style={{ width: "100%", padding: "10px 36px 10px 12px", boxSizing: "border-box" }}
+          />
+          {busy === "searching" && <Spinner style={{ position: "absolute", right: 12, top: "50%", marginTop: -7 }} />}
+        </div>
         <button onClick={clearAll} disabled={!hasFilters} title="Clear search and all filters"
           style={{ padding: "10px 14px", cursor: hasFilters ? "pointer" : "default", opacity: hasFilters ? 1 : 0.5 }}>
           Clear
@@ -127,19 +163,39 @@ export default function MasterPriceList({ onAdd }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: "10px", marginBottom: "12px" }}>
-        <SearchableSelect value={seriesFilter} onChange={setSeriesFilter} options={facets.series || []} allLabel="All Series" placeholder="Search series" />
-        <SearchableSelect value={modelFilter} onChange={setModelFilter} options={facets.models || []} allLabel="All Models" placeholder="Search model" />
-        <SearchableSelect value={sectionFilter} onChange={setSectionFilter} options={facets.sections || []} allLabel="All Sections" placeholder="Search section" />
-        <SearchableSelect value={categoryFilter} onChange={setCategoryFilter} options={facets.categories || []} allLabel="All Categories" placeholder="Search category" />
-        <SearchableSelect value={vendorFilter} onChange={setVendorFilter} options={facets.vendors || []} allLabel="All Vendors" placeholder="Search vendor" />
+        <SearchableSelect value={seriesFilter} onChange={onSeries} options={facets.series || []} allLabel="All Series" placeholder="Search series" loading={facetsLoading} />
+        <SearchableSelect value={modelFilter} onChange={onModel} options={facets.models || []} allLabel="All Models" placeholder="Search model" loading={facetsLoading} />
+        <SearchableSelect value={sectionFilter} onChange={onSection} options={facets.sections || []} allLabel="All Sections" placeholder="Search section" loading={facetsLoading} />
+        <SearchableSelect value={categoryFilter} onChange={onCategory} options={facets.categories || []} allLabel="All Categories" placeholder="Search category" loading={facetsLoading} />
+        <SearchableSelect value={vendorFilter} onChange={onVendor} options={facets.vendors || []} allLabel="All Vendors" placeholder="Search vendor" loading={facetsLoading} />
       </div>
 
       <div style={{ fontSize: "13px", color: "#666", marginBottom: "10px", display: "flex", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>
-        <span>Showing {data.rows.length} of {data.total} items{loading ? " …" : ""}</span>
+        <span role="status" aria-live="polite" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          {isBusy ? (
+            <><Spinner /><span style={{ color: "#1d4ed8", fontWeight: 600 }}>{statusText(busy, { search, page })}</span></>
+          ) : error ? (
+            <span style={{ color: "#dc2626" }}>
+              Could not load results ({error}).{" "}
+              <button onClick={retry} style={{ padding: "2px 8px", fontSize: "12px" }}>Try again</button>
+            </span>
+          ) : (
+            <span>Showing {data.rows.length} of {data.total} items{search.trim() ? ` for “${search.trim()}”` : ""}</span>
+          )}
+        </span>
       </div>
 
-      <div style={{ maxHeight: "620px", overflowY: "auto", overflowX: "auto", border: "1px solid #ddd", background: "white" }}>
-        <table border="1" cellPadding="6" style={{ borderCollapse: "collapse", width: "100%", minWidth: "860px", fontSize: "13px", tableLayout: "fixed" }}>
+      <div aria-busy={isBusy} style={{ position: "relative", maxHeight: "620px", overflowY: "auto", overflowX: "auto", border: "1px solid #ddd", background: "white" }}>
+        {isBusy && loaded && (
+          <div style={{ position: "sticky", top: 0, left: 0, height: 0, zIndex: 2, display: "flex", justifyContent: "center" }}>
+            <span style={{ marginTop: "40px", background: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe", borderRadius: "16px",
+              padding: "6px 14px", fontSize: "13px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "8px", boxShadow: "0 2px 8px rgba(0,0,0,.08)" }}>
+              <Spinner /> {statusText(busy, { search, page })}
+            </span>
+          </div>
+        )}
+        <table border="1" cellPadding="6" style={{ borderCollapse: "collapse", width: "100%", minWidth: "860px", fontSize: "13px", tableLayout: "fixed",
+          opacity: isBusy && loaded ? 0.45 : 1, transition: "opacity .15s" }}>
           <thead style={{ position: "sticky", top: 0, background: "#f3f3f3", zIndex: 1 }}>
             <tr>
               <th style={{ width: "65px" }}>Add</th>
@@ -151,6 +207,17 @@ export default function MasterPriceList({ onAdd }) {
             </tr>
           </thead>
           <tbody>
+            {!data.rows.length && (
+              <tr>
+                <td colSpan={6} style={{ textAlign: "center", padding: "28px", color: "#64748b" }}>
+                  {!loaded && !error ? <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}><Spinner /> Loading Master Price List…</span>
+                    : isBusy ? null
+                    : error ? "Results could not be loaded."
+                    : hasFilters ? "No parts match your search or filters. Try fewer words, or press Clear."
+                    : "No parts found."}
+                </td>
+              </tr>
+            )}
             {data.rows.map((item) => (
               <tr key={`${item.source}-${item.id}`}>
                 <td style={{ textAlign: "center" }}>
@@ -195,8 +262,8 @@ export default function MasterPriceList({ onAdd }) {
 
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: "14px", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
         <div>
-          <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} style={{ padding: "8px 12px", marginRight: "8px" }}>Prev</button>
-          <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ padding: "8px 12px" }}>Next</button>
+          <button onClick={() => goPage(Math.max(1, page - 1))} disabled={page === 1 || busy === "page"} style={{ padding: "8px 12px", marginRight: "8px" }}>Prev</button>
+          <button onClick={() => goPage(Math.min(totalPages, page + 1))} disabled={page === totalPages || busy === "page"} style={{ padding: "8px 12px" }}>Next</button>
         </div>
         <div style={{ fontSize: "13px" }}>Page {page} of {totalPages}</div>
       </div>

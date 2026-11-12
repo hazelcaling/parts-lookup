@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,6 +9,7 @@ import { seedDatabase } from "./seedLib.js";
 import { migrate } from "./migrate.js";
 import { apiRouter } from "./routes/api.js";
 import { applyLatestRaypakList } from "./raypak.js";
+import { createStartupData } from "./startupData.js";
 
 const { APP_PASSWORD, SESSION_SECRET } = process.env;
 if (!APP_PASSWORD || !SESSION_SECRET) {
@@ -21,6 +23,8 @@ const isProd = process.env.NODE_ENV === "production";
 const app = express();
 app.set("trust proxy", 1);
 app.use(cookieParser(SESSION_SECRET));
+// gzip API responses and the JS/CSS bundle (the startup bundle is ~3x smaller over the wire)
+app.use(compression());
 
 const safeEqual = (a, b) => {
   const ha = crypto.createHash("sha256").update(String(a)).digest();
@@ -88,7 +92,7 @@ app.post("/api/admin/seed", async (req, res) => {
   try {
     const { partsData, partsCatalog } = req.body || {};
     const result = await seedDatabase(pool, partsData, partsCatalog);
-    cache = null;
+    clearCache();
     res.json({ ok: true, ...result });
   } catch (e) {
     console.error("seed failed:", e.message);
@@ -122,51 +126,29 @@ app.get("/api/health", async (req, res) => {
 
 app.get("/api/session", (req, res) => res.json({ loggedIn: isLoggedIn(req) }));
 
-// Cache data in memory (data only changes when re-seeded; restart to refresh)
-let cache = null;
-async function loadData() {
-  if (cache) return cache;
-  const annual = await pool.query(
-    "SELECT id, series, model, pn, description, price, annual, default_qty, notes, obsolete FROM annual_parts ORDER BY id"
-  );
-  const partsData = {};
-  for (const r of annual.rows) {
-    ((partsData[r.series] ??= {})[r.model] ??= []).push({
-      pn: r.pn,
-      description: r.description,
-      price: r.price,
-      annual: r.annual,
-      defaultQty: r.default_qty,
-      id: r.id,
-      notes: r.notes || "",
-      obsolete: r.obsolete,
-    });
-  }
-  const cat = await pool.query(
-    `SELECT series, model, part_number AS "partNumber", description, list_price AS "listPrice",
-            call_out AS "callOut", section, ipl_description AS "iplDescription", notes
-       FROM catalog_parts ORDER BY id`
-  );
-  cache = { partsData, partsCatalog: cat.rows };
-  return cache;
-}
+// Startup data (Annual Kit only), cached in memory and serialized once; cleared when data changes
+const startupData = createStartupData(pool);
+const loadData = startupData.load;
+const clearCache = startupData.clear;
 
 app.get("/api/data", requireAuth, async (req, res) => {
   try {
     res.set("Cache-Control", "private, no-store");
-    res.json(await loadData());
+    res.type("application/json").send((await loadData()).json);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "database error" });
   }
 });
 
-app.use("/api", requireAuth, apiRouter(pool, { onCatalogChanged: () => { cache = null; } }));
+app.use("/api", requireAuth, apiRouter(pool, { onCatalogChanged: clearCache }));
 app.use("/api", (req, res) => res.status(404).json({ error: "not found" }));
 
 const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
-app.use(express.static(dist));
-app.get(/^(?!\/api\/).*/, (req, res) => res.sendFile(path.join(dist, "index.html")));
+// Hashed build files (dist/assets/*) never change, so browsers can keep them; index.html is always revalidated
+app.use("/assets", express.static(path.join(dist, "assets"), { immutable: true, maxAge: "1y" }));
+app.use(express.static(dist, { setHeaders: (res, p) => { if (p.endsWith(".html")) res.set("Cache-Control", "no-cache"); } }));
+app.get(/^(?!\/api\/).*/, (req, res) => { res.set("Cache-Control", "no-cache"); res.sendFile(path.join(dist, "index.html")); });
 
 // Re-apply the newest Raypak price list on boot (idempotent) so rule changes take effect on existing data
 let startupRaypak = null;
@@ -176,7 +158,7 @@ async function applyRaypakOnBoot() {
     await client.query("BEGIN");
     startupRaypak = await applyLatestRaypakList(client);
     await client.query("COMMIT");
-    cache = null;
+    clearCache();
     console.log("raypak list re-applied:", JSON.stringify(startupRaypak));
   } catch (e) {
     await client.query("ROLLBACK").catch(() => {});
@@ -189,5 +171,9 @@ async function applyRaypakOnBoot() {
 
 migrate(pool)
   .then(applyRaypakOnBoot)
-  .then(() => app.listen(PORT, () => console.log(`parts-lookup listening on ${PORT}`)))
+  .then(() => app.listen(PORT, () => {
+    console.log(`parts-lookup listening on ${PORT}`);
+    // Warm the startup data so the first person to open the app after a restart doesn't wait for it
+    loadData().catch((e) => console.error("data warm-up failed:", e.message));
+  }))
   .catch((e) => { console.error(e.message); process.exit(1); });
