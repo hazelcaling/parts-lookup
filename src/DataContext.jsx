@@ -126,7 +126,6 @@ export function DataProvider({ children }) {
           style={{ width: "100%", padding: 10, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: signingIn ? "wait" : "pointer" }}>
           {signingIn ? <><Spinner /> Signing in…</> : "Log in"}
         </button>
-        {signingIn && <p role="status" style={{ color: "#64748b", fontSize: 14 }}>Checking your password…</p>}
         {error && <p role="alert" style={{ color: "#c00" }}>{error}</p>}
       </form>
     );
