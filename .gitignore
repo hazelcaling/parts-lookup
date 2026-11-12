@@ -34,3 +34,6 @@ src/data/
 # Python virtualenv
 venv/
 __pycache__/
+
+# Sample PO / Order Confirmation PDFs (scripts/sample-forms-pdf.mjs)
+sample-forms/

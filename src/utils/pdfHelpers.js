@@ -12,11 +12,7 @@ export const generateQuoteNumber = () => {
   return `Q${mm}${dd}${yy}${random}`;
 };
 
-export const money = (value) =>
-  `$${Number(value || 0).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
+export { money } from "./money.js";
 
 export const drawQuoteHeader = (
   doc,

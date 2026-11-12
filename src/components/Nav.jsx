@@ -11,6 +11,8 @@ export default function Nav() {
     <nav style={{ display: "flex", gap: "6px", padding: "10px 20px 0", fontFamily: "Arial, sans-serif", maxWidth: "1900px", margin: "0 auto", boxSizing: "border-box" }}>
       <NavLink to="/" end style={link}>Parts Lookup</NavLink>
       <NavLink to="/pricelists" style={link}>Vendor Price Lists</NavLink>
+      <NavLink to="/po" style={link}>Purchase Order</NavLink>
+      <NavLink to="/order-confirmation" style={link}>Order Confirmation</NavLink>
     </nav>
   );
 }
